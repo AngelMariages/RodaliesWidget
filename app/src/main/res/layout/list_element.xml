@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<TextView
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="New Text"
+    android:id="@+id/horarisText"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical|center_horizontal"
+    android:textSize="@dimen/abc_text_size_medium_material" />-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/horarisListLayout">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:id="@+id/horarisSortidaText"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:layout_weight="1"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:id="@+id/horarisArribadaText"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:layout_weight="1"/>
+</LinearLayout>
