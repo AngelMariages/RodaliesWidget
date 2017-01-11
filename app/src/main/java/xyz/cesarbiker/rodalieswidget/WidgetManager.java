@@ -4,13 +4,16 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class WidgetManager extends AppWidgetProvider {
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseDatabase mFirebaseDatabase;
     private int numberOfWidgets = 0;
 
     @Override
@@ -125,15 +128,60 @@ public class WidgetManager extends AppWidgetProvider {
     }
 
     private void logUpdates(Context context, int widgetID) {
-        mFirebaseAnalytics = Utils.getFirebaseAnalytics(context);
+        mFirebaseDatabase = Utils.getFirebaseDatabase();
 
-        String[] stations = Utils.getStations(context, widgetID);
+        final String[] stations = Utils.getStations(context, widgetID);
+
         if(stations != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.ORIGIN, stations[0]);
-            bundle.putString(FirebaseAnalytics.Param.DESTINATION, stations[1]);
-            bundle.putString(FirebaseAnalytics.Param.QUANTITY, String.valueOf(numberOfWidgets));
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH, bundle);
+            DatabaseReference mRefJourneys = mFirebaseDatabase.getReference("statics/journeys");
+            DatabaseReference mRefStations = mFirebaseDatabase.getReference("statics/stations");
+
+
+            mRefJourneys.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DataSnapshot origenDesti = dataSnapshot.child(stations[0] + "@@" + stations[1]);
+
+                    if (origenDesti.exists()) {
+                        int value = Integer.parseInt(String.valueOf(origenDesti.getValue()));
+                        origenDesti.getRef().setValue(value + 1);
+                    } else {
+                        origenDesti.getRef().setValue(1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Utils.log("Error" + databaseError.getMessage());
+                }
+            });
+
+            mRefStations.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DataSnapshot origen = dataSnapshot.child(stations[0]).child("departures");
+                    DataSnapshot desti = dataSnapshot.child(stations[1]).child("arrivals");
+
+                    if (origen.exists()) {
+                        int value = Integer.parseInt(String.valueOf(origen.getValue()));
+                        origen.getRef().setValue(value + 1);
+                    } else {
+                        origen.getRef().setValue(1);
+                    }
+
+                    if (desti.exists()) {
+                        int value = Integer.parseInt(String.valueOf(desti.getValue()));
+                        desti.getRef().setValue(value + 1);
+                    } else {
+                        desti.getRef().setValue(1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Utils.log("Error" + databaseError.getMessage());
+                }
+            });
         }
     }
 }

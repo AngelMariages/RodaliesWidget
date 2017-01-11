@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.FirebaseDatabase;
 
 public abstract class Utils {
     public static final int ORIGIN = 100;
@@ -71,6 +72,7 @@ public abstract class Utils {
             "79608", "71602", "71701", "78700", "78710", "79607", "77111", "77305", "77307", "78606", "78607",
             "77109", "71709", "78609", "72204", "71700", "79410"};
     private static FirebaseAnalytics mFirebaseAnalytics;
+    private static FirebaseDatabase mFirebaseDatabase;
 
     public static void log(String message) {
         if(LOGGING) {
@@ -146,5 +148,12 @@ public abstract class Utils {
             mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         }
         return mFirebaseAnalytics;
+    }
+
+    public static FirebaseDatabase getFirebaseDatabase() {
+        if(mFirebaseDatabase == null) {
+            mFirebaseDatabase = FirebaseDatabase.getInstance();
+        }
+        return mFirebaseDatabase;
     }
 }
