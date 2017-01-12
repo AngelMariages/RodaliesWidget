@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget;
+package xyz.cesarbiker.rodalieswidget.timetables;
 
 import android.content.Context;
 
@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -29,6 +30,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import xyz.cesarbiker.rodalieswidget.utils.U;
 
 public class GetHoraris {
     private static final String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
@@ -45,14 +48,12 @@ public class GetHoraris {
         this.desti = desti;
         try {
             return getXMLFromToday();
-        } catch(IOException e) {
-            e.printStackTrace();
-        } catch(XPathExpressionException e) {
-            e.printStackTrace();
-        } catch(ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch(SAXException e) {
-            e.printStackTrace();
+        } catch(IOException | XPathExpressionException | ParserConfigurationException | SAXException e) {
+            if(e instanceof UnknownHostException) {
+                U.log("Can't reach the internet");
+            } else {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -61,13 +62,12 @@ public class GetHoraris {
         String xmlFileReaded = openXMLFile();
 
         if(xmlFileReaded.isEmpty()) {
-            Utils.log("Getting from internet!");
+            U.log("Getting from internet!");
             xmlFileReaded = getXMLFromWeb();
             saveXMLFile(xmlFileReaded);
             removeOldXML();
-            Utils.log("Getting from internet, DONE!");
         } else {
-            Utils.log("Getting from file!");
+            U.log("Getting from file!");
         }
 
         return parseXMLFile(xmlFileReaded);
@@ -140,7 +140,8 @@ public class GetHoraris {
             }
 
         } catch(IOException e) {
-            e.printStackTrace();
+            // TODO: 1/12/17 Tell the user
+            U.log("File " + fileName + " not found, getting from internet");
         }
 
         return allLines.toString();
@@ -159,7 +160,7 @@ public class GetHoraris {
         };
 
         for(File file : filesDir.listFiles(filenameFilter)) {
-            Utils.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
+            U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
         }
     }
 

@@ -1,44 +1,45 @@
 package xyz.cesarbiker.rodalieswidget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import xyz.cesarbiker.rodalieswidget.utils.U;
+
 public class WidgetReceiver extends BroadcastReceiver {
     private final Context context;
     private int widgetID;
-    private String[] stations;
+    private int[] stations;
 
     public WidgetReceiver(int widgetID, Context context) {
         this.widgetID = widgetID;
         this.context = context;
-        stations = Utils.getStations(context, widgetID);
+        stations = U.getStations(context, widgetID);
         updateStationsTextViews();
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String intentAction = intent.getAction();
-        int idNewSettings = intent.getIntExtra(Utils.EXTRA_WIDGET_ID, -1);
+        // TODO: 1/12/17 Check if all broadcast send the ID
+        int idNewSettings = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
         if(idNewSettings == widgetID) {
-            if(intentAction.equalsIgnoreCase(Utils.ACTION_CLICK_SWAP_BUTTON)) {
-                String[] stationsTmp = new String[2];
+            if(intentAction.equalsIgnoreCase(U.ACTION_CLICK_SWAP_BUTTON)) {
+                int[] stationsTmp = new int[2];
                 stationsTmp[0] = stations[1];
                 stationsTmp[1] = stations[0];
                 stations = stationsTmp;
-                Utils.saveStations(context, widgetID, stations[0], stations[1]);
+                U.saveStations(context, widgetID, stations[0], stations[1]);
                 updateStationsTextViews();
-            }
-            if(intentAction.equalsIgnoreCase(Utils.ACTION_SEND_NEWSTATIONS)) {
-                int originOrDestination = intent.getIntExtra(Utils.EXTRA_ORIGINorDESTINATION, -1);
-                String newStation = intent.getStringExtra(Utils.EXTRA_NEWSTATIONS);
+            } else if(intentAction.equalsIgnoreCase(U.ACTION_SEND_NEW_STATIONS)) {
+                int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
+                int newStation = intent.getIntExtra(U.EXTRA_CONFIG_STATION, -1);
 
-                if(originOrDestination != -1 && newStation != null) {
-                    if(originOrDestination == Utils.ORIGIN) stations[0] = newStation;
+                if(originOrDestination != -1 && newStation != -1) {
+                    if(originOrDestination == U.ORIGIN) stations[0] = newStation;
                     else stations[1] = newStation;
 
-                    Utils.saveStations(context, widgetID, stations[0], stations[1]);
+                    U.saveStations(context, widgetID, stations[0], stations[1]);
                     updateStationsTextViews();
                 }
             }
@@ -47,10 +48,10 @@ public class WidgetReceiver extends BroadcastReceiver {
 
     public void updateStationsTextViews() {
         Intent updateStationsTextIntent = new Intent(context, WidgetManager.class);
-        updateStationsTextIntent.setAction(Utils.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
-        updateStationsTextIntent.putExtra(Utils.EXTRA_WIDGET_ID, widgetID);
-        updateStationsTextIntent.putExtra(Utils.EXTRA_ORIGIN, stations[0]);
-        updateStationsTextIntent.putExtra(Utils.EXTRA_DESTINATION, stations[1]);
+        updateStationsTextIntent.setAction(U.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
+        updateStationsTextIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+        updateStationsTextIntent.putExtra(U.EXTRA_ORIGIN, stations[0]);
+        updateStationsTextIntent.putExtra(U.EXTRA_DESTINATION, stations[1]);
         context.sendBroadcast(updateStationsTextIntent);
     }
 }

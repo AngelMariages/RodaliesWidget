@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RodaliesWidget</string>
+    <string name="no_destination_set">Toca para la destinación</string>
+    <string name="no_internet">No se puede acceder a internet y tampoco tenemos datos guardados de estas estaciones</string>
+    <string name="no_origin_set">Toca para el origen</string>
+    <string name="title_activity_select_station">Selecciona la estación</string>
+</resources>

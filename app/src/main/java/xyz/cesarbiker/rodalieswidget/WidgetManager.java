@@ -6,33 +6,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
+import xyz.cesarbiker.rodalieswidget.utils.U;
 
 public class WidgetManager extends AppWidgetProvider {
-    private FirebaseDatabase mFirebaseDatabase;
-    private int numberOfWidgets = 0;
 
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        Utils.log("onEnabled");
+        U.log("onEnabled");
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
         // TODO: 07-May-16 Borrar shared preferences
-        Utils.log("onDeleted");
+        U.log("onDeleted");
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Utils.log("onUpdate; num of widgets:" + appWidgetIds.length);
-        numberOfWidgets = appWidgetIds.length;
+        U.log("onUpdate; num of widgets:" + appWidgetIds.length);
 
         for (int i = 0; i < appWidgetIds.length; i++) {
             int widgetID = appWidgetIds[i];
@@ -41,9 +35,9 @@ public class WidgetManager extends AppWidgetProvider {
 
             appWidgetManager.updateAppWidget(widgetID, widget);
 
-            logUpdates(context, widgetID);
+            U.logUpdates(context, widgetID);
 
-            Utils.log("Updating widget id:" + i + " widgetID? " + widgetID);
+            U.log("Updating widget id:" + i + " widgetID? " + widgetID);
         }
     }
 
@@ -53,57 +47,64 @@ public class WidgetManager extends AppWidgetProvider {
         super.onReceive(context, intent);
         String intentAction = intent.getAction();
 
-        Utils.log("onRecive(); intentAction: " + intentAction);
+        U.log("onReceive(); intentAction: " + intentAction);
 
-        if(intentAction.startsWith(Utils.ACTION_CLICK_UPDATE_BUTTON)) {
-            int widgetID = Utils.getIdFromIntent(intent);
+        if(intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
+            int widgetID = U.getIdFromIntent(intent);
 
             updateTimeTables(context, widgetID);
 
-            logUpdates(context, widgetID);
-        } else if(intentAction.startsWith(Utils.ACTION_CLICK_SWAP_BUTTON)) {
-            int widgetID = Utils.getIdFromIntent(intent);
+            U.logUpdates(context, widgetID);
+        } else if(intentAction.startsWith(U.ACTION_CLICK_SWAP_BUTTON)) {
+            int widgetID = U.getIdFromIntent(intent);
 
             swapStations(context, widgetID);
-        } else if(intentAction.startsWith(Utils.ACTION_CLICK_STATIONS_TEXT)) {
-            int widgetID = Utils.getIdFromIntent(intent);
+        } else if(intentAction.startsWith(U.ACTION_CLICK_STATIONS_TEXT)) {
+            int widgetID = U.getIdFromIntent(intent);
 
-            int originOrDestination = intent.getIntExtra(Utils.EXTRA_ORIGINorDESTINATION, -1);
+            int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
             if(widgetID != -1 && originOrDestination != -1) {
                 Intent dialogActivity = new Intent(context, SelectStation.class);
                 dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                dialogActivity.putExtra(Utils.EXTRA_ORIGINorDESTINATION, originOrDestination);
-                dialogActivity.putExtra(Utils.EXTRA_WIDGET_ID, widgetID);
+                dialogActivity.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
+                dialogActivity.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 
                 context.startActivity(dialogActivity);
             }
-        } else if(intentAction.startsWith(Utils.ACTION_UPDATE_STATIONS)) {
-            int widgetID = Utils.getIdFromIntent(intent);
+        } else if(intentAction.startsWith(U.ACTION_UPDATE_STATIONS)) {
+            int widgetID = U.getIdFromIntent(intent);
 
-            String newOrigin = intent.getStringExtra(Utils.EXTRA_ORIGIN);
-            String newDestination = intent.getStringExtra(Utils.EXTRA_DESTINATION);
+            int newOrigin = intent.getIntExtra(U.EXTRA_ORIGIN, -1);
+            int newDestination = intent.getIntExtra(U.EXTRA_DESTINATION, -1);
 
-            Utils.log("Got update to: " + widgetID);
-            Utils.log("UpdateContains: " + newOrigin + "," + newDestination);
+            U.log("Got update to: " + widgetID);
+            U.log("UpdateContains: " + newOrigin + "," + newDestination);
 
-            updateStationTexts(newOrigin, newDestination, context, widgetID);
-        } else if(intentAction.startsWith(Utils.ACTION_CLICK_LIST_ITEM)) {
-            String duracioTrajecte = intent.getStringExtra(Utils.EXTRA_RIDELENGTH);
+            updateStationTexts(StationUtils.getNameFromID(newOrigin), StationUtils.getNameFromID(newDestination),
+                    context, widgetID);
+        } else if(intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
+            String duracioTrajecte = intent.getStringExtra(U.EXTRA_RIDE_LENGTH);
 
             Toast.makeText(context, "Duració del trajecte: " + duracioTrajecte, Toast.LENGTH_SHORT).show();
+        } else if(intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
+            int widgetID = U.getIdFromIntent(intent);
+
+            // TODO: 1/12/17 get the reason
+            AppWidgetManager.getInstance(context).updateAppWidget(widgetID,
+                    new RodaliesWidget(context, widgetID, 0));
         }
     }
 
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
-        Utils.log("onDisabled()");
+        U.log("onDisabled()");
     }
 
     @Override
     public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
         super.onRestored(context, oldWidgetIds, newWidgetIds);
-        Utils.log("onRestored()");
+        U.log("onRestored()");
     }
 
     private void updateStationTexts(String originText, String destinationText, Context context, int widgetID) {
@@ -111,77 +112,19 @@ public class WidgetManager extends AppWidgetProvider {
             RodaliesWidget widget = new RodaliesWidget(context, widgetID);
             widget.updateStationsText(originText, destinationText);
         } else {
-            Utils.log("ERROR: Widget id not found");
+            U.log("ERROR: Widget id not found");
         }
     }
 
     private void swapStations(Context context, int widgetID) {
         Intent swapIntent = new Intent();
-        swapIntent.setAction(Utils.ACTION_CLICK_SWAP_BUTTON);
-        swapIntent.putExtra(Utils.EXTRA_WIDGET_ID, widgetID);
+        swapIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON);
+        swapIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
         context.sendBroadcast(swapIntent);
         updateTimeTables(context, widgetID);
     }
 
     private void updateTimeTables(Context context, int widgetID) {
         AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
-    }
-
-    private void logUpdates(Context context, int widgetID) {
-        mFirebaseDatabase = Utils.getFirebaseDatabase();
-
-        final String[] stations = Utils.getStations(context, widgetID);
-
-        if(stations != null) {
-            DatabaseReference mRefJourneys = mFirebaseDatabase.getReference("statics/journeys");
-            DatabaseReference mRefStations = mFirebaseDatabase.getReference("statics/stations");
-
-
-            mRefJourneys.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    DataSnapshot origenDesti = dataSnapshot.child(stations[0] + "@@" + stations[1]);
-
-                    if (origenDesti.exists()) {
-                        int value = Integer.parseInt(String.valueOf(origenDesti.getValue()));
-                        origenDesti.getRef().setValue(value + 1);
-                    } else {
-                        origenDesti.getRef().setValue(1);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Utils.log("Error" + databaseError.getMessage());
-                }
-            });
-
-            mRefStations.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    DataSnapshot origen = dataSnapshot.child(stations[0]).child("departures");
-                    DataSnapshot desti = dataSnapshot.child(stations[1]).child("arrivals");
-
-                    if (origen.exists()) {
-                        int value = Integer.parseInt(String.valueOf(origen.getValue()));
-                        origen.getRef().setValue(value + 1);
-                    } else {
-                        origen.getRef().setValue(1);
-                    }
-
-                    if (desti.exists()) {
-                        int value = Integer.parseInt(String.valueOf(desti.getValue()));
-                        desti.getRef().setValue(value + 1);
-                    } else {
-                        desti.getRef().setValue(1);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Utils.log("Error" + databaseError.getMessage());
-                }
-            });
-        }
     }
 }

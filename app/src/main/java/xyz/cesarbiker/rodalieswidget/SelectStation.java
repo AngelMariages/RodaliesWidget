@@ -11,6 +11,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
+import xyz.cesarbiker.rodalieswidget.utils.U;
+
 public class SelectStation extends AppCompatActivity {
     private int widgetID;
     private int originOrDestination;
@@ -22,8 +25,8 @@ public class SelectStation extends AppCompatActivity {
 
         Intent selectIntent = getIntent();
 
-        widgetID = selectIntent.getIntExtra(Utils.EXTRA_WIDGET_ID, -1);
-        originOrDestination = selectIntent.getIntExtra(Utils.EXTRA_ORIGINorDESTINATION, -1);
+        widgetID = selectIntent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
+        originOrDestination = selectIntent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
 
         //This should not had been created
         if(originOrDestination == -1)  finish();
@@ -36,7 +39,7 @@ public class SelectStation extends AppCompatActivity {
 
         if(stationListView != null) {
             final ArrayList<String> stationList = new ArrayList<>();
-            Collections.addAll(stationList, Utils.STATION_NAMES);
+            Collections.addAll(stationList, StationUtils.STATION_NAMES);
 
             stationListView.setAdapter(new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1,
@@ -46,16 +49,16 @@ public class SelectStation extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent updateStationsIntent = new Intent();
-                    updateStationsIntent.setAction(Utils.ACTION_SEND_NEWSTATIONS);
-                    updateStationsIntent.putExtra(Utils.EXTRA_WIDGET_ID, widgetID);
-                    updateStationsIntent.putExtra(Utils.EXTRA_NEWSTATIONS, stationList.get(position));
-                    updateStationsIntent.putExtra(Utils.EXTRA_ORIGINorDESTINATION, originOrDestination);
+                    updateStationsIntent.setAction(U.ACTION_SEND_NEW_STATIONS);
+                    updateStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+                    updateStationsIntent.putExtra(U.EXTRA_CONFIG_STATION, StationUtils.STATION_IDS[position]);
+                    updateStationsIntent.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
                     getApplicationContext().sendBroadcast(updateStationsIntent);
                     finish();
                 }
             });
         } else {
-            Utils.log("Error when creating the stations list view, finishing dialog");
+            U.log("Error when creating the stations list view, finishing dialog");
             finish();
         }
     }
