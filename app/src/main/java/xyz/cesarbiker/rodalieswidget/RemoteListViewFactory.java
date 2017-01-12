@@ -9,26 +9,29 @@ import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 
-public class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
+import xyz.cesarbiker.rodalieswidget.timetables.GetHoraris;
+import xyz.cesarbiker.rodalieswidget.timetables.Horari;
+import xyz.cesarbiker.rodalieswidget.utils.U;
+
+class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;
     private int widgetID;
     private WidgetReceiver widgetReceiver;
 
     private ArrayList<Horari> taulaHoraris = new ArrayList<>();
 
-    public RemoteListViewFactory(Context context, Intent intent) {
+    RemoteListViewFactory(Context context, Intent intent) {
         this.context = context;
         widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
-        Utils.log("Id: " + widgetID, "i");
     }
 
     @Override
     public void onCreate() {
-        Utils.log("onCreate!!!!!");
+        U.log("onCreate!!!!!");
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Utils.ACTION_CLICK_SWAP_BUTTON );
-        intentFilter.addAction(Utils.ACTION_SEND_NEWSTATIONS );
+        intentFilter.addAction(U.ACTION_CLICK_SWAP_BUTTON );
+        intentFilter.addAction(U.ACTION_SEND_NEW_STATIONS);
 
         widgetReceiver = new WidgetReceiver(widgetID, context);
 
@@ -37,11 +40,17 @@ public class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFact
 
     @Override
     public void onDataSetChanged() {
-        Utils.log("onDataSetChanged() I'm widgetID: " + widgetID);
-        String[] stations = Utils.getStations(context, widgetID);
+        U.log("onDataSetChanged() I'm widgetID: " + widgetID);
+        int[] stations = U.getStations(context, widgetID);
 
-        if(stations != null) {
-            taulaHoraris = new GetHoraris(context).get(Utils.getIDFromEstacio(stations[0]), Utils.getIDFromEstacio(stations[1]));
+        if(stations.length > 0) {
+            taulaHoraris = new GetHoraris(context).get(stations[0], stations[1]);
+            if(taulaHoraris == null) {
+                Intent noDataIntent = new Intent(context, WidgetManager.class);
+                noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
+                noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+                context.sendBroadcast(noDataIntent);
+            }
         } else {
             taulaHoraris = new GetHoraris(context).get(79409, 71801);
         }
@@ -54,7 +63,8 @@ public class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFact
 
     @Override
     public int getCount() {
-        return taulaHoraris.size();
+        if(taulaHoraris != null) return taulaHoraris.size();
+        else return 0;
     }
 
     @Override
@@ -70,7 +80,7 @@ public class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFact
         row.setTextViewText(R.id.horarisArribadaText, taulaHoraris.get(position).getHora_arribada());
 
         Intent intent = new Intent(context, WidgetManager.class);
-        intent.putExtra(Utils.EXTRA_RIDELENGTH, taulaHoraris.get(position).getDuracio_trajecte());
+        intent.putExtra(U.EXTRA_RIDE_LENGTH, taulaHoraris.get(position).getDuracio_trajecte());
         row.setOnClickFillInIntent(R.id.horarisListLayout, intent);
 
         return row;

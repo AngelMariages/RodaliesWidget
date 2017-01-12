@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RodaliesWidget</string>
-    <string name="title_activity_select_station">SelectStation</string>
+    <string name="title_activity_select_station">Select the station</string>
+    <string name="no_origin_set">Touch to set the origin</string>
+    <string name="no_destination_set">Touch to set the destination</string>
+    <string name="no_internet">There\'s no internet available and we don\'t have any data saved</string>
 </resources>

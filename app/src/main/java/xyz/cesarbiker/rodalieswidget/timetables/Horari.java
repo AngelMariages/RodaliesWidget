@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget;
+package xyz.cesarbiker.rodalieswidget.timetables;
 
 public class Horari {
     private final String hora_sortida;
