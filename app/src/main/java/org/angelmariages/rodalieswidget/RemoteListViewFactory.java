@@ -1,17 +1,16 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 
-import xyz.cesarbiker.rodalieswidget.timetables.GetHoraris;
-import xyz.cesarbiker.rodalieswidget.timetables.Horari;
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.timetables.GetHoraris;
+import org.angelmariages.rodalieswidget.timetables.Horari;
+import org.angelmariages.rodalieswidget.utils.U;
 
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;

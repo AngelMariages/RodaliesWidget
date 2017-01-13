@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RodaliesWidget</string>
     <string name="no_destination_set">Toca per la destinació</string>
     <string name="no_internet">No es pot accedir a internet i tampoc tenim dades guardades d\'aquestes estacions</string>
     <string name="no_origin_set">Toca per l\'origen</string>
     <string name="title_activity_select_station">Selecciona l\'estació</string>
     <string name="no_stations">L\'origen o la destinació no estan configurats</string>
+    <string name="departure">Sortida</string>
+    <string name="arrival">Arribada</string>
 </resources>

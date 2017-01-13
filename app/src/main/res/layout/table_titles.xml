@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/title_background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/departure"
+        android:gravity="center_horizontal|center_vertical"
+        android:id="@+id/textView"
+        android:layout_weight="1"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/arrival"
+        android:gravity="center_horizontal|center_vertical"
+        android:id="@+id/textView2"
+        android:layout_weight="1"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF" />
+</LinearLayout>

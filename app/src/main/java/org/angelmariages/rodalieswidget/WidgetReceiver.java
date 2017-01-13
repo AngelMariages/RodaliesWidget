@@ -1,10 +1,10 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.U;
 
 public class WidgetReceiver extends BroadcastReceiver {
 

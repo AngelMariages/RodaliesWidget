@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.StationUtils;
+import org.angelmariages.rodalieswidget.utils.U;
 
 public class WidgetManager extends AppWidgetProvider {
 

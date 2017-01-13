@@ -1,9 +1,9 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;
 
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.U;
 
 public class WidgetService extends RemoteViewsService {
     @Override

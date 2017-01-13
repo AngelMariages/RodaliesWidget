@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget.utils;
+package org.angelmariages.rodalieswidget.utils;
 
 import android.content.Context;
 import android.content.Intent;

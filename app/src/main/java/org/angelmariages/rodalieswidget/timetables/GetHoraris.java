@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget.timetables;
+package org.angelmariages.rodalieswidget.timetables;
 
 import android.content.Context;
 
@@ -31,7 +31,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetHoraris {
     private static final String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";

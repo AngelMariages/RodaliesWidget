@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:baselineAligned="false"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textviewclick"
+            android:layout_weight="1"
+            android:gravity="clip_vertical"
+            android:clickable="true"
+            android:id="@+id/origenLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/origenTextView"
+                android:textColor="#263238"
+                android:textSize="18sp"
+                android:clickable="false"
+                android:maxLines="1"
+                tools:text="Premià de Mar" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textviewclick"
+            android:layout_weight="1"
+            android:gravity="clip_vertical"
+            android:clickable="true"
+            android:id="@+id/destiLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/destiTextView"
+                android:textColor="#263238"
+                android:textSize="18sp"
+                android:clickable="false"
+                android:maxLines="1"
+                tools:text="Barcelona - Sants" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/actualitzarButton"
+            android:src="@drawable/icon_update"
+            android:scaleType="fitXY"
+            android:cropToPadding="false" />
+
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/intercanviarButton"
+            android:src="@drawable/icon_swap"
+            android:scaleType="fitXY"
+            android:cropToPadding="false" />
+    </LinearLayout>
+</LinearLayout>
