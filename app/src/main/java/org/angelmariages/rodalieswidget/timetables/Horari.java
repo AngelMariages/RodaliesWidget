@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget.timetables;
+package org.angelmariages.rodalieswidget.timetables;
 
 public class Horari {
     private final String hora_sortida;

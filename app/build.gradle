@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "xyz.cesarbiker.rodalieswidget"
+        applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 5

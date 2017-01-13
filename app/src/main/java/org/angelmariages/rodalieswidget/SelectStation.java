@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.StationUtils;
+import org.angelmariages.rodalieswidget.utils.U;
 
 public class SelectStation extends AppCompatActivity {
     private int widgetID;

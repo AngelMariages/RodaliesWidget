@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget.utils;
+package org.angelmariages.rodalieswidget.utils;
 
 public final class StationUtils {
     public static final String[] STATION_NAMES = new String[]{"Aeroport", "Arenys de Mar", "Badalona", "Balenyà-Els Hostalets", "Balenyà-Tona-Seva",

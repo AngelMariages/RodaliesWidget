@@ -1,4 +1,4 @@
-package xyz.cesarbiker.rodalieswidget;
+package org.angelmariages.rodalieswidget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
-import xyz.cesarbiker.rodalieswidget.utils.U;
+import org.angelmariages.rodalieswidget.utils.StationUtils;
+import org.angelmariages.rodalieswidget.utils.U;
 
 class RodaliesWidget extends RemoteViews {
     private int state = U.WIDGET_STATE_UPDATE_TABLES;
