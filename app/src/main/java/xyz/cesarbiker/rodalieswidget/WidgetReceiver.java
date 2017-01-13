@@ -7,7 +7,7 @@ import android.content.Intent;
 import xyz.cesarbiker.rodalieswidget.utils.U;
 
 public class WidgetReceiver extends BroadcastReceiver {
-    private final Context context;
+    private Context context;
     private int widgetID;
     private int[] stations;
 
@@ -20,6 +20,7 @@ public class WidgetReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        U.log("onReceive() Receiver: " + intent.getAction());
         String intentAction = intent.getAction();
         // TODO: 1/12/17 Check if all broadcast send the ID
         int idNewSettings = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);

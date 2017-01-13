@@ -50,14 +50,16 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
                 noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
                 context.sendBroadcast(noDataIntent);
+                U.log("taulaHoraris NULL!");
             }
-        } else {
+        }/* else {
             taulaHoraris = new GetHoraris(context).get(79409, 71801);
-        }
+        }*/
     }
 
     @Override
     public void onDestroy() {
+        U.log("RECEIVER DESTROYED!!!!!!----------------------------------");
         context.unregisterReceiver(widgetReceiver);
     }
 

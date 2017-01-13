@@ -109,8 +109,12 @@ public class WidgetManager extends AppWidgetProvider {
 
     private void updateStationTexts(String originText, String destinationText, Context context, int widgetID) {
         if(widgetID != -1) {
+            U.saveStations(context, widgetID, originText, destinationText);
+
             RodaliesWidget widget = new RodaliesWidget(context, widgetID);
             widget.updateStationsText(originText, destinationText);
+            AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
+            updateTimeTables(context, widgetID);
         } else {
             U.log("ERROR: Widget id not found");
         }
@@ -121,7 +125,6 @@ public class WidgetManager extends AppWidgetProvider {
         swapIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON);
         swapIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
         context.sendBroadcast(swapIntent);
-        updateTimeTables(context, widgetID);
     }
 
     private void updateTimeTables(Context context, int widgetID) {
