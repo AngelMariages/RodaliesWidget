@@ -48,7 +48,7 @@ public class SelectStation extends AppCompatActivity {
             stationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent updateStationsIntent = new Intent();
+                    Intent updateStationsIntent = new Intent(getApplicationContext(), WidgetReceiver.class);
                     updateStationsIntent.setAction(U.ACTION_SEND_NEW_STATIONS);
                     updateStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
                     updateStationsIntent.putExtra(U.EXTRA_CONFIG_STATION, StationUtils.STATION_IDS[position]);
