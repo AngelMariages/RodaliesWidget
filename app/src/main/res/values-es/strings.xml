@@ -5,4 +5,5 @@
     <string name="no_internet">No se puede acceder a internet y tampoco tenemos datos guardados de estas estaciones</string>
     <string name="no_origin_set">Toca para el origen</string>
     <string name="title_activity_select_station">Selecciona la estación</string>
+    <string name="no_stations">El origen o el destino no están configurados</string>
 </resources>

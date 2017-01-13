@@ -31,7 +31,7 @@ public class WidgetManager extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; i++) {
             int widgetID = appWidgetIds[i];
 
-            RodaliesWidget widget = new RodaliesWidget(context, widgetID);
+            RodaliesWidget widget = new RodaliesWidget(context, widgetID, 0);
 
             appWidgetManager.updateAppWidget(widgetID, widget);
 
@@ -51,14 +51,16 @@ public class WidgetManager extends AppWidgetProvider {
 
         if(intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
             int widgetID = U.getIdFromIntent(intent);
+            int widgetState = U.getStateFromIntent(intent);
 
-            updateTimeTables(context, widgetID);
+            updateTimeTables(context, widgetID, widgetState);
 
             U.logUpdates(context, widgetID);
         } else if(intentAction.startsWith(U.ACTION_CLICK_SWAP_BUTTON)) {
             int widgetID = U.getIdFromIntent(intent);
+            int widgetState = U.getStateFromIntent(intent);
 
-            swapStations(context, widgetID);
+            swapStations(context, widgetID, widgetState);
         } else if(intentAction.startsWith(U.ACTION_CLICK_STATIONS_TEXT)) {
             int widgetID = U.getIdFromIntent(intent);
 
@@ -88,10 +90,10 @@ public class WidgetManager extends AppWidgetProvider {
             Toast.makeText(context, "Duració del trajecte: " + duracioTrajecte, Toast.LENGTH_SHORT).show();
         } else if(intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
             int widgetID = U.getIdFromIntent(intent);
+            int widgetState = U.getStateFromIntent(intent);
 
-            // TODO: 1/12/17 get the reason
             AppWidgetManager.getInstance(context).updateAppWidget(widgetID,
-                    new RodaliesWidget(context, widgetID, 0));
+                    new RodaliesWidget(context, widgetID, widgetState));
         }
     }
 
@@ -110,24 +112,32 @@ public class WidgetManager extends AppWidgetProvider {
     private void updateStationTexts(String originText, String destinationText, Context context, int widgetID) {
         if(widgetID != -1) {
             U.saveStations(context, widgetID, originText, destinationText);
-
-            RodaliesWidget widget = new RodaliesWidget(context, widgetID);
-            widget.updateStationsText(originText, destinationText);
-            AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
-            updateTimeTables(context, widgetID);
+            reloadWidget(context, widgetID);
         } else {
             U.log("ERROR: Widget id not found");
         }
     }
 
-    private void swapStations(Context context, int widgetID) {
-        Intent swapIntent = new Intent();
+    private void swapStations(Context context, int widgetID, int widgetState) {
+        Intent swapIntent = new Intent(context, WidgetReceiver.class);
         swapIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON);
         swapIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+        swapIntent.putExtra(U.EXTRA_WIDGET_STATE, widgetState);
         context.sendBroadcast(swapIntent);
     }
 
-    private void updateTimeTables(Context context, int widgetID) {
+    private void updateTimeTables(Context context, int widgetID, int widgetState) {
+        U.log("UpdateTimeTables" + widgetState);
+        if(widgetState == U.WIDGET_STATE_UPDATE_TABLES) {
+            AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
+        } else {
+            reloadWidget(context, widgetID);
+        }
+    }
+
+    private void reloadWidget(Context context, int widgetID) {
+        RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES);
+        AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
         AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
     }
 }

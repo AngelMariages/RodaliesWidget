@@ -30,14 +30,17 @@ public final class U {
     public static final String EXTRA_WIDGET_ID = "org.angelmariages.RodaliesWidget.extraWidgetId";
     public static final String EXTRA_RIDE_LENGTH = "org.angelmariages.RodaliesWidget.extraRideLength";
     public static final String EXTRA_CONFIG_STATION = "org.angelmariages.RodaliesWidget.newSettings";
+    public static final String EXTRA_WIDGET_STATE = "org.angelmariages.RodaliesWidget.extraWidgetState";
 
     private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
-
     private static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
     private static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
-    //====================== [ END_CONSTANTS ] ======================
 
+    //====================== [ END_CONSTANTS ] ======================
     private static final boolean LOGGING = true;
+    public static final int WIDGET_STATE_UPDATE_TABLES = 0;
+    public static final int WIDGET_STATE_NO_INTERNET = 1;
+    public static final int WIDGET_STATE_NO_STATIONS = 2;
 
     private static FirebaseDatabase mFirebaseDatabase;
 
@@ -49,6 +52,10 @@ public final class U {
 
     public static int getIdFromIntent(Intent intent) {
         return intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
+    }
+
+    public static int getStateFromIntent(Intent intent) {
+        return intent.getIntExtra(U.EXTRA_WIDGET_STATE, -1);
     }
 
     public static void saveStations(Context context, int widgetID, String origin, String destination) {
@@ -71,7 +78,7 @@ public final class U {
                     sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1)
             };
         }
-        return new int[]{};
+        return new int[]{-1, -1};
     }
 
     private static FirebaseDatabase getFirebaseDatabase() {

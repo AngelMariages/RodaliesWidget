@@ -16,7 +16,6 @@ import xyz.cesarbiker.rodalieswidget.utils.U;
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;
     private int widgetID;
-    private WidgetReceiver widgetReceiver;
 
     private ArrayList<Horari> taulaHoraris = new ArrayList<>();
 
@@ -26,16 +25,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
+    /*intentFilter.addAction(U.ACTION_CLICK_SWAP_BUTTON );
+    intentFilter.addAction(U.ACTION_SEND_NEW_STATIONS);*/
+
     @Override
     public void onCreate() {
-        U.log("onCreate!!!!!");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(U.ACTION_CLICK_SWAP_BUTTON );
-        intentFilter.addAction(U.ACTION_SEND_NEW_STATIONS);
 
-        widgetReceiver = new WidgetReceiver(widgetID, context);
-
-        context.registerReceiver(widgetReceiver, intentFilter);
     }
 
     @Override
@@ -43,24 +38,28 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         U.log("onDataSetChanged() I'm widgetID: " + widgetID);
         int[] stations = U.getStations(context, widgetID);
 
-        if(stations.length > 0) {
+        if(stations[0] == -1 || stations[1] == -1) {
+            Intent noStationsIntent = new Intent(context, WidgetManager.class);
+            noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
+            noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+            noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
+            context.sendBroadcast(noStationsIntent);
+        } else {
             taulaHoraris = new GetHoraris(context).get(stations[0], stations[1]);
             if(taulaHoraris == null) {
                 Intent noDataIntent = new Intent(context, WidgetManager.class);
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
                 noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+                noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
                 context.sendBroadcast(noDataIntent);
                 U.log("taulaHoraris NULL!");
             }
-        }/* else {
-            taulaHoraris = new GetHoraris(context).get(79409, 71801);
-        }*/
+        }
     }
 
     @Override
     public void onDestroy() {
-        U.log("RECEIVER DESTROYED!!!!!!----------------------------------");
-        context.unregisterReceiver(widgetReceiver);
+
     }
 
     @Override

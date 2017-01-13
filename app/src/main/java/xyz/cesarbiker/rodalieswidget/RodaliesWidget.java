@@ -11,38 +11,31 @@ import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
 import xyz.cesarbiker.rodalieswidget.utils.U;
 
 class RodaliesWidget extends RemoteViews {
-    private int reason = -1;
+    private int state = U.WIDGET_STATE_UPDATE_TABLES;
     private Context context;
     private int widgetID;
-    private AppWidgetManager appWidgetManager;
 
-    RodaliesWidget(Context context, int widgetID) {
-        super(context.getPackageName(), R.layout.widget_layout);
+    RodaliesWidget(Context context, int widgetID, int state) {
+        super(context.getPackageName(), state == U.WIDGET_STATE_UPDATE_TABLES ? R.layout.widget_layout : R.layout.widget_layout_no_data);
         this.context = context;
         this.widgetID = widgetID;
-        this.appWidgetManager = AppWidgetManager.getInstance(context);
-
-        Intent adapterIntent = new Intent(context, WidgetService.class);
-        adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
-        adapterIntent.setData(Uri.parse(adapterIntent.toUri(Intent.URI_INTENT_SCHEME)));
-
-        this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
-        setStationNames();
-        setPendingIntents();
-    }
-
-    RodaliesWidget(Context context, int widgetID, int reason) {
-        super(context.getPackageName(), R.layout.widget_layout_no_data);
-        this.context = context;
-        this.widgetID = widgetID;
-        this.appWidgetManager = AppWidgetManager.getInstance(context);
         setStationNames();
         setPendingIntents();
 
-        this.reason = reason;
+        this.state = state;
 
-        if(reason == 0) {
+        if(state == U.WIDGET_STATE_UPDATE_TABLES) {
+            Intent adapterIntent = new Intent(context, WidgetService.class);
+            adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
+            adapterIntent.setData(Uri.parse(adapterIntent.toUri(Intent.URI_INTENT_SCHEME)));
+
+            this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
+            setStationNames();
+            setPendingIntents();
+        } else if(state == U.WIDGET_STATE_NO_INTERNET) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
+        } else if(state == U.WIDGET_STATE_NO_STATIONS) {
+            this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_stations));
         }
     }
     private void setStationNames() {
@@ -72,6 +65,7 @@ class RodaliesWidget extends RemoteViews {
         Intent updateButtonIntent = new Intent(context, WidgetManager.class);
         updateButtonIntent.setAction(U.ACTION_CLICK_UPDATE_BUTTON + getWidgetID());
         updateButtonIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+        updateButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
                 updateButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         this.setOnClickPendingIntent(R.id.actualitzarButton, pendingIntent);
@@ -81,6 +75,7 @@ class RodaliesWidget extends RemoteViews {
         Intent swapButtonIntent = new Intent(context, WidgetManager.class);
         swapButtonIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON + getWidgetID());
         swapButtonIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+        swapButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
         PendingIntent swapPI = PendingIntent.getBroadcast(context, 0,
                 swapButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         this.setOnClickPendingIntent(R.id.intercanviarButton, swapPI);
