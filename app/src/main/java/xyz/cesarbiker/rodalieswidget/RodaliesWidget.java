@@ -11,6 +11,7 @@ import xyz.cesarbiker.rodalieswidget.utils.StationUtils;
 import xyz.cesarbiker.rodalieswidget.utils.U;
 
 class RodaliesWidget extends RemoteViews {
+    private int reason = -1;
     private Context context;
     private int widgetID;
     private AppWidgetManager appWidgetManager;
@@ -35,14 +36,10 @@ class RodaliesWidget extends RemoteViews {
         this.context = context;
         this.widgetID = widgetID;
         this.appWidgetManager = AppWidgetManager.getInstance(context);
-
-        Intent adapterIntent = new Intent(context, WidgetService.class);
-        adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
-        adapterIntent.setData(Uri.parse(adapterIntent.toUri(Intent.URI_INTENT_SCHEME)));
-
-        this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
         setStationNames();
         setPendingIntents();
+
+        this.reason = reason;
 
         if(reason == 0) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
@@ -115,8 +112,6 @@ class RodaliesWidget extends RemoteViews {
 
         this.setTextViewText(R.id.origenTextView, originText);
         this.setTextViewText(R.id.destiTextView, destinationText);
-        appWidgetManager.updateAppWidget(widgetID, this);
-        U.saveStations(context, widgetID, originText, destinationText);
     }
 
     private String getWidgetID() {
