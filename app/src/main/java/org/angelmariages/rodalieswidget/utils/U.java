@@ -41,6 +41,7 @@ public final class U {
     public static final int WIDGET_STATE_UPDATE_TABLES = 0;
     public static final int WIDGET_STATE_NO_INTERNET = 1;
     public static final int WIDGET_STATE_NO_STATIONS = 2;
+    public static final int WIDGET_STATE_NO_TIMES = 3;
 
     private static FirebaseDatabase mFirebaseDatabase;
 

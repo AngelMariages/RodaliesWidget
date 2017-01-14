@@ -3,10 +3,16 @@ package org.angelmariages.rodalieswidget;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,29 +38,38 @@ public class SelectStation extends AppCompatActivity {
         if(originOrDestination == -1)  finish();
 
         setListView();
+
+        if (this.getWindow() != null) {
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
     }
 
+
+
     private void setListView() {
+        EditText searchEditView = (EditText) findViewById(R.id.searchEditText);
         ListView stationListView = (ListView) findViewById(R.id.stationListView);
 
         if(stationListView != null) {
             final ArrayList<String> stationList = new ArrayList<>();
             Collections.addAll(stationList, StationUtils.STATION_NAMES);
 
-            stationListView.setAdapter(new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1,
-                    stationList));
-
-            stationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            final StationsAdapter stationsAdapter = new StationsAdapter(this, stationList, widgetID, originOrDestination);
+            stationListView.setAdapter(stationsAdapter);
+            searchEditView.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent updateStationsIntent = new Intent(getApplicationContext(), WidgetReceiver.class);
-                    updateStationsIntent.setAction(U.ACTION_SEND_NEW_STATIONS);
-                    updateStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-                    updateStationsIntent.putExtra(U.EXTRA_CONFIG_STATION, StationUtils.STATION_IDS[position]);
-                    updateStationsIntent.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
-                    getApplicationContext().sendBroadcast(updateStationsIntent);
-                    finish();
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    stationsAdapter.filterStations(charSequence.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
                 }
             });
         } else {

@@ -24,9 +24,6 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
-    /*intentFilter.addAction(U.ACTION_CLICK_SWAP_BUTTON );
-    intentFilter.addAction(U.ACTION_SEND_NEW_STATIONS);*/
-
     @Override
     public void onCreate() {
 
@@ -51,7 +48,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
                 noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
                 noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
                 context.sendBroadcast(noDataIntent);
-                U.log("taulaHoraris NULL!");
+            } else if(taulaHoraris.size() == 0) {
+                Intent noDataIntent = new Intent(context, WidgetManager.class);
+                noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
+                noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+                noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_TIMES);
+                context.sendBroadcast(noDataIntent);
             }
         }
     }
