@@ -7,4 +7,6 @@
     <string name="no_stations">L\'origen o la destinació no estan configurats</string>
     <string name="departure">Sortida</string>
     <string name="arrival">Arribada</string>
+    <string name="no_times">No hi han horaris per aquesta combinació d\'estacions</string>
+    <string name="search_text"/>
 </resources>

@@ -15,8 +15,8 @@ class RodaliesWidget extends RemoteViews {
     private Context context;
     private int widgetID;
 
-    RodaliesWidget(Context context, int widgetID, int state) {
-        super(context.getPackageName(), state == U.WIDGET_STATE_UPDATE_TABLES ? R.layout.widget_layout : R.layout.widget_layout_no_data);
+    RodaliesWidget(Context context, int widgetID, int state, int layout) {
+        super(context.getPackageName(), layout);
         this.context = context;
         this.widgetID = widgetID;
         setStationNames();
@@ -30,13 +30,16 @@ class RodaliesWidget extends RemoteViews {
             adapterIntent.setData(Uri.parse(adapterIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
-            setStationNames();
-            setPendingIntents();
         } else if(state == U.WIDGET_STATE_NO_INTERNET) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
         } else if(state == U.WIDGET_STATE_NO_STATIONS) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_stations));
+        } else if(state == U.WIDGET_STATE_NO_TIMES) {
+            this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_times));
         }
+
+        setStationNames();
+        setPendingIntents();
     }
     private void setStationNames() {
         int[] stations = U.getStations(context, widgetID);

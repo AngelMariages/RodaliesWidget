@@ -31,7 +31,7 @@ public class WidgetManager extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; i++) {
             int widgetID = appWidgetIds[i];
 
-            RodaliesWidget widget = new RodaliesWidget(context, widgetID, 0);
+            RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES, R.layout.widget_layout);
 
             appWidgetManager.updateAppWidget(widgetID, widget);
 
@@ -91,9 +91,12 @@ public class WidgetManager extends AppWidgetProvider {
         } else if(intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
             int widgetID = U.getIdFromIntent(intent);
             int widgetState = U.getStateFromIntent(intent);
+            int widgetLayout = R.layout.widget_layout;
+
+            if(widgetState == 1 || widgetState == 2 || widgetState == 3) widgetLayout = R.layout.widget_layout_no_data;
 
             AppWidgetManager.getInstance(context).updateAppWidget(widgetID,
-                    new RodaliesWidget(context, widgetID, widgetState));
+                    new RodaliesWidget(context, widgetID, widgetState, widgetLayout));
         }
     }
 
@@ -136,7 +139,7 @@ public class WidgetManager extends AppWidgetProvider {
     }
 
     private void reloadWidget(Context context, int widgetID) {
-        RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES);
+        RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES, R.layout.widget_layout);
         AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
         AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
     }

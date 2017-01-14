@@ -39,6 +39,7 @@ public class WidgetReceiver extends BroadcastReceiver {
             } else if(intentAction.equalsIgnoreCase(U.ACTION_SEND_NEW_STATIONS)) {
                 int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
                 int newStation = intent.getIntExtra(U.EXTRA_CONFIG_STATION, -1);
+                U.log("OR= " + originOrDestination + " , " + newStation);
 
                 if(originOrDestination != -1 && newStation != -1) {
                     int[] stations = U.getStations(context, widgetID);

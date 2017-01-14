@@ -113,6 +113,7 @@ public class GetHoraris {
     }
 
     private void saveXMLFile(String data) {
+        // TODO: 14-Jan-17 Don't save if there's no data
         String fileName = "horaris_" + origen + "_" + desti + "_" + getTodayDateWithoutPath() + ".xml";
 
         OutputStreamWriter outputStreamWriter;

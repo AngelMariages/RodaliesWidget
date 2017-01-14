@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/widget_background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding"
+    android:paddingLeft="@dimen/padding"
+    android:paddingRight="@dimen/padding">
+
+    <include layout="@layout/widget_buttons"/>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/padding"
-        android:paddingBottom="@dimen/padding"
-        android:paddingRight="@dimen/padding">
+        android:background="@color/data_background"
+        android:orientation="vertical">
 
-        <include layout="@layout/widget_buttons"/>
-
-        <LinearLayout
-            android:orientation="vertical"
+        <TextView
+            android:id="@+id/reasonTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/data_background">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/reasonTextView"
-                android:textColor="@color/data_text"
-                tools:text="There's no internet available"
-                android:textSize="24sp"
-                android:gravity="center_vertical|center_horizontal" />
-        </LinearLayout>
-
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@color/data_text"
+            android:textSize="24sp"
+            tools:text="There's no internet available"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
