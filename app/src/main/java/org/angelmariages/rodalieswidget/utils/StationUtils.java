@@ -25,7 +25,7 @@ public final class StationUtils {
             "Vic", "Viladecans", "Viladecavalls", "Vilafranca del Penedés", "Vilanova i la Geltrú", "Vilassar de Mar"
     };
 
-    public static final int[] STATION_IDS = new int[]{72400, 79600, 79404, 77106, 77107, 78705, 78804,
+    private static final int[] STATION_IDS = new int[]{72400, 79600, 79404, 77106, 77107, 78705, 78804,
             79009, 79400, 78806, 71802, 78805, 78802, 79004, 71801, 78801, 71708, 79606,
             77112, 79412, 71601, 79502, 79603, 77301, 79601, 79101, 78605, 72210, 71705,
             77105, 78706, 72503, 72303, 71604, 71603, 79407, 72211, 71707, 72201, 72203,
@@ -47,7 +47,6 @@ public final class StationUtils {
     }
 
     public static String getNameFromID(int stationID) {
-        // TODO: 1/12/17 Check for nulls on usages of this method
         for(int i = 0; i < STATION_IDS.length; i++)
             if(STATION_IDS[i] == stationID)
                 return STATION_NAMES[i];

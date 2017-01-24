@@ -3,7 +3,7 @@ package org.angelmariages.rodalieswidget.timetables;
 public class Horari {
     private final String hora_sortida;
     private final String hora_arribada;
-    private String duracio_trajecte;
+    private final String duracio_trajecte;
     private final int origen;
     private final int desti;
     private final String linia;
@@ -27,17 +27,5 @@ public class Horari {
 
     public String getDuracio_trajecte() {
         return duracio_trajecte;
-    }
-
-    public int getOrigen() {
-        return origen;
-    }
-
-    public int getDesti() {
-        return desti;
-    }
-
-    public String getLinia() {
-        return linia;
     }
 }

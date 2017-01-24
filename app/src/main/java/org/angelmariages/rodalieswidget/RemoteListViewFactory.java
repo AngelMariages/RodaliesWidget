@@ -8,13 +8,13 @@ import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 
-import org.angelmariages.rodalieswidget.timetables.GetHoraris;
+import org.angelmariages.rodalieswidget.timetables.GetTimeTables;
 import org.angelmariages.rodalieswidget.timetables.Horari;
 import org.angelmariages.rodalieswidget.utils.U;
 
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;
-    private int widgetID;
+    private final int widgetID;
 
     private ArrayList<Horari> taulaHoraris = new ArrayList<>();
 
@@ -22,6 +22,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         this.context = context;
         widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
+        U.log("RemoteListViewFactory()");
     }
 
     @Override
@@ -41,7 +42,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
             context.sendBroadcast(noStationsIntent);
         } else {
-            taulaHoraris = new GetHoraris(context).get(stations[0], stations[1]);
+            taulaHoraris = new GetTimeTables(context).get(stations[0], stations[1]);
             if(taulaHoraris == null) {
                 Intent noDataIntent = new Intent(context, WidgetManager.class);
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
@@ -71,9 +72,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
-        // TODO: 09-May-16 ArrayIndexOutOfBoundsException
-        // TODO: 21-Mar-16 Comprovar horaris correctes(Sense error)
-        if(position >= getCount()) return null;// TODO: 08-Jan-17 Set loading view
+        if(position >= getCount()) return null;
 
         RemoteViews row = new RemoteViews(context.getPackageName(),
                 R.layout.list_element);

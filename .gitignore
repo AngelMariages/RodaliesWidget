@@ -1,15 +1,7 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
 /build
-/captures
-.idea/*
-projectFilesBackup/*
-app/app-release.apk
-app/src/androidTest/*
 app/build/*
-app/src/test/*
 app/google-services.json
+.idea/

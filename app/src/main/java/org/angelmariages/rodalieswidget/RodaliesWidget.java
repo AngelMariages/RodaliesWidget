@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.angelmariages.rodalieswidget.utils.StationUtils;
@@ -12,8 +13,8 @@ import org.angelmariages.rodalieswidget.utils.U;
 
 class RodaliesWidget extends RemoteViews {
     private int state = U.WIDGET_STATE_UPDATE_TABLES;
-    private Context context;
-    private int widgetID;
+    private final Context context;
+    private final int widgetID;
 
     RodaliesWidget(Context context, int widgetID, int state, int layout) {
         super(context.getPackageName(), layout);
@@ -27,9 +28,10 @@ class RodaliesWidget extends RemoteViews {
         if(state == U.WIDGET_STATE_UPDATE_TABLES) {
             Intent adapterIntent = new Intent(context, WidgetService.class);
             adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
-            adapterIntent.setData(Uri.parse(adapterIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID), null));
 
             this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
+            this.setViewVisibility(R.id.progressCircle, View.GONE);
         } else if(state == U.WIDGET_STATE_NO_INTERNET) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
         } else if(state == U.WIDGET_STATE_NO_STATIONS) {
@@ -102,7 +104,7 @@ class RodaliesWidget extends RemoteViews {
         this.setOnClickPendingIntent(R.id.destiLayout, showDialogPI2);
     }
 
-    void updateStationsText(String originText, String destinationText) {
+    private void updateStationsText(String originText, String destinationText) {
         String nullOrigin = context.getResources().getString(R.string.no_origin_set);
         String nullDestination = context.getResources().getString(R.string.no_destination_set);
         if(originText == null) originText = nullOrigin;
