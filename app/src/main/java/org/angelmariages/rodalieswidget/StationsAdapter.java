@@ -15,14 +15,14 @@ import org.angelmariages.rodalieswidget.utils.U;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class StationsAdapter extends BaseAdapter {
+class StationsAdapter extends BaseAdapter {
     private final Context mContext;
-    private ArrayList<String> stationList = new ArrayList<>();
+    private final ArrayList<String> stationList = new ArrayList<>();
     private final int widgetID;
     private final int originOrDestination;
     private final ArrayList<String> initialStationList;
 
-    public StationsAdapter(Context context, ArrayList<String> stationList, int widgetID, int originOrDestination) {
+    StationsAdapter(Context context, ArrayList<String> stationList, int widgetID, int originOrDestination) {
         this.mContext = context;
         this.initialStationList = stationList;
         this.stationList.addAll(initialStationList);
@@ -52,7 +52,7 @@ public class StationsAdapter extends BaseAdapter {
     public View getView(final int position, View view, ViewGroup viewGroup) {
         if(view == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.station_select_text_view, null);
+            view = layoutInflater.inflate(R.layout.station_select_text_view, viewGroup, false);
         }
         TextView textView = (TextView) view.findViewById(R.id.station_list_text);
         textView.setText(stationList.get(position));

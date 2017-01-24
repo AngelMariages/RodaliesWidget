@@ -43,11 +43,12 @@ public class WidgetManager extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: 22-Mar-16 Comprovar null Intent, etc
         super.onReceive(context, intent);
         String intentAction = intent.getAction();
 
         U.log("onReceive(); intentAction: " + intentAction);
+
+        if(intentAction.isEmpty()) return;
 
         if(intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
             int widgetID = U.getIdFromIntent(intent);

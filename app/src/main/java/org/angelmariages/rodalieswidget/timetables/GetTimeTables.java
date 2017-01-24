@@ -33,19 +33,19 @@ import javax.xml.xpath.XPathFactory;
 
 import org.angelmariages.rodalieswidget.utils.U;
 
-public class GetHoraris {
+public class GetTimeTables {
     private static final String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
     private final Calendar cal = Calendar.getInstance();
-    private Context context;
-    private int origen = -1, desti = -1;
+    private final Context context;
+    private int origin = -1, destination = -1;
 
-    public GetHoraris(Context context) {
+    public GetTimeTables(Context context) {
         this.context = context;
     }
 
     public ArrayList<Horari> get(int origen, int desti) {
-        this.origen = origen;
-        this.desti = desti;
+        this.origin = origen;
+        this.destination = desti;
         try {
             return getXMLFromToday();
         } catch(IOException | XPathExpressionException | ParserConfigurationException | SAXException e) {
@@ -64,8 +64,10 @@ public class GetHoraris {
         if(xmlFileReaded.isEmpty()) {
             U.log("Getting from internet!");
             xmlFileReaded = getXMLFromWeb();
-            saveXMLFile(xmlFileReaded);
-            removeOldXML();
+            if(!xmlFileReaded.isEmpty()) {
+                saveXMLFile(xmlFileReaded);
+                removeOldXML();
+            }
         } else {
             U.log("Getting from file!");
         }
@@ -101,8 +103,8 @@ public class GetHoraris {
                             hora_sortida,
                             hora_arribada,
                             duracio_trajecte,
-                            origen,
-                            desti,
+                            origin,
+                            destination,
                             linia
                     ));
                 }
@@ -113,8 +115,9 @@ public class GetHoraris {
     }
 
     private void saveXMLFile(String data) {
-        // TODO: 14-Jan-17 Don't save if there's no data
-        String fileName = "horaris_" + origen + "_" + desti + "_" + getTodayDateWithoutPath() + ".xml";
+        if(data.isEmpty()) return;
+
+        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".xml";
 
         OutputStreamWriter outputStreamWriter;
         try {
@@ -127,7 +130,7 @@ public class GetHoraris {
     }
 
     private String openXMLFile() {
-        String fileName = "horaris_" + origen + "_" + desti + "_" + getTodayDateWithoutPath() + ".xml";
+        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".xml";
 
         StringBuilder allLines = new StringBuilder();
 
@@ -141,7 +144,6 @@ public class GetHoraris {
             }
 
         } catch(IOException e) {
-            // TODO: 1/12/17 Tell the user
             U.log("File " + fileName + " not found, getting from internet");
         }
 
@@ -166,8 +168,8 @@ public class GetHoraris {
     }
 
     private String getXMLFromWeb() throws IOException {
-        String query  = "origen=" + origen +
-                "&desti=" + desti +
+        String query  = "origen=" + origin +
+                "&desti=" + destination +
                 "&dataViatge=" + getTodayDate() +
                 "&horaIni=0";
         URLConnection urlConnection = new URL(url + query).openConnection();

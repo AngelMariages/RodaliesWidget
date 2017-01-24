@@ -14,9 +14,8 @@ public class WidgetReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         U.log("onReceive() Receiver: " + intent.getAction());
         String intentAction = intent.getAction();
-        // TODO: 1/12/17 Check if all broadcast send the ID
 
-        int widgetID = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
+        int widgetID = U.getIdFromIntent(intent);
 
         if(widgetID != -1) {
             if(intentAction.equalsIgnoreCase(U.ACTION_CLICK_SWAP_BUTTON)) {
@@ -54,7 +53,7 @@ public class WidgetReceiver extends BroadcastReceiver {
         }
     }
 
-    public void updateStationsTextViews(Context context, int widgetID) {
+    private void updateStationsTextViews(Context context, int widgetID) {
         int[] stations = U.getStations(context, widgetID);
         Intent updateStationsTextIntent = new Intent(context, WidgetManager.class);
         updateStationsTextIntent.setAction(U.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
