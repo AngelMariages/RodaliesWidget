@@ -8,7 +8,7 @@ import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 
-import org.angelmariages.rodalieswidget.timetables.GetTimeTables;
+import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRodalies;
 import org.angelmariages.rodalieswidget.timetables.Horari;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -42,7 +42,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
             context.sendBroadcast(noStationsIntent);
         } else {
-            taulaHoraris = new GetTimeTables(context).get(stations[0], stations[1]);
+            taulaHoraris = new GetTimeTablesRodalies(context).get(stations[0], stations[1]);
             if(taulaHoraris == null) {
                 Intent noDataIntent = new Intent(context, WidgetManager.class);
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
@@ -75,14 +75,14 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         if(position >= getCount()) return null;
 
         RemoteViews row = new RemoteViews(context.getPackageName(),
-                R.layout.list_element);
+                R.layout.time_list);
 
-        row.setTextViewText(R.id.horarisSortidaText, taulaHoraris.get(position).getHora_sortida());
-        row.setTextViewText(R.id.horarisArribadaText, taulaHoraris.get(position).getHora_arribada());
+        row.setTextViewText(R.id.departureTimeText, taulaHoraris.get(position).getHora_sortida());
+        row.setTextViewText(R.id.arrivalTimeText, taulaHoraris.get(position).getHora_arribada());
 
         Intent intent = new Intent(context, WidgetManager.class);
         intent.putExtra(U.EXTRA_RIDE_LENGTH, taulaHoraris.get(position).getDuracio_trajecte());
-        row.setOnClickFillInIntent(R.id.horarisListLayout, intent);
+        row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 
         return row;
     }

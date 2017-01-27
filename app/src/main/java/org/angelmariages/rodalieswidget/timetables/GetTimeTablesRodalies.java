@@ -1,6 +1,7 @@
 package org.angelmariages.rodalieswidget.timetables;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,14 +34,15 @@ import javax.xml.xpath.XPathFactory;
 
 import org.angelmariages.rodalieswidget.utils.U;
 
-public class GetTimeTables {
+public class GetTimeTablesRodalies {
     private static final String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
     private final Calendar cal = Calendar.getInstance();
     private final Context context;
     private int origin = -1, destination = -1;
 
-    public GetTimeTables(Context context) {
+    public GetTimeTablesRodalies(Context context) {
         this.context = context;
+
     }
 
     public ArrayList<Horari> get(int origen, int desti) {
@@ -59,20 +61,20 @@ public class GetTimeTables {
     }
 
     private ArrayList<Horari> getXMLFromToday() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
-        String xmlFileReaded = openXMLFile();
+        String xmlFileRead = openXMLFile();
 
-        if(xmlFileReaded.isEmpty()) {
+        if(xmlFileRead.isEmpty()) {
             U.log("Getting from internet!");
-            xmlFileReaded = getXMLFromWeb();
-            if(!xmlFileReaded.isEmpty()) {
-                saveXMLFile(xmlFileReaded);
+            xmlFileRead = getXMLFromWeb();
+            if(!xmlFileRead.isEmpty()) {
+                saveXMLFile(xmlFileRead);
                 removeOldXML();
             }
         } else {
             U.log("Getting from file!");
         }
 
-        return parseXMLFile(xmlFileReaded);
+        return parseXMLFile(xmlFileRead);
     }
 
     private ArrayList<Horari> parseXMLFile(String xmlData) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {

@@ -9,4 +9,5 @@
     <string name="arrival">Arribada</string>
     <string name="no_times">No hi han horaris per aquesta combinació d\'estacions</string>
     <string name="search_text"/>
+    <string name="transfer_departure">Sortida transbord</string>
 </resources>
