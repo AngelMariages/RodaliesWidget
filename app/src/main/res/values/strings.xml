@@ -9,4 +9,5 @@
     <string name="arrival">Arrival</string>
     <string name="no_times">There are no current times for this pair of stations</string>
     <string name="search_text"/>
+    <string name="transfer_departure" >Transfer departure</string>
 </resources>
