@@ -1,14 +1,6 @@
 package org.angelmariages.rodalieswidget.timetables;
 
 import android.content.Context;
-import android.text.TextUtils;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,27 +8,16 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetTimeTablesRodalies {
-    private static final String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
-    private final Calendar cal = Calendar.getInstance();
+	// TODO: 29/01/17 This should be an async task etc...
+	private final Calendar cal = Calendar.getInstance();
     private final Context context;
     private int origin = -1, destination = -1;
 
@@ -45,12 +26,12 @@ public class GetTimeTablesRodalies {
 
     }
 
-    public ArrayList<Horari> get(int origen, int desti) {
+    public ArrayList<TrainTime> get(int origen, int desti) {
         this.origin = origen;
         this.destination = desti;
         try {
-            return getXMLFromToday();
-        } catch(IOException | XPathExpressionException | ParserConfigurationException | SAXException e) {
+            return getJSONFromToday();
+        } catch(IOException e) {
             if(e instanceof UnknownHostException) {
                 U.log("Can't reach the internet");
             } else {
@@ -60,79 +41,72 @@ public class GetTimeTablesRodalies {
         return null;
     }
 
-    private ArrayList<Horari> getXMLFromToday() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
-        String xmlFileRead = openXMLFile();
+    private ArrayList<TrainTime> getJSONFromToday() throws IOException {
+        String jsonFileRead = readJSONFile();
 
-        if(xmlFileRead.isEmpty()) {
-            U.log("Getting from internet!");
-            xmlFileRead = getXMLFromWeb();
-            if(!xmlFileRead.isEmpty()) {
-                saveXMLFile(xmlFileRead);
-                removeOldXML();
-            }
-        } else {
-            U.log("Getting from file!");
-        }
+        if(jsonFileRead.isEmpty()) {
+            U.log("Getting json from internet...");
+            RenfeSchedule renfeSchedule = new RenfeSchedule(origin, destination, 50);
+            ArrayList<TrainTime> schedule = renfeSchedule.getSchedule();
+            ArrayList<TrainTime> hourSchedule = new ArrayList<>();
+            if(schedule.size() > 0) {
+                int currentHour = getCurrentHour();
+                for (TrainTime trainTime : schedule) {
+	                String departureTime = trainTime.getDeparture_time();
+	                String departureTime_one = trainTime.getDeparture_time_transfer_one();
+	                String departureTime_two = trainTime.getDeparture_time_transfer_two();
+	                int hour = 24;
+	                if(departureTime != null)
+                        hour = Integer.parseInt(departureTime.split(":")[0]);
+	                else if(departureTime_one != null)
+		                hour = Integer.parseInt(departureTime_one.split(":")[0]);
+	                else if(departureTime_two != null)
+		                hour = Integer.parseInt(departureTime_two.split(":")[0]);
 
-        return parseXMLFile(xmlFileRead);
-    }
-
-    private ArrayList<Horari> parseXMLFile(String xmlData) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
-        int currentHour = getCurrentHour();
-        InputSource source = new InputSource(new StringReader(xmlData));
-
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document document = db.parse(source);
-
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        NodeList nodeList = (NodeList) xPath.compile("/horaris/resultats/item").evaluate(document, XPathConstants.NODESET);
-
-        ArrayList<Horari> horaris = new ArrayList<>();
-
-        for(int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String linia = element.getElementsByTagName("linia").item(0).getTextContent();
-                String hora_sortida = element.getElementsByTagName("hora_sortida").item(0).getTextContent();
-                String hora_arribada = element.getElementsByTagName("hora_arribada").item(0).getTextContent();
-                String duracio_trajecte = element.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
-
-                int hora = Integer.parseInt(hora_sortida.split(":")[0]);
-                if(hora == 0 || hora >= currentHour) {
-                    horaris.add(new Horari(
-                            hora_sortida,
-                            hora_arribada,
-                            duracio_trajecte,
-                            origin,
-                            destination,
-                            linia
-                    ));
+                    if(hour == 0 || hour >= currentHour) {
+                        hourSchedule.add(trainTime);
+                    }
                 }
+
+                jsonFileRead = ScheduleFileManager.getJSONString(schedule);
+                saveJSONFile(jsonFileRead);
+                removeOldJSON();
             }
-        }
 
-        return horaris;
+            return hourSchedule;
+        } else {
+            U.log("Getting json from file...");
+	        ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonFileRead, origin, destination);
+	        ArrayList<TrainTime> hourSchedule = new ArrayList<>();
+	        if(scheduleFromJSON.size() > 0) {
+		        int currentHour = getCurrentHour();
+		        U.log(origin + " , " + destination);
+		        U.log("SIZE JSON: " + scheduleFromJSON.size());
+		        for (TrainTime trainTime : scheduleFromJSON) {
+			        String departureTime = trainTime.getDeparture_time();
+			        String departureTime_one = trainTime.getDeparture_time_transfer_one();
+			        String departureTime_two = trainTime.getDeparture_time_transfer_two();
+			        int hour = 24;
+			        if(departureTime != null)
+				        hour = Integer.parseInt(departureTime.split(":")[0]);
+			        else if(departureTime_one != null)
+				        hour = Integer.parseInt(departureTime_one.split(":")[0]);
+			        else if(departureTime_two != null)
+				        hour = Integer.parseInt(departureTime_two.split(":")[0]);
+
+			        if(hour == 0 || hour >= currentHour) {
+				        hourSchedule.add(trainTime);
+			        }
+			        U.log(trainTime.toString());
+		        }
+	        }
+
+	        return hourSchedule;
+        }
     }
 
-    private void saveXMLFile(String data) {
-        if(data.isEmpty()) return;
-
-        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".xml";
-
-        OutputStreamWriter outputStreamWriter;
-        try {
-            outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String openXMLFile() {
-        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".xml";
+    private String readJSONFile() {
+        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".json";
 
         StringBuilder allLines = new StringBuilder();
 
@@ -141,15 +115,47 @@ public class GetTimeTablesRodalies {
             inputStreamReader = new InputStreamReader(context.openFileInput(fileName));
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line;
-            while((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 allLines.append(line);
             }
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             U.log("File " + fileName + " not found, getting from internet");
         }
 
         return allLines.toString();
+    }
+
+    private void saveJSONFile(String jsonFile) {
+        if(jsonFile.isEmpty()) return;
+
+        String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".json";
+
+        OutputStreamWriter outputStreamWriter;
+        try {
+            outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
+            outputStreamWriter.write(jsonFile);
+            outputStreamWriter.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeOldJSON() {
+        File filesDir = context.getFilesDir();
+        final String endsWith = "_" + getTodayDateWithoutPath() + ".json";
+
+        FilenameFilter filenameFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+	            return !name.equals("instant-run") && !(name.startsWith("horaris_") && name.endsWith(endsWith));
+            }
+        };
+
+        for(File file : filesDir.listFiles(filenameFilter)) {
+            U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
+        }
+	    // TODO: 29/01/17 Clear this in the next release
+	    removeOldXML();
     }
 
     private void removeOldXML() {
@@ -159,37 +165,13 @@ public class GetTimeTablesRodalies {
         FilenameFilter filenameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name.equals("instant-run")) return false;
-                return !(name.startsWith("horaris_") && name.endsWith(endsWith));
+	            return !name.equals("instant-run") && !(name.startsWith("horaris_") && name.endsWith(endsWith));
             }
         };
 
         for(File file : filesDir.listFiles(filenameFilter)) {
             U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
         }
-    }
-
-    private String getXMLFromWeb() throws IOException {
-        String query  = "origen=" + origin +
-                "&desti=" + destination +
-                "&dataViatge=" + getTodayDate() +
-                "&horaIni=0";
-        URLConnection urlConnection = new URL(url + query).openConnection();
-        urlConnection.setConnectTimeout(5000);
-        urlConnection.setReadTimeout(5000);
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-        StringBuilder allLines = new StringBuilder();
-        String line;
-        while((line = in.readLine()) != null) {
-            allLines.append(line);
-        }
-        return allLines.toString();
-    }
-
-    private String getTodayDate() {
-        return String.format(Locale.getDefault(), "%02d/%02d/%d",
-                        cal.get(Calendar.DAY_OF_MONTH),cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
     }
 
     private String getTodayDateWithoutPath() {
