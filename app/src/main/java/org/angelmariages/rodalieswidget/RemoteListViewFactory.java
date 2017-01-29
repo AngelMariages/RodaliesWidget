@@ -9,14 +9,14 @@ import android.widget.RemoteViewsService;
 import java.util.ArrayList;
 
 import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRodalies;
-import org.angelmariages.rodalieswidget.timetables.Horari;
+import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.U;
 
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;
     private final int widgetID;
 
-    private ArrayList<Horari> taulaHoraris = new ArrayList<>();
+    private ArrayList<TrainTime> taulaHoraris = new ArrayList<>();
 
     RemoteListViewFactory(Context context, Intent intent) {
         this.context = context;
@@ -77,11 +77,11 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews row = new RemoteViews(context.getPackageName(),
                 R.layout.time_list);
 
-        row.setTextViewText(R.id.departureTimeText, taulaHoraris.get(position).getHora_sortida());
-        row.setTextViewText(R.id.arrivalTimeText, taulaHoraris.get(position).getHora_arribada());
+        row.setTextViewText(R.id.departureTimeText, taulaHoraris.get(position).getDeparture_time());
+        row.setTextViewText(R.id.arrivalTimeText, taulaHoraris.get(position).getArrival_time());
 
         Intent intent = new Intent(context, WidgetManager.class);
-        intent.putExtra(U.EXTRA_RIDE_LENGTH, taulaHoraris.get(position).getDuracio_trajecte());
+        intent.putExtra(U.EXTRA_RIDE_LENGTH, taulaHoraris.get(position).getTravel_time());
         row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 
         return row;
