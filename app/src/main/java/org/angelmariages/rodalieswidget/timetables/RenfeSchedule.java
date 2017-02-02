@@ -67,6 +67,7 @@ public class RenfeSchedule {
 		String html = getPageFromInternet();
 		ArrayList<String> rows = getRows(html);
 
+		if(html.isEmpty()) return null;
 		return parseTimes(rows, getTransfers(html));
 	}
 
