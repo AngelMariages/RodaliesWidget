@@ -165,7 +165,7 @@ public class GetTimeTablesRodalies {
         FilenameFilter filenameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-	            return !name.equals("instant-run") && !(name.startsWith("horaris_") && name.endsWith(endsWith));
+	            return !name.equals("instant-run") && !(name.endsWith(".json") && name.startsWith("horaris_") && name.endsWith(endsWith));
             }
         };
 
