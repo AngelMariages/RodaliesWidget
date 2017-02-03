@@ -132,11 +132,17 @@ public class WidgetManager extends AppWidgetProvider {
 
     private void updateTimeTables(Context context, int widgetID, int widgetState) {
         U.log("UpdateTimeTables" + widgetState);
-        if(widgetState == U.WIDGET_STATE_UPDATE_TABLES) {
-            AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
-        } else {
-            reloadWidget(context, widgetID);
-        }
+
+	    if(widgetState != U.WIDGET_STATE_NO_STATIONS) {
+		    RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES, R.layout.widget_layout_updating);
+		    AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
+	    } else {
+		    if (widgetState == U.WIDGET_STATE_UPDATE_TABLES) {
+			    AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
+		    } else {
+			    reloadWidget(context, widgetID);
+		    }
+	    }
     }
 
     private void reloadWidget(Context context, int widgetID) {

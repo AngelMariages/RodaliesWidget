@@ -8,7 +8,7 @@ import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 
-import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRodalies;
+import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRenfe;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -42,7 +42,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
             context.sendBroadcast(noStationsIntent);
         } else {
-            taulaHoraris = new GetTimeTablesRodalies(context).get(stations[0], stations[1]);
+            taulaHoraris = new GetTimeTablesRenfe(context).get(stations[0], stations[1]);
             if(taulaHoraris == null) {
                 Intent noDataIntent = new Intent(context, WidgetManager.class);
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);

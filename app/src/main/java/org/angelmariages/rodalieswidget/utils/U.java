@@ -31,6 +31,8 @@ public final class U {
     public static final String EXTRA_RIDE_LENGTH = "org.angelmariages.RodaliesWidget.extraRideLength";
     public static final String EXTRA_CONFIG_STATION = "org.angelmariages.RodaliesWidget.newSettings";
     public static final String EXTRA_WIDGET_STATE = "org.angelmariages.RodaliesWidget.extraWidgetState";
+    public static final String EXTRA_SCHEDULE_DATA = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_DATA";
+    public static final String EXTRA_SCHEDULE_BUNDLE = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_BUNDLE";
 
     private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
     private static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
@@ -40,8 +42,9 @@ public final class U {
     private static final boolean LOGGING = true;
     public static final int WIDGET_STATE_UPDATE_TABLES = 0;
     public static final int WIDGET_STATE_NO_INTERNET = 1;
-    public static final int WIDGET_STATE_NO_STATIONS = 2;
-    public static final int WIDGET_STATE_NO_TIMES = 3;
+	public static final int WIDGET_STATE_NO_STATIONS = 2;
+	public static final int WIDGET_STATE_NO_TIMES = 3;
+	public static final int WIDGET_STATE_UPDATING_TABLES = 4;
 
     private static FirebaseDatabase mFirebaseDatabase;
 
