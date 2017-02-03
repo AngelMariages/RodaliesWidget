@@ -5,11 +5,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRenfe;
+import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
+
+import java.util.ArrayList;
 
 class RodaliesWidget extends RemoteViews {
     private int state = U.WIDGET_STATE_UPDATE_TABLES;
@@ -25,13 +30,21 @@ class RodaliesWidget extends RemoteViews {
 
         this.state = state;
 
-        if(state == U.WIDGET_STATE_UPDATE_TABLES) {
+	    if(state == U.WIDGET_STATE_UPDATING_TABLES) {
+
+	    } else if(state == U.WIDGET_STATE_UPDATE_TABLES) {
             Intent adapterIntent = new Intent(context, WidgetService.class);
             adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
             adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID), null));
+            Bundle bundle = new Bundle();
+
+	        ArrayList<TrainTime> trainTimes = new ArrayList<>();
+	        trainTimes.add(new TrainTime("R1","00:21", "00:22", "00:30", 30, 40));
+
+	        bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+            adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
             this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
-            this.setViewVisibility(R.id.progressCircle, View.GONE);
         } else if(state == U.WIDGET_STATE_NO_INTERNET) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
         } else if(state == U.WIDGET_STATE_NO_STATIONS) {

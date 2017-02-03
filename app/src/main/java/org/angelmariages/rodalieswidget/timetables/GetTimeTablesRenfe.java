@@ -15,13 +15,13 @@ import java.util.Locale;
 
 import org.angelmariages.rodalieswidget.utils.U;
 
-public class GetTimeTablesRodalies {
+public class GetTimeTablesRenfe {
 	// TODO: 29/01/17 This should be an async task etc...
 	private final Calendar cal = Calendar.getInstance();
     private final Context context;
     private int origin = -1, destination = -1;
 
-    public GetTimeTablesRodalies(Context context) {
+    public GetTimeTablesRenfe(Context context) {
         this.context = context;
 
     }

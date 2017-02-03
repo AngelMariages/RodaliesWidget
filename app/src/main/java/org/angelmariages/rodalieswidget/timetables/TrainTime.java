@@ -1,11 +1,12 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class TrainTime {
+public class TrainTime implements Serializable {
 	private int transfer = 0;
 	private final String line;
 	private final String departure_time;
