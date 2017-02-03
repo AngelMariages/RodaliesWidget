@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRenfe;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -50,7 +51,12 @@ public class WidgetManager extends AppWidgetProvider {
 
         if(intentAction.isEmpty()) return;
 
-        if(intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
+	    if(intentAction.startsWith(U.ACTION_SEND_SCHEDULE)) {
+		    int widgetID = U.getIdFromIntent(intent);
+
+
+
+	    } else if(intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
             int widgetID = U.getIdFromIntent(intent);
             int widgetState = U.getStateFromIntent(intent);
 
@@ -133,15 +139,18 @@ public class WidgetManager extends AppWidgetProvider {
     private void updateTimeTables(Context context, int widgetID, int widgetState) {
         U.log("UpdateTimeTables" + widgetState);
 
+	    int[] stations = U.getStations(context, widgetID);
+	    if(stations.length != 2) {
+		    U.log("Wrong stations! : " + stations.length);
+	    }
+
+	    new GetTimeTablesRenfe(context).execute(stations[0], stations[1], widgetID);
+
 	    if(widgetState != U.WIDGET_STATE_NO_STATIONS) {
 		    RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATE_TABLES, R.layout.widget_layout_updating);
 		    AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 	    } else {
-		    if (widgetState == U.WIDGET_STATE_UPDATE_TABLES) {
-			    AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.horarisListView);
-		    } else {
-			    reloadWidget(context, widgetID);
-		    }
+		    reloadWidget(context, widgetID);
 	    }
     }
 

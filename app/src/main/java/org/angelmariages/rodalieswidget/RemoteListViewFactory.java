@@ -77,6 +77,8 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews row = new RemoteViews(context.getPackageName(),
                 R.layout.time_list);
 
+        row.removeAllViews(R.id.timesListLayout);
+
         row.setTextViewText(R.id.departureTimeText, taulaHoraris.get(position).getDeparture_time());
         row.setTextViewText(R.id.arrivalTimeText, taulaHoraris.get(position).getArrival_time());
 

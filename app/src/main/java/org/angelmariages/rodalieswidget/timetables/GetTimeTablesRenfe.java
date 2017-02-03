@@ -1,6 +1,9 @@
 package org.angelmariages.rodalieswidget.timetables;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,23 +16,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.utils.U;
 
-public class GetTimeTablesRenfe {
+public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 	// TODO: 29/01/17 This should be an async task etc...
 	private final Calendar cal = Calendar.getInstance();
     private final Context context;
-    private int origin = -1, destination = -1;
+    private int origin = -1;
+	private int destination = -1;
+	private int widgetID = -1;
 
-    public GetTimeTablesRenfe(Context context) {
+	public GetTimeTablesRenfe(Context context) {
         this.context = context;
-
     }
 
-    public ArrayList<TrainTime> get(int origen, int desti) {
-        this.origin = origen;
-        this.destination = desti;
-        try {
+    private ArrayList<TrainTime> get(int origin, int destination, int widgetId) {
+        this.origin = origin;
+        this.destination = destination;
+	    this.widgetID = widgetId;
+	    try {
             return getJSONFromToday();
         } catch(IOException e) {
             if(e instanceof UnknownHostException) {
@@ -182,4 +188,21 @@ public class GetTimeTablesRenfe {
     private int getCurrentHour() {
         return Integer.parseInt(String.format(Locale.getDefault(), "%02d",cal.get(Calendar.HOUR_OF_DAY)));
     }
+
+	@Override
+	protected Void doInBackground(Integer... stationIds) {
+		if(stationIds.length != 2) {
+			// TODO: 2/3/17 Check for valid ids maybe?
+			ArrayList<TrainTime> trainTimes = get(stationIds[0], stationIds[1], stationIds[2]);
+			Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+			sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetID);
+			sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+			Bundle bundle = new Bundle();
+
+			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+			sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+			context.sendBroadcast(sendScheduleIntent);
+		}
+		return null;
+	}
 }
