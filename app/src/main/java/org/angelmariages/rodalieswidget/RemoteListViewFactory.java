@@ -43,6 +43,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             context.sendBroadcast(noStationsIntent);
         } else {
             taulaHoraris = new GetTimeTablesRodalies(context).get(stations[0], stations[1]);
+            new GetTimeTablesRodalies(context).get(stations[1], stations[0]);
             if(taulaHoraris == null) {
                 Intent noDataIntent = new Intent(context, WidgetManager.class);
                 noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
