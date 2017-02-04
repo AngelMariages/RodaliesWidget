@@ -153,7 +153,7 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
         FilenameFilter filenameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-	            return !name.equals("instant-run") && !(name.startsWith("horaris_") && name.endsWith(endsWith));
+	            return !name.endsWith(endsWith) && !name.equals("instant-run");
             }
         };
 
@@ -171,12 +171,12 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
         FilenameFilter filenameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-	            return !name.equals("instant-run") && !(name.endsWith(".json") && name.startsWith("horaris_") && name.endsWith(endsWith));
+	            return !name.endsWith(".json") && !name.endsWith(endsWith) && !name.equals("instant-run");
             }
         };
 
         for(File file : filesDir.listFiles(filenameFilter)) {
-            U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
+            U.log("Deleting old file: " + file.getName() + ";RESULT: " + file.delete());
         }
     }
 

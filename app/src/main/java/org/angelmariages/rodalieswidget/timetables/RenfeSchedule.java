@@ -1,5 +1,7 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.U;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -54,10 +56,11 @@ public class RenfeSchedule {
 	private int getTransfers(String html) {
 		ArrayList<String> rows = getRows(html);
 
-		int numTds = numOfCols(rows.get(1));
-		int transfers = 0;
+		int numTds = numOfCols(rows.get(0));
+		int transfers = -1;
 
-		if(numTds == 6)  transfers = 1;
+		if(numTds == 5) transfers = 0;
+		else if(numTds == 6)  transfers = 1;
 		else if(numTds == 7) transfers = 2;
 
 		return transfers;
@@ -206,7 +209,7 @@ public class RenfeSchedule {
 	}
 
 	private String getTodayDate() {
-		return String.format(Locale.getDefault(), "%02d%02d%d",
+		return String.format(Locale.getDefault(), "%d%02d%02d",
 				cal.get(Calendar.YEAR) ,cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
