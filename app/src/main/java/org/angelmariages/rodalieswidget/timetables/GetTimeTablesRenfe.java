@@ -190,22 +190,24 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 			int widgetId = params[0];
 			int[] stations = U.getStations(context, params[0]);
 			if(stations.length == 2) {
-				if(stations[0] == stations[1]) {
-					sendNoDataForStationsError(widgetId);
-				}
-				else if(stations[0] != -1 && stations[1] != -1) {
-					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
-					if(trainTimes != null && trainTimes.size() > 0) {
-						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-						sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId);
-						sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
-						Bundle bundle = new Bundle();
+				if(stations[0] != -1 && stations[1] != -1) {
+					if(stations[0] == stations[1]) {
+						sendNoDataForStationsError(widgetId);
+					}
+					else {
+						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
+						if (trainTimes != null && trainTimes.size() > 0) {
+							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+							sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId);
+							sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+							Bundle bundle = new Bundle();
 
-						bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
-						sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
-						context.sendBroadcast(sendScheduleIntent);
-					} else {
-						sendNoDataForSchedule(widgetId);
+							bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+							sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+							context.sendBroadcast(sendScheduleIntent);
+						} else {
+							sendNoDataForSchedule(widgetId);
+						}
 					}
 				} else {
 					sendNoStationsMessage(widgetId);

@@ -32,9 +32,6 @@ class RodaliesWidget extends RemoteViews {
 
 	    if(state == U.WIDGET_STATE_UPDATING_TABLES) {
 		    new GetTimeTablesRenfe(context).execute(widgetID);
-
-		    this.setViewVisibility(R.id.actualitzarButton, View.INVISIBLE);
-		    this.setViewVisibility(R.id.intercanviarButton, View.INVISIBLE);
 	    } else if(state == U.WIDGET_STATE_SCHEDULE_LOADED) {
             Intent adapterIntent = new Intent(context, WidgetService.class);
             adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
@@ -54,7 +51,7 @@ class RodaliesWidget extends RemoteViews {
         }
 
         setStationNames();
-        setPendingIntents();
+	    if(state != U.WIDGET_STATE_UPDATING_TABLES) setPendingIntents();
     }
     private void setStationNames() {
         int[] stations = U.getStations(context, widgetID);
