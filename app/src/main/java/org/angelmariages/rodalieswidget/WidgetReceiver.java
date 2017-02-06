@@ -8,6 +8,7 @@ import org.angelmariages.rodalieswidget.utils.U;
 
 public class WidgetReceiver extends BroadcastReceiver {
 
+    // TODO: 2/6/17 Refactor this whole class, all the methods in the widgetManager should go here
     public WidgetReceiver() { }
 
     @Override

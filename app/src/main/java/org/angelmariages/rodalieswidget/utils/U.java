@@ -41,7 +41,7 @@ public final class U {
 
     //====================== [ END_CONSTANTS ] ======================
     private static final boolean LOGGING = true;
-    public static final int WIDGET_STATE_UPDATE_TABLES = 0;
+    public static final int WIDGET_STATE_SCHEDULE_LOADED = 0;
     public static final int WIDGET_STATE_NO_INTERNET = 1;
 	public static final int WIDGET_STATE_NO_STATIONS = 2;
 	public static final int WIDGET_STATE_NO_TIMES = 3;

@@ -25,16 +25,14 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
     private final Context context;
     private int origin = -1;
 	private int destination = -1;
-	private int widgetID = -1;
 
 	public GetTimeTablesRenfe(Context context) {
         this.context = context;
     }
 
-    private ArrayList<TrainTime> get(int origin, int destination, int widgetId) {
+    private ArrayList<TrainTime> get(int origin, int destination) {
         this.origin = origin;
         this.destination = destination;
-	    this.widgetID = widgetId;
 	    try {
             return getJSONFromToday();
         } catch(IOException e) {
@@ -55,7 +53,7 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
             RenfeSchedule renfeSchedule = new RenfeSchedule(origin, destination, 50);
             ArrayList<TrainTime> schedule = renfeSchedule.getSchedule();
             ArrayList<TrainTime> hourSchedule = new ArrayList<>();
-            if(schedule.size() > 0) {
+            if(schedule != null && schedule.size() > 0) {
                 int currentHour = getCurrentHour();
                 for (TrainTime trainTime : schedule) {
 	                String departureTime = trainTime.getDeparture_time();
@@ -86,8 +84,6 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 	        ArrayList<TrainTime> hourSchedule = new ArrayList<>();
 	        if(scheduleFromJSON.size() > 0) {
 		        int currentHour = getCurrentHour();
-		        U.log(origin + " , " + destination);
-		        U.log("SIZE JSON: " + scheduleFromJSON.size());
 		        for (TrainTime trainTime : scheduleFromJSON) {
 			        String departureTime = trainTime.getDeparture_time();
 			        String departureTime_one = trainTime.getDeparture_time_transfer_one();
@@ -103,7 +99,6 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 			        if(hour == 0 || hour >= currentHour) {
 				        hourSchedule.add(trainTime);
 			        }
-			        U.log(trainTime.toString());
 		        }
 	        }
 
@@ -190,19 +185,65 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
     }
 
 	@Override
-	protected Void doInBackground(Integer... stationIds) {
-		if(stationIds.length != 2) {
-			// TODO: 2/3/17 Check for valid ids maybe?
-			ArrayList<TrainTime> trainTimes = get(stationIds[0], stationIds[1], stationIds[2]);
-			Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-			sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetID);
-			sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-			Bundle bundle = new Bundle();
+	protected Void doInBackground(Integer... params) {
+		if(params.length == 1) {
+			int widgetId = params[0];
+			int[] stations = U.getStations(context, params[0]);
+			if(stations.length == 2) {
+				if(stations[0] == stations[1]) {
+					sendNoDataForStationsError(widgetId);
+				}
+				else if(stations[0] != -1 && stations[1] != -1) {
+					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
+					if(trainTimes != null && trainTimes.size() > 0) {
+						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+						sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId);
+						sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+						Bundle bundle = new Bundle();
 
-			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
-			sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
-			context.sendBroadcast(sendScheduleIntent);
+						bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+						sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+						context.sendBroadcast(sendScheduleIntent);
+					} else {
+						sendNoDataForSchedule(widgetId);
+					}
+				} else {
+					sendNoStationsMessage(widgetId);
+				}
+			} else {
+				sendNoStationsMessage(widgetId);
+			}
+
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
+	}
+
+	private void sendNoDataForSchedule(int widgetId) {
+		Intent noDataIntent = new Intent(context, WidgetManager.class);
+		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
+		context.sendBroadcast(noDataIntent);
+	}
+
+	private void sendNoDataForStationsError(int widgetId) {
+		Intent noDataIntent = new Intent(context, WidgetManager.class);
+		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_TIMES);
+		context.sendBroadcast(noDataIntent);
+	}
+
+	private void sendNoStationsMessage(int widgetId) {
+		Intent noStationsIntent = new Intent(context, WidgetManager.class);
+		noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
+		context.sendBroadcast(noStationsIntent);
 	}
 }

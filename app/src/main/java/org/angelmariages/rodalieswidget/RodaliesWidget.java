@@ -17,11 +17,11 @@ import org.angelmariages.rodalieswidget.utils.U;
 import java.util.ArrayList;
 
 class RodaliesWidget extends RemoteViews {
-    private int state = U.WIDGET_STATE_UPDATE_TABLES;
+    private int state = U.WIDGET_STATE_SCHEDULE_LOADED;
     private final Context context;
     private final int widgetID;
 
-    RodaliesWidget(Context context, int widgetID, int state, int layout) {
+    RodaliesWidget(Context context, int widgetID, int state, int layout, ArrayList<TrainTime> schedule) {
         super(context.getPackageName(), layout);
         this.context = context;
         this.widgetID = widgetID;
@@ -31,17 +31,17 @@ class RodaliesWidget extends RemoteViews {
         this.state = state;
 
 	    if(state == U.WIDGET_STATE_UPDATING_TABLES) {
+		    new GetTimeTablesRenfe(context).execute(widgetID);
 
-	    } else if(state == U.WIDGET_STATE_UPDATE_TABLES) {
+		    this.setViewVisibility(R.id.actualitzarButton, View.INVISIBLE);
+		    this.setViewVisibility(R.id.intercanviarButton, View.INVISIBLE);
+	    } else if(state == U.WIDGET_STATE_SCHEDULE_LOADED) {
             Intent adapterIntent = new Intent(context, WidgetService.class);
             adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
             adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID), null));
+
             Bundle bundle = new Bundle();
-
-	        ArrayList<TrainTime> trainTimes = new ArrayList<>();
-	        trainTimes.add(new TrainTime("R1","00:21", "00:22", "00:30", 30, 40));
-
-	        bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+	        bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
             adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
             this.setRemoteAdapter(R.id.horarisListView, adapterIntent);

@@ -3,6 +3,7 @@ package org.angelmariages.rodalieswidget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -15,13 +16,18 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context = null;
     private final int widgetID;
 
-    private ArrayList<TrainTime> taulaHoraris = new ArrayList<>();
+    private ArrayList<TrainTime> schedule;
 
     RemoteListViewFactory(Context context, Intent intent) {
         this.context = context;
         widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         U.log("RemoteListViewFactory()");
+        if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
+            Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
+            schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
+	        // TODO: 2/6/17 Check if null
+        }
     }
 
     @Override
@@ -32,31 +38,6 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         U.log("onDataSetChanged() I'm widgetID: " + widgetID);
-        int[] stations = U.getStations(context, widgetID);
-
-        if(stations[0] == -1 || stations[1] == -1) {
-            Intent noStationsIntent = new Intent(context, WidgetManager.class);
-            noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
-            noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-            noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
-            context.sendBroadcast(noStationsIntent);
-        } else {
-            /*taulaHoraris = new GetTimeTablesRenfe(context).get(stations[0], stations[1]);
-            new GetTimeTablesRenfe(context).get(stations[1], stations[0]);*/
-            if(taulaHoraris == null) {
-                Intent noDataIntent = new Intent(context, WidgetManager.class);
-                noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
-                noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-                noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
-                context.sendBroadcast(noDataIntent);
-            } else if(taulaHoraris.size() == 0) {
-                Intent noDataIntent = new Intent(context, WidgetManager.class);
-                noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
-                noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-                noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_TIMES);
-                context.sendBroadcast(noDataIntent);
-            }
-        }
     }
 
     @Override
@@ -66,24 +47,24 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        if(taulaHoraris != null) return taulaHoraris.size();
+        if(schedule != null) return schedule.size();
         else return 0;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        if(position >= getCount()) return null;
+	    if(position >= getCount()) return null;
 
         RemoteViews row = new RemoteViews(context.getPackageName(),
                 R.layout.time_list);
 
-        row.removeAllViews(R.id.timesListLayout);
+        //row.removeAllViews(R.id.timesListLayout);
 
-        row.setTextViewText(R.id.departureTimeText, taulaHoraris.get(position).getDeparture_time());
-        row.setTextViewText(R.id.arrivalTimeText, taulaHoraris.get(position).getArrival_time());
+        row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
+        row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
 
         Intent intent = new Intent(context, WidgetManager.class);
-        intent.putExtra(U.EXTRA_RIDE_LENGTH, taulaHoraris.get(position).getTravel_time());
+        intent.putExtra(U.EXTRA_RIDE_LENGTH, schedule.get(position).getTravel_time());
         row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 
         return row;
