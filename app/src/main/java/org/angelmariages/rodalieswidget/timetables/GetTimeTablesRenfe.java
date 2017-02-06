@@ -213,12 +213,6 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 			} else {
 				sendNoStationsMessage(widgetId);
 			}
-
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 		return null;
 	}
