@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1"
-    android:baselineAligned="false"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:weightSum="1"
+              android:baselineAligned="false"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:orientation="vertical"
@@ -65,7 +65,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:id="@+id/actualitzarButton"
-            android:src="@drawable/icon_update"
+            android:src="@drawable/ic_update"
             android:scaleType="fitXY"
             android:cropToPadding="false"
             android:background="@drawable/button_background_padding"
@@ -75,7 +75,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:id="@+id/intercanviarButton"
-            android:src="@drawable/icon_swap"
+            android:src="@drawable/ic_swap"
             android:scaleType="fitXY"
             android:background="@drawable/button_background_padding"/>
     </LinearLayout>
