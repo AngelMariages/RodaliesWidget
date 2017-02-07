@@ -21,7 +21,7 @@ public class TrainTime implements Serializable {
 	private final int origin;
 	private final int destination;
 
-	public TrainTime(String line, String departure_time, String arrival_time, String travel_time, int origin, int destination) {
+	TrainTime(String line, String departure_time, String arrival_time, String travel_time, int origin, int destination) {
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time =formatHour( arrival_time);
@@ -30,8 +30,8 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 	}
 
-	public TrainTime(int transfer, String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, int origin, int destination) {
-		this.transfer = transfer;
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, int origin, int destination) {
+		this.transfer = 1;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
@@ -43,8 +43,8 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 	}
 
-	public TrainTime(int transfer, String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, int origin, int destination) {
-		this.transfer = transfer;
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, int origin, int destination) {
+		this.transfer = 2;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
@@ -148,11 +148,11 @@ public class TrainTime implements Serializable {
 		return arrival_time_transfer_two;
 	}
 
-	public int getOrigin() {
+	/*public int getOrigin() {
 		return origin;
 	}
 
 	public int getDestination() {
 		return destination;
-	}
+	}*/
 }

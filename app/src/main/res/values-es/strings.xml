@@ -2,9 +2,9 @@
 <resources>
     <string name="no_destination_set">Toca para la destinación</string>
     <string name="no_internet">No se puede acceder a internet y tampoco tenemos datos guardados de estas estaciones</string>
-    <string name="no_origin_set">Toca para el origen</string>
+    <string name="no_origin_set">Toca para el origin</string>
     <string name="title_activity_select_station">Selecciona la estación</string>
-    <string name="no_stations">El origen o el destino no están configurados</string>
+    <string name="no_stations">El origin o el destino no están configurados</string>
     <string name="departure">Salida</string>
     <string name="arrival">Llegada</string>
     <string name="no_times">No hay horarios para esta combinación de estaciones</string>

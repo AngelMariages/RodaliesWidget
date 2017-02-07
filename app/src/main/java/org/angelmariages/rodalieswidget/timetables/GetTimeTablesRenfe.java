@@ -11,7 +11,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -32,19 +31,10 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
     private ArrayList<TrainTime> get(int origin, int destination) {
         this.origin = origin;
         this.destination = destination;
-	    try {
-            return getJSONFromToday();
-        } catch(IOException e) {
-            if(e instanceof UnknownHostException) {
-                U.log("Can't reach the internet");
-            } else {
-                e.printStackTrace();
-            }
-        }
-        return null;
+	    return getJSONFromToday();
     }
 
-    private ArrayList<TrainTime> getJSONFromToday() throws IOException {
+    private ArrayList<TrainTime> getJSONFromToday() {
         String jsonFileRead = readJSONFile();
 
         if(jsonFileRead.isEmpty()) {
@@ -79,8 +69,6 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
             return hourSchedule;
         } else {
             U.log("Getting json from file...");
-
-	        U.log(jsonFileRead);
 
 	        ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonFileRead, origin, destination);
 	        ArrayList<TrainTime> hourSchedule = new ArrayList<>();
@@ -198,8 +186,6 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 					}
 					else {
 						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
-
-						U.log("0 " + stations[0] + ", 1 " +stations[1]);
 
 						if (trainTimes != null && trainTimes.size() > 0) {
 							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
