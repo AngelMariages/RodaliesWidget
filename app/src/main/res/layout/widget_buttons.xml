@@ -21,12 +21,12 @@
             android:background="@drawable/textviewclick"
             android:gravity="clip_vertical"
             android:clickable="true"
-            android:id="@+id/origenLayout">
+            android:id="@+id/originLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/origenTextView"
+                android:id="@+id/originTextView"
                 android:textColor="#263238"
                 android:textSize="18sp"
                 android:clickable="false"
@@ -41,12 +41,12 @@
             android:background="@drawable/textviewclick"
             android:gravity="clip_vertical"
             android:clickable="true"
-            android:id="@+id/destiLayout">
+            android:id="@+id/destinationLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/destiTextView"
+                android:id="@+id/destinationTextView"
                 android:textColor="#263238"
                 android:textSize="18sp"
                 android:clickable="false"
@@ -64,7 +64,7 @@
         <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/actualitzarButton"
+            android:id="@+id/updateButton"
             android:src="@drawable/ic_update"
             android:scaleType="fitXY"
             android:cropToPadding="false"
@@ -74,7 +74,7 @@
         <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/intercanviarButton"
+            android:id="@+id/swapButton"
             android:src="@drawable/ic_swap"
             android:scaleType="fitXY"
             android:background="@drawable/button_background_padding"/>
