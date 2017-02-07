@@ -22,10 +22,11 @@ final class ScheduleFileManager {
 	private static final String KEY_ARRIVAL_TRANSFER_TWO = "arrival_time_transfer_two";
 
 
-	private ScheduleFileManager() {}
+	private ScheduleFileManager() {
+	}
 
 	static String getJSONString(ArrayList<TrainTime> trainTimes) {
-		if(trainTimes.size() < 1) return null;
+		if (trainTimes.size() < 1) return null;
 		JSONObject scheduleObject = new JSONObject();
 
 		int transfers = trainTimes.get(0).getTransfer();
@@ -70,9 +71,9 @@ final class ScheduleFileManager {
 			int transfers = (int) scheduleObject.get(KEY_TRANSFERS);
 			String line = scheduleObject.getString(KEY_LINE);
 			String line_transfer_one = null, line_transfer_two = null;
-			if(transfers > 0) {
+			if (transfers > 0) {
 				line_transfer_one = scheduleObject.getString(KEY_LINE_TRANSFER_ONE);
-				if(transfers > 1)
+				if (transfers > 1)
 					line_transfer_two = scheduleObject.getString(KEY_LINE_TRANSFER_TWO);
 			}
 
@@ -88,7 +89,8 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_TRAVEL_TIME),
 								origin, destination));
 					}
-				} break;
+				}
+				break;
 				case 1: {
 					for (int i = 0; i < timesArray.length(); i++) {
 						JSONObject timeObject = timesArray.getJSONObject(i);
@@ -101,7 +103,8 @@ final class ScheduleFileManager {
 								timeObject.getString(KEY_TRAVEL_TIME),
 								origin, destination));
 					}
-				} break;
+				}
+				break;
 				case 2: {
 					for (int i = 0; i < timesArray.length(); i++) {
 						JSONObject timeObject = timesArray.getJSONObject(i);
@@ -116,7 +119,8 @@ final class ScheduleFileManager {
 								timeObject.getString(KEY_ARRIVAL_TRANSFER_TWO),
 								origin, destination));
 					}
-				} break;
+				}
+				break;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

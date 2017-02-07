@@ -24,7 +24,7 @@ public class TrainTime implements Serializable {
 	TrainTime(String line, String departure_time, String arrival_time, String travel_time, int origin, int destination) {
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
-		this.arrival_time =formatHour( arrival_time);
+		this.arrival_time = formatHour(arrival_time);
 		this.travel_time = formatHour(travel_time);
 		this.origin = origin;
 		this.destination = destination;
@@ -80,11 +80,13 @@ public class TrainTime implements Serializable {
 	}
 
 	private String formatHour(String hour) {
-		if(hour == null) return null;
+		if (hour == null) return null;
 		String[] splitDot = hour.split("\\.");
 		String[] splitTwoDots = hour.split(":");
-		if(splitDot.length == 2) return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
-		else if(splitTwoDots.length == 2) return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
+		if (splitDot.length == 2)
+			return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
+		else if (splitTwoDots.length == 2)
+			return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
 		else return null;
 	}
 
