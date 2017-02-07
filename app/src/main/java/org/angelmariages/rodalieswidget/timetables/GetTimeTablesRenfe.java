@@ -20,7 +20,6 @@ import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
-	// TODO: 29/01/17 This should be an async task etc...
 	private final Calendar cal = Calendar.getInstance();
     private final Context context;
     private int origin = -1;
@@ -80,6 +79,9 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
             return hourSchedule;
         } else {
             U.log("Getting json from file...");
+
+	        U.log(jsonFileRead);
+
 	        ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonFileRead, origin, destination);
 	        ArrayList<TrainTime> hourSchedule = new ArrayList<>();
 	        if(scheduleFromJSON.size() > 0) {
@@ -188,7 +190,7 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 	protected Void doInBackground(Integer... params) {
 		if(params.length == 1) {
 			int widgetId = params[0];
-			int[] stations = U.getStations(context, params[0]);
+			int[] stations = U.getStations(context, widgetId);
 			if(stations.length == 2) {
 				if(stations[0] != -1 && stations[1] != -1) {
 					if(stations[0] == stations[1]) {
@@ -196,9 +198,12 @@ public class GetTimeTablesRenfe extends AsyncTask<Integer, Void, Void> {
 					}
 					else {
 						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
+
+						U.log("0 " + stations[0] + ", 1 " +stations[1]);
+
 						if (trainTimes != null && trainTimes.size() > 0) {
 							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-							sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId);
+							sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
 							sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
 							Bundle bundle = new Bundle();
 
