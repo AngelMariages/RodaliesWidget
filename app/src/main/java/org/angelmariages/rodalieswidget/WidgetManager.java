@@ -146,7 +146,8 @@ public class WidgetManager extends AppWidgetProvider {
 	private void loadSchedule(Context context, int widgetID, ArrayList<TrainTime> schedule) {
 		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule);
 		if (schedule != null && schedule.size() > 0) {
-			if(schedule.get(0).getTransfer() == 1) widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule);
+			if (schedule.get(0).getTransfer() == 1)
+				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule);
 		}
 		AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 	}
