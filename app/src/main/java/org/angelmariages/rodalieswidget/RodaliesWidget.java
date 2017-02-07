@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.RemoteViews;
 
 import org.angelmariages.rodalieswidget.timetables.GetTimeTablesRenfe;
@@ -35,13 +34,13 @@ class RodaliesWidget extends RemoteViews {
 	    } else if(state == U.WIDGET_STATE_SCHEDULE_LOADED) {
             Intent adapterIntent = new Intent(context, WidgetService.class);
             adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
-            adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID), null));
+            adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID) + Math.random(), null));
 
             Bundle bundle = new Bundle();
 	        bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
             adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
-            this.setRemoteAdapter(R.id.horarisListView, adapterIntent);
+            this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);
         } else if(state == U.WIDGET_STATE_NO_INTERNET) {
             this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
         } else if(state == U.WIDGET_STATE_NO_STATIONS) {
@@ -73,7 +72,7 @@ class RodaliesWidget extends RemoteViews {
         listViewClickIntent.setAction(U.ACTION_CLICK_LIST_ITEM + getWidgetID());
         PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
                 listViewClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        this.setPendingIntentTemplate(R.id.horarisListView, clickPI);
+        this.setPendingIntentTemplate(R.id.scheduleListView, clickPI);
     }
 
     private void setUpdateButtonIntent() {
@@ -83,7 +82,7 @@ class RodaliesWidget extends RemoteViews {
         updateButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
                 updateButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        this.setOnClickPendingIntent(R.id.actualitzarButton, pendingIntent);
+        this.setOnClickPendingIntent(R.id.updateButton, pendingIntent);
     }
 
     private void setSwapButtonIntent() {
@@ -93,7 +92,7 @@ class RodaliesWidget extends RemoteViews {
         swapButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
         PendingIntent swapPI = PendingIntent.getBroadcast(context, 0,
                 swapButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        this.setOnClickPendingIntent(R.id.intercanviarButton, swapPI);
+        this.setOnClickPendingIntent(R.id.swapButton, swapPI);
     }
 
     private void setConfigStationIntent() {
@@ -103,7 +102,7 @@ class RodaliesWidget extends RemoteViews {
         originStationIntent.putExtra(U.EXTRA_OREGNorDESTINATION, U.ORIGIN);
         PendingIntent showDialogPI1 = PendingIntent.getBroadcast(context, 0,
                 originStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        this.setOnClickPendingIntent(R.id.origenLayout, showDialogPI1);
+        this.setOnClickPendingIntent(R.id.originLayout, showDialogPI1);
 
         Intent destinationStationIntent = new Intent(context, WidgetManager.class);
         destinationStationIntent.setAction(U.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_D");
@@ -111,7 +110,7 @@ class RodaliesWidget extends RemoteViews {
         destinationStationIntent.putExtra(U.EXTRA_OREGNorDESTINATION, U.DESTINATION);
         PendingIntent showDialogPI2 = PendingIntent.getBroadcast(context, 0,
                 destinationStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        this.setOnClickPendingIntent(R.id.destiLayout, showDialogPI2);
+        this.setOnClickPendingIntent(R.id.destinationLayout, showDialogPI2);
     }
 
     private void updateStationsText(String originText, String destinationText) {
@@ -120,8 +119,8 @@ class RodaliesWidget extends RemoteViews {
         if(originText == null) originText = nullOrigin;
         if(destinationText == null) destinationText = nullDestination;
 
-        this.setTextViewText(R.id.origenTextView, originText);
-        this.setTextViewText(R.id.destiTextView, destinationText);
+        this.setTextViewText(R.id.originTextView, originText);
+        this.setTextViewText(R.id.destinationTextView, destinationText);
     }
 
     private String getWidgetID() {

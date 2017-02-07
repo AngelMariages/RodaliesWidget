@@ -13,41 +13,33 @@ import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.U;
 
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
+    private int transfers = 0;
     private Context context = null;
-    private final int widgetID;
 
-    private ArrayList<TrainTime> schedule;
+	private ArrayList<TrainTime> schedule;
 
+	@SuppressWarnings("unchecked")
     RemoteListViewFactory(Context context, Intent intent) {
         this.context = context;
-        widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+		int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+				AppWidgetManager.INVALID_APPWIDGET_ID);
         U.log("RemoteListViewFactory()");
         if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
             Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
             schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
-	        // TODO: 2/6/17 Check if null
-
-            for (TrainTime trainTime : schedule) {
-                U.log(trainTime.toString());
-            }
+            if(schedule != null && schedule.size() > 0) transfers = schedule.get(0).getTransfer();
+	        else sendNoDataForSchedule(widgetId);
         }
     }
 
     @Override
-    public void onCreate() {
-        U.log("onCreate()");
-    }
+    public void onCreate() { }
 
     @Override
-    public void onDataSetChanged() {
-        U.log("onDataSetChanged() I'm widgetID: " + widgetID);
-    }
+    public void onDataSetChanged() { }
 
     @Override
-    public void onDestroy() {
-
-    }
+    public void onDestroy() { }
 
     @Override
     public int getCount() {
@@ -59,13 +51,17 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
 	    if(position >= getCount()) return null;
 
-        RemoteViews row = new RemoteViews(context.getPackageName(),
-                R.layout.time_list);
-
-        //row.removeAllViews(R.id.timesListLayout);
+        RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.time_list);
+        if(transfers == 1)
+            row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
 
         row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
         row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
+
+        if(transfers == 1) {
+            row.setTextViewText(R.id.transferDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
+	        row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
+        }
 
         Intent intent = new Intent(context, WidgetManager.class);
         intent.putExtra(U.EXTRA_RIDE_LENGTH, schedule.get(position).getTravel_time());
@@ -92,5 +88,13 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    private void sendNoDataForSchedule(int widgetId) {
+        Intent noDataIntent = new Intent(context, WidgetManager.class);
+        noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+        noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+        noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
+        context.sendBroadcast(noDataIntent);
     }
 }

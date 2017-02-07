@@ -62,7 +62,7 @@ final class ScheduleFileManager {
 		return scheduleObject.toString();
 	}
 
-	static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, int origen, int desti) {
+	static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, int origin, int destination) {
 		ArrayList<TrainTime> schedule = new ArrayList<>();
 
 		try {
@@ -86,26 +86,26 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE),
 								timeObject.optString(KEY_ARRIVAL),
 								timeObject.optString(KEY_TRAVEL_TIME),
-								origen, desti));
+								origin, destination));
 					}
 				} break;
 				case 1: {
 					for (int i = 0; i < timesArray.length(); i++) {
 						JSONObject timeObject = timesArray.getJSONObject(i);
-						schedule.add(new TrainTime(1, line,
+						schedule.add(new TrainTime(line,
 								timeObject.optString(KEY_DEPARTURE),
 								timeObject.optString(KEY_ARRIVAL),
 								line_transfer_one,
 								timeObject.getString(KEY_DEPARTURE_TRANSFER_ONE),
 								timeObject.getString(KEY_ARRIVAL_TRANSFER_ONE),
 								timeObject.getString(KEY_TRAVEL_TIME),
-								origen, desti));
+								origin, destination));
 					}
 				} break;
 				case 2: {
 					for (int i = 0; i < timesArray.length(); i++) {
 						JSONObject timeObject = timesArray.getJSONObject(i);
-						schedule.add(new TrainTime(2, line,
+						schedule.add(new TrainTime(line,
 								timeObject.optString(KEY_DEPARTURE),
 								timeObject.optString(KEY_ARRIVAL),
 								line_transfer_one,
@@ -114,7 +114,7 @@ final class ScheduleFileManager {
 								line_transfer_two,
 								timeObject.getString(KEY_DEPARTURE_TRANSFER_TWO),
 								timeObject.getString(KEY_ARRIVAL_TRANSFER_TWO),
-								origen, desti));
+								origin, destination));
 					}
 				} break;
 			}

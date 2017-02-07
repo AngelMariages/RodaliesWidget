@@ -14,7 +14,7 @@
     <include layout="@layout/table_titles_one_transfer"/>
 
     <ListView
-        android:id="@+id/horarisListView"
+        android:id="@+id/scheduleListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/data_background"
