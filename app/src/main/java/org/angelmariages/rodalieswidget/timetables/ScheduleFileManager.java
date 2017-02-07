@@ -1,7 +1,5 @@
 package org.angelmariages.rodalieswidget.timetables;
 
-import android.util.JsonReader;
-
 import org.angelmariages.rodalieswidget.utils.U;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public final class ScheduleFileManager {
+final class ScheduleFileManager {
 	private static final String KEY_TRANSFERS = "transfers";
 	private static final String KEY_LINE = "line";
 	private static final String KEY_TIMES = "times";
@@ -26,7 +24,7 @@ public final class ScheduleFileManager {
 
 	private ScheduleFileManager() {}
 
-	public static String getJSONString(ArrayList<TrainTime> trainTimes) {
+	static String getJSONString(ArrayList<TrainTime> trainTimes) {
 		if(trainTimes.size() < 1) return null;
 		JSONObject scheduleObject = new JSONObject();
 
@@ -64,7 +62,7 @@ public final class ScheduleFileManager {
 		return scheduleObject.toString();
 	}
 
-	public static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, int origen, int desti) {
+	static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, int origen, int desti) {
 		ArrayList<TrainTime> schedule = new ArrayList<>();
 
 		try {

@@ -39,6 +39,8 @@ public class RenfeSchedule {
 			urlConnection.setConnectTimeout(5000);
 			urlConnection.setReadTimeout(5000);
 
+			U.log("URL: " + url + query);
+
 			BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			String line;
 			while((line = in.readLine()) != null) {

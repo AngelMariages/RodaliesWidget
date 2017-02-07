@@ -27,12 +27,16 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
             schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
 	        // TODO: 2/6/17 Check if null
+
+            for (TrainTime trainTime : schedule) {
+                U.log(trainTime.toString());
+            }
         }
     }
 
     @Override
     public void onCreate() {
-
+        U.log("onCreate()");
     }
 
     @Override
