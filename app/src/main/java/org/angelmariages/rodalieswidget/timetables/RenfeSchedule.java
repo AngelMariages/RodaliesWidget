@@ -89,38 +89,84 @@ class RenfeSchedule {
 			switch (transfers) {
 				case 0: {
 					for (int y = 0; y < cols.size(); y++) {
-						if (y == 0) line = getTextInsideTd(cols.get(y));
-						else if (y == 1) departure_time = getTextInsideTd(cols.get(y));
-						else if (y == 2) arrival_time = getTextInsideTd(cols.get(y));
-						else if (y == 3) journey_time = getTextInsideTd(cols.get(y));
+						switch (y) {
+							case 0:
+								line = getTextInsideTd(cols.get(y));
+								break;
+							case 1:
+								departure_time = getTextInsideTd(cols.get(y));
+								break;
+							case 2:
+								arrival_time = getTextInsideTd(cols.get(y));
+								break;
+							case 3:
+								journey_time = getTextInsideTd(cols.get(y));
+								break;
+						}
 					}
 					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination));
 				}
 				break;
 				case 1: {
 					for (int y = 0; y < cols.size(); y++) {
-						if (y == 0) line = getTextInsideTd(cols.get(y));
-						else if (y == 1) departure_time = getTextInsideTd(cols.get(y));
-						else if (y == 2) arrival_time = getTextInsideTd(cols.get(y));
-						else if (y == 3) departure_time_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 4) line_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 5) arrival_time_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 6) journey_time = getTextInsideTd(cols.get(y));
+						switch (y) {
+							case 0:
+								line = getTextInsideTd(cols.get(y));
+								break;
+							case 1:
+								departure_time = getTextInsideTd(cols.get(y));
+								break;
+							case 2:
+								arrival_time = getTextInsideTd(cols.get(y));
+								break;
+							case 3:
+								departure_time_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 4:
+								line_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 5:
+								arrival_time_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 6:
+								journey_time = getTextInsideTd(cols.get(y));
+								break;
+						}
 					}
 					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
 				}
 				break;
 				case 2: {
 					for (int y = 0; y < cols.size(); y++) {
-						if (y == 0) line = getTextInsideTd(cols.get(y));
-						else if (y == 1) departure_time = getTextInsideTd(cols.get(y));
-						else if (y == 2) arrival_time = getTextInsideTd(cols.get(y));
-						else if (y == 3) departure_time_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 4) line_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 5) arrival_time_transfer_one = getTextInsideTd(cols.get(y));
-						else if (y == 6) departure_time_transfer_two = getTextInsideTd(cols.get(y));
-						else if (y == 7) line_transfer_two = getTextInsideTd(cols.get(y));
-						else if (y == 8) arrival_time_transfer_two = getTextInsideTd(cols.get(y));
+						switch (y) {
+							case 0:
+								line = getTextInsideTd(cols.get(y));
+								break;
+							case 1:
+								departure_time = getTextInsideTd(cols.get(y));
+								break;
+							case 2:
+								arrival_time = getTextInsideTd(cols.get(y));
+								break;
+							case 3:
+								departure_time_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 4:
+								line_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 5:
+								arrival_time_transfer_one = getTextInsideTd(cols.get(y));
+								break;
+							case 6:
+								departure_time_transfer_two = getTextInsideTd(cols.get(y));
+								break;
+							case 7:
+								line_transfer_two = getTextInsideTd(cols.get(y));
+								break;
+							case 8:
+								arrival_time_transfer_two = getTextInsideTd(cols.get(y));
+								break;
+						}
 					}
 					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
 				}
