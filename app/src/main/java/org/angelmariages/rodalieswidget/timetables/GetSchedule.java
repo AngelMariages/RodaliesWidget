@@ -39,8 +39,11 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 		if (jsonFileRead.isEmpty()) {
 			U.log("Getting json from internet...");
-			RenfeSchedule renfeSchedule = new RenfeSchedule(origin, destination, 50);
-			ArrayList<TrainTime> schedule = renfeSchedule.getSchedule();
+			/*RenfeSchedule renfeSchedule = new RenfeSchedule(origin, destination, 50);
+			ArrayList<TrainTime> schedule = renfeSchedule.getSchedule();*/
+			RodaliesSchedule rodaliesSchedule = new RodaliesSchedule(origin, destination);
+			ArrayList<TrainTime> schedule = rodaliesSchedule.getSchedule();
+
 			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
 			if (schedule != null && schedule.size() > 0) {
 				int currentHour = getCurrentHour();
