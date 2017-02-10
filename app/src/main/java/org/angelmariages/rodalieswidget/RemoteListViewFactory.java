@@ -53,22 +53,31 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getViewAt(int position) {
 		if (position >= getCount()) return null;
+		RemoteViews row = null;
+		if(transfers == 0) {
+			row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 
-		RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-		if (transfers == 1)
-			row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-
-		row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
-		row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
-
-		if (transfers == 1) {
-			row.setTextViewText(R.id.transferDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
-			row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
+			row.setTextViewText(R.id.lineText, schedule.get(position).getLine());
+			row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
+			row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
 		}
 
-		Intent intent = new Intent(context, WidgetManager.class);
-		intent.putExtra(U.EXTRA_RIDE_LENGTH, schedule.get(position).getTravel_time());
-		row.setOnClickFillInIntent(R.id.timesListLayout, intent);
+		if (transfers == 1) {
+			row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
+
+			row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
+			row.setTextViewText(R.id.transferDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
+			if(schedule.get(position).getArrival_time_transfer_one() != null)
+				row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
+			else
+				row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
+		}
+
+		if (row != null) {
+			Intent intent = new Intent(context, WidgetManager.class);
+			intent.putExtra(U.EXTRA_RIDE_LENGTH, schedule.get(position).getTravel_time());
+			row.setOnClickFillInIntent(R.id.timesListLayout, intent);
+		}
 
 		return row;
 	}
