@@ -65,7 +65,7 @@ public class RodaliesSchedule {
 
 	public ArrayList<TrainTime> getSchedule() {
 		try {
-			parseXMLFile(getPageFromInternet());
+			return parseXMLFile(getPageFromInternet());
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -125,26 +125,32 @@ public class RodaliesSchedule {
 					line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 					departure_time = parentElement.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-					arrival_time_transfer_one = recorregutElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
-					journey_time = recorregutElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
+					if(recorreguts > 0) {
+						arrival_time_transfer_one = recorregutElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
+						journey_time = recorregutElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
-					Element insideItem = (Element) recorregutElement.getElementsByTagName("item").item(0);
-					departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
-					arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
+						Element insideItem = (Element) recorregutElement.getElementsByTagName("item").item(0);
+						departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
+						arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
 
-					if(recorreguts == 2) {
-						Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(1);
+						if (recorreguts == 2) {
+							Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(1);
 
-						arrival_time_transfer_one = recorregutElement2.getElementsByTagName("hora_arribada").item(0).getTextContent();
-						journey_time = recorregutElement2.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
+							arrival_time_transfer_one = recorregutElement2.getElementsByTagName("hora_arribada").item(0).getTextContent();
+							journey_time = recorregutElement2.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
-						Element insideItem2 = (Element) recorregutElement2.getElementsByTagName("item").item(0);
-						departure_time_transfer_one = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
+							Element insideItem2 = (Element) recorregutElement2.getElementsByTagName("item").item(0);
+							departure_time_transfer_one = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-						//There's no train from the origin station
-						times.add(new TrainTime(line, null, null, null, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+							//There's no train from the origin station
+							times.add(new TrainTime(line, null, null, null, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+						}
+					} else {//Direct train
+						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
+						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
+						times.add(new TrainTime(line, departure_time, arrival_time, null, null, null, journey_time, origin, destination));
 					}
 				}
 			}
