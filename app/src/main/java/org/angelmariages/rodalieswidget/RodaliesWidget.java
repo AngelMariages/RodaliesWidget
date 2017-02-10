@@ -40,7 +40,6 @@ class RodaliesWidget extends RemoteViews {
 			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
 			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
-			//if(schedule != null && schedule.size() > 0) this.setTextViewText(R.id.lineTextTitle, schedule.get(0).getLine());
 			this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);
 		} else if (state == U.WIDGET_STATE_NO_INTERNET) {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
