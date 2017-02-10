@@ -7,22 +7,20 @@
     android:layout_height="wrap_content"
     android:background="@drawable/list_element_background"
     android:orientation="horizontal"
-    android:weightSum="2.1"
-    >
+    android:weightSum="2">
 
     <TextView
         android:id="@+id/lineText"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:textColor="@color/data_text"
         android:gravity="center_vertical|center_horizontal"
         android:textSize="18sp"
-        tools:text="R1"
-        android:layout_weight="0.1"/>
+        tools:text="R1"/>
 
     <TextView
         android:id="@+id/departureTimeText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="@color/data_text"
@@ -32,7 +30,7 @@
 
     <TextView
         android:id="@+id/arrivalTimeText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="@color/data_text"
