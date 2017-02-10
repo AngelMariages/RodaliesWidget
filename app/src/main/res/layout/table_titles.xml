@@ -5,10 +5,13 @@
     android:layout_height="wrap_content"
     android:background="@color/title_background"
     android:orientation="horizontal"
-    android:paddingStart="20dp">
+    android:weightSum="2">
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
@@ -18,8 +21,7 @@
         android:textColor="#FFFFFF"/>
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
