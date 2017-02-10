@@ -69,12 +69,12 @@ final class ScheduleFileManager {
 		try {
 			JSONObject scheduleObject = new JSONObject(jsonString);
 			int transfers = (int) scheduleObject.get(KEY_TRANSFERS);
-			String line = scheduleObject.getString(KEY_LINE);
+			String line = scheduleObject.optString(KEY_LINE);
 			String line_transfer_one = null, line_transfer_two = null;
 			if (transfers > 0) {
-				line_transfer_one = scheduleObject.getString(KEY_LINE_TRANSFER_ONE);
+				line_transfer_one = scheduleObject.optString(KEY_LINE_TRANSFER_ONE);
 				if (transfers > 1)
-					line_transfer_two = scheduleObject.getString(KEY_LINE_TRANSFER_TWO);
+					line_transfer_two = scheduleObject.optString(KEY_LINE_TRANSFER_TWO);
 			}
 
 			JSONArray timesArray = (JSONArray) scheduleObject.get(KEY_TIMES);
@@ -98,9 +98,9 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE),
 								timeObject.optString(KEY_ARRIVAL),
 								line_transfer_one,
-								timeObject.getString(KEY_DEPARTURE_TRANSFER_ONE),
-								timeObject.getString(KEY_ARRIVAL_TRANSFER_ONE),
-								timeObject.getString(KEY_TRAVEL_TIME),
+								timeObject.optString(KEY_DEPARTURE_TRANSFER_ONE),
+								timeObject.optString(KEY_ARRIVAL_TRANSFER_ONE),
+								timeObject.optString(KEY_TRAVEL_TIME),
 								origin, destination));
 					}
 				}
@@ -115,8 +115,8 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE_TRANSFER_ONE),
 								timeObject.optString(KEY_ARRIVAL_TRANSFER_ONE),
 								line_transfer_two,
-								timeObject.getString(KEY_DEPARTURE_TRANSFER_TWO),
-								timeObject.getString(KEY_ARRIVAL_TRANSFER_TWO),
+								timeObject.optString(KEY_DEPARTURE_TRANSFER_TWO),
+								timeObject.optString(KEY_ARRIVAL_TRANSFER_TWO),
 								origin, destination));
 					}
 				}
