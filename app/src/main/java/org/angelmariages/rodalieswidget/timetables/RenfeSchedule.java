@@ -133,7 +133,8 @@ class RenfeSchedule {
 								break;
 						}
 					}
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+					// TODO: 12/02/17 Check station for stransfer from renfe
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, null, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
 				}
 				break;
 				case 2: {
@@ -168,7 +169,7 @@ class RenfeSchedule {
 								break;
 						}
 					}
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, null, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
 				}
 				break;
 			}

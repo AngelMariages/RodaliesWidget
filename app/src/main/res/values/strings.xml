@@ -8,6 +8,9 @@
     <string name="departure">Departure</string>
     <string name="arrival">Arrival</string>
     <string name="no_times">There are no current times for this pair of stations</string>
-    <string name="search_text"/>
-    <string name="transfer_departure" >Transfer departure</string>
+    <string name="search_text">Type the name of a station</string>
+    <string name="transfer_departure" >Transfer</string>
+    <string name="travel_time_toast">Travel time: %s</string>
+    <string name="dataInfoText">Schedules offered by Rodalies de Catalunya</string>
+    <string name="transfer_station_one">Transfer: %s</string>
 </resources>

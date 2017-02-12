@@ -185,7 +185,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			if (stations.length == 2) {
 				if (stations[0] != -1 && stations[1] != -1) {
 					if (stations[0] == stations[1]) {
-						sendNoDataForStationsError(widgetId);
+						U.sendNoTimesError(widgetId, context);
 					} else {
 						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
 
@@ -199,40 +199,16 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 							sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 							context.sendBroadcast(sendScheduleIntent);
 						} else {
-							sendNoDataForSchedule(widgetId);
+							U.sendNoInternetError(widgetId, context);
 						}
 					}
 				} else {
-					sendNoStationsMessage(widgetId);
+					U.sendNoStationsSetError(widgetId, context);
 				}
 			} else {
-				sendNoStationsMessage(widgetId);
+				U.sendNoStationsSetError(widgetId, context);
 			}
 		}
 		return null;
-	}
-
-	private void sendNoDataForSchedule(int widgetId) {
-		Intent noDataIntent = new Intent(context, WidgetManager.class);
-		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
-		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
-		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
-		context.sendBroadcast(noDataIntent);
-	}
-
-	private void sendNoDataForStationsError(int widgetId) {
-		Intent noDataIntent = new Intent(context, WidgetManager.class);
-		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
-		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
-		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_TIMES);
-		context.sendBroadcast(noDataIntent);
-	}
-
-	private void sendNoStationsMessage(int widgetId) {
-		Intent noStationsIntent = new Intent(context, WidgetManager.class);
-		noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
-		noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
-		noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
-		context.sendBroadcast(noStationsIntent);
 	}
 }

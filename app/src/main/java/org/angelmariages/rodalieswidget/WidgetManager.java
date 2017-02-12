@@ -98,19 +98,16 @@ public class WidgetManager extends AppWidgetProvider {
 			updateStationTexts(StationUtils.getNameFromID(newOrigin), StationUtils.getNameFromID(newDestination),
 					context, widgetID);
 		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
-			String duracioTrajecte = intent.getStringExtra(U.EXTRA_RIDE_LENGTH);
+			String travelTime = intent.getStringExtra(U.EXTRA_RIDE_LENGTH);
+			String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), travelTime);
 
-			Toast.makeText(context, "Duració del trajecte: " + duracioTrajecte, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
 		} else if (intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
 			int widgetID = U.getIdFromIntent(intent);
 			int widgetState = U.getStateFromIntent(intent);
-			int widgetLayout = R.layout.widget_layout;
-
-			if (widgetState == 1 || widgetState == 2 || widgetState == 3)
-				widgetLayout = R.layout.widget_layout_no_data;
 
 			AppWidgetManager.getInstance(context).updateAppWidget(widgetID,
-					new RodaliesWidget(context, widgetID, widgetState, widgetLayout, null));
+					new RodaliesWidget(context, widgetID, widgetState, R.layout.widget_layout_no_data, null));
 		}
 	}
 
