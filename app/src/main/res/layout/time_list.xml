@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/data_text"
         android:gravity="center_vertical|center_horizontal"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:maxLines="1"
         tools:text="R1"/>
 
     <TextView

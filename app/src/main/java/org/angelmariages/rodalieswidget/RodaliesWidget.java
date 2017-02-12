@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.angelmariages.rodalieswidget.timetables.GetSchedule;
@@ -40,6 +41,17 @@ class RodaliesWidget extends RemoteViews {
 			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
 			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
+			if(schedule != null && schedule.size() > 0) {
+				if (schedule.get(0).getTransfer() > 0) {
+					String transferStation = null;
+					try {
+						transferStation = String.format(context.getResources().getString(R.string.transfer_station_one),
+								StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one())));
+					} catch (NumberFormatException ignored) {}
+					if(transferStation != null) this.setTextViewText(R.id.transferOneTitleText, transferStation);
+					else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+				}
+			}
 			this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);
 		} else if (state == U.WIDGET_STATE_NO_INTERNET) {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
