@@ -13,6 +13,7 @@ public class TrainTime implements Serializable {
 	private final String arrival_time;
 	private final String travel_time;
 	private String line_transfer_one;
+	private String station_transfer_one;
 	private String departure_time_transfer_one = null;
 	private String arrival_time_transfer_one = null;
 	private String line_transfer_two;
@@ -30,26 +31,28 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, int origin, int destination) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, int origin, int destination) {
 		this.transfer = 1;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
 		this.travel_time = formatHour(travel_time);
 		this.line_transfer_one = line_transfer_one;
+		this.station_transfer_one = station_transfer_one;
 		this.departure_time_transfer_one = formatHour(departure_time_transfer_one);
 		this.arrival_time_transfer_one = formatHour(arrival_time_transfer_one);
 		this.origin = origin;
 		this.destination = destination;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, int origin, int destination) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, int origin, int destination) {
 		this.transfer = 2;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
 		// TODO: 29/01/17 Travel time might be incorrect when there's no departure_time
 		this.travel_time = formatHour(getTravelTime(departure_time, arrival_time_transfer_two));
+		this.station_transfer_one = station_transfer_one;
 		this.line_transfer_one = line_transfer_one;
 		this.departure_time_transfer_one = formatHour(departure_time_transfer_one);
 		this.arrival_time_transfer_one = formatHour(arrival_time_transfer_one);
@@ -128,6 +131,10 @@ public class TrainTime implements Serializable {
 
 	public String getLine_transfer_one() {
 		return line_transfer_one;
+	}
+
+	public String getStation_transfer_one() {
+		return station_transfer_one;
 	}
 
 	public String getDeparture_time_transfer_one() {

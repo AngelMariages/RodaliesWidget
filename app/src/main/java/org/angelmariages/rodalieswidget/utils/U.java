@@ -9,7 +9,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+
+import org.angelmariages.rodalieswidget.WidgetManager;
 
 public final class U {
 	//====================== [ CONSTANTS ] ======================
@@ -148,5 +152,29 @@ public final class U {
 				}
 			});
 		}
+	}
+
+	public static void sendNoInternetError(int widgetId, Context context) {
+		Intent noDataIntent = new Intent(context, WidgetManager.class);
+		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_INTERNET);
+		context.sendBroadcast(noDataIntent);
+	}
+
+	public static void sendNoTimesError(int widgetId, Context context) {
+		Intent noDataIntent = new Intent(context, WidgetManager.class);
+		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noDataIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_TIMES);
+		context.sendBroadcast(noDataIntent);
+	}
+
+	public static void sendNoStationsSetError(int widgetId, Context context) {
+		Intent noStationsIntent = new Intent(context, WidgetManager.class);
+		noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
+		noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+		noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
+		context.sendBroadcast(noStationsIntent);
 	}
 }

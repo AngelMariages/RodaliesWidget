@@ -8,6 +8,9 @@
     <string name="departure">Salida</string>
     <string name="arrival">Llegada</string>
     <string name="no_times">No hay horarios para esta combinación de estaciones</string>
-    <string name="search_text"/>
-    <string name="transfer_departure" >Salida transbordo</string>
+    <string name="search_text">Escribe el nombre de una estacion</string>
+    <string name="transfer_departure" >Transbordo</string>
+    <string name="travel_time_toast">Duracion del trayecto: %s</string>
+    <string name="dataInfoText">Horarios ofrecidos por Rodalies de Cataluña</string>
+    <string name="transfer_station_one">Transbordo: %s</string>
 </resources>

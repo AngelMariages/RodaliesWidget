@@ -5,14 +5,24 @@
     android:id="@+id/timesListLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@drawable/list_element_background"
-    >
+    android:orientation="horizontal"
+    android:weightSum="3">
+
+    <TextView
+        android:id="@+id/lineText"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/data_text"
+        android:textSize="14sp"
+        android:maxLines="1"
+        tools:text="RG1"/>
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/departureTimeText"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical|center_horizontal"
@@ -21,9 +31,18 @@
         tools:text="22:30"/>
 
     <TextView
+        android:id="@+id/lineTransferOneText"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/data_text"
+        android:textSize="14sp"
+        tools:text="R14"/>
+
+    <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/transferDepartureTimeText"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical|center_horizontal"
@@ -34,7 +53,7 @@
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/arrivalTimeText"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical|center_horizontal"

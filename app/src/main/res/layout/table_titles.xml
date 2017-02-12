@@ -6,6 +6,7 @@
     android:background="@color/title_background"
     android:orientation="horizontal"
     android:weightSum="2">
+
     <TextView
         android:layout_width="30dp"
         android:layout_height="wrap_content"/>
@@ -15,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:maxLines="1"
         android:gravity="center_horizontal"
         android:text="@string/departure"
         android:textAllCaps="true"
@@ -25,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:maxLines="1"
         android:gravity="center_horizontal"
         android:text="@string/arrival"
         android:textAllCaps="true"
