@@ -72,7 +72,25 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 					row.setTextViewText(R.id.lineText, "");
 				row.setTextViewText(R.id.lineTransferOneText, schedule.get(position).getLine_transfer_one());
 				row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
-				row.setTextViewText(R.id.transferDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
+				row.setTextViewText(R.id.transferOneDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
+				if (schedule.get(position).getArrival_time_transfer_one() != null)
+					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
+				else
+					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
+			} else if(transfers == 2) {
+				row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
+
+				if (schedule.get(position).getDeparture_time() != null)
+					row.setTextViewText(R.id.lineText, schedule.get(position).getLine());
+				else
+					row.setTextViewText(R.id.lineText, "");
+
+				row.setTextViewText(R.id.lineTransferOneText, schedule.get(position).getLine_transfer_one());
+				row.setTextViewText(R.id.departureTimeText, schedule.get(position).getDeparture_time());
+				row.setTextViewText(R.id.transferOneDepartureTimeText, schedule.get(position).getDeparture_time_transfer_one());
+
+				row.setTextViewText(R.id.lineTransferTwoText, schedule.get(position).getLine_transfer_two());
+				row.setTextViewText(R.id.transferTwoDepartureTimeText, schedule.get(position).getDeparture_time_transfer_two());
 				if (schedule.get(position).getArrival_time_transfer_one() != null)
 					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
 				else

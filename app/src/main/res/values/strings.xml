@@ -13,4 +13,8 @@
     <string name="travel_time_toast">Travel time: %s</string>
     <string name="dataInfoText">Schedules offered by Rodalies de Catalunya</string>
     <string name="transfer_station_one">Transfer: %s</string>
+    <string name="transfer_stations_one">1st transfer: %s</string>
+    <string name="transfer_stations_two">2nd transfer: %s</string>
+    <string name="transfer_departure_two">2nd transfer</string>
+    <string name="transfer_departure_one">1st transfer</string>
 </resources>
