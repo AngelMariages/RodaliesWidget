@@ -39,8 +39,6 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 		if (jsonFileRead.isEmpty()) {
 			U.log("Getting json from internet...");
-			/*RenfeSchedule renfeSchedule = new RenfeSchedule(origin, destination, 50);
-			ArrayList<TrainTime> schedule = renfeSchedule.getSchedule();*/
 			RodaliesSchedule rodaliesSchedule = new RodaliesSchedule(origin, destination);
 			ArrayList<TrainTime> schedule = rodaliesSchedule.getSchedule();
 
@@ -189,7 +187,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 					} else {
 						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
 
-						if (trainTimes != null && trainTimes.size() > 0) {
+						if (trainTimes != null) {
 							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
 							sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
 							sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);

@@ -21,6 +21,7 @@ final class ScheduleFileManager {
 	private static final String KEY_DEPARTURE_TRANSFER_TWO = "departure_time_transfer_two";
 	private static final String KEY_ARRIVAL_TRANSFER_TWO = "arrival_time_transfer_two";
 	private static final String KEY_STATION_TRANSFER_ONE = "station_transfer_one";
+	private static final String KEY_STATION_TRANSFER_TWO = "station_transfer_two";
 
 
 	private ScheduleFileManager() {
@@ -38,8 +39,10 @@ final class ScheduleFileManager {
 			if (transfers > 0) {
 				scheduleObject.put(KEY_LINE_TRANSFER_ONE, trainTimes.get(0).getLine_transfer_one());
 				scheduleObject.put(KEY_STATION_TRANSFER_ONE, trainTimes.get(0).getStation_transfer_one());
-				if (transfers > 1)
+				if (transfers > 1) {
 					scheduleObject.put(KEY_LINE_TRANSFER_TWO, trainTimes.get(0).getLine_transfer_two());
+					scheduleObject.put(KEY_STATION_TRANSFER_TWO, trainTimes.get(0).getStation_transfer_two());
+				}
 			}
 
 			JSONArray timesArray = new JSONArray();
@@ -73,12 +76,14 @@ final class ScheduleFileManager {
 			int transfers = (int) scheduleObject.get(KEY_TRANSFERS);
 			String line = scheduleObject.optString(KEY_LINE);
 			String line_transfer_one = null, line_transfer_two = null;
-			String station_transfer_one = null;
+			String station_transfer_one = null, station_transfer_two = null;
 			if (transfers > 0) {
 				line_transfer_one = scheduleObject.optString(KEY_LINE_TRANSFER_ONE);
 				station_transfer_one = scheduleObject.optString(KEY_STATION_TRANSFER_ONE);
-				if (transfers > 1)
+				if (transfers > 1) {
 					line_transfer_two = scheduleObject.optString(KEY_LINE_TRANSFER_TWO);
+					station_transfer_two = scheduleObject.optString(KEY_STATION_TRANSFER_TWO);
+				}
 			}
 
 			JSONArray timesArray = (JSONArray) scheduleObject.get(KEY_TIMES);
@@ -121,6 +126,7 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE_TRANSFER_ONE),
 								timeObject.optString(KEY_ARRIVAL_TRANSFER_ONE),
 								line_transfer_two,
+								station_transfer_two,
 								timeObject.optString(KEY_DEPARTURE_TRANSFER_TWO),
 								timeObject.optString(KEY_ARRIVAL_TRANSFER_TWO),
 								origin, destination));

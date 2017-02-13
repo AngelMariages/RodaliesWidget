@@ -23,11 +23,7 @@ public class WidgetReceiver extends BroadcastReceiver {
 			if (intentAction.equalsIgnoreCase(U.ACTION_CLICK_SWAP_BUTTON)) {
 				int[] oldStations = U.getStations(context, widgetID);
 				if (oldStations[0] == -1 || oldStations[1] == -1) {
-					Intent noStationsIntent = new Intent(context, WidgetManager.class);
-					noStationsIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetID);
-					noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-					noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
-					context.sendBroadcast(noStationsIntent);
+					U.sendNoStationsSetError(widgetID, context);
 				} else {
 					int[] stationsTmp = new int[2];
 
