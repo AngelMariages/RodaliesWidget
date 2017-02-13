@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/list_element_background"
     android:orientation="horizontal"
-    android:weightSum="3">
+    android:weightSum="4">
 
     <TextView
         android:id="@+id/lineText"
@@ -42,6 +42,26 @@
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/transferOneDepartureTimeText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/data_text"
+        android:textSize="18sp"
+        tools:text="23:30"/>
+
+    <TextView
+        android:id="@+id/lineTransferTwoText"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="@color/data_text"
+        android:textSize="14sp"
+        tools:text="R14"/>
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/transferTwoDepartureTimeText"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

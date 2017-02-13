@@ -30,6 +30,7 @@ class RodaliesSchedule {
 	private final int destination;
 	private final Calendar cal = Calendar.getInstance();
 	private String station_transfer_one;
+	private String station_transfer_two;
 
 	RodaliesSchedule(int origin, int destination) {
 		this.origin = origin;
@@ -175,11 +176,11 @@ class RodaliesSchedule {
 					arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
 					Element insideItem2 = (Element) recorregutElement.getElementsByTagName("item").item(1);
-					line_transfer_two = insideItem.getAttribute("linea");
+					line_transfer_two = insideItem2.getAttribute("linea");
 					departure_time_transfer_two = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 					arrival_time_transfer_one = insideItem2.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
 				}
 			}
 		}
@@ -196,7 +197,8 @@ class RodaliesSchedule {
 			Node node = transfersNode.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
-				if(station_transfer_one == null) station_transfer_one = element.getAttribute("codi");
+				if(i == 0 && station_transfer_one == null) station_transfer_one = element.getAttribute("codi");
+				if(i == 1 && station_transfer_two == null) station_transfer_two = element.getAttribute("codi");
 			}
 		}
 

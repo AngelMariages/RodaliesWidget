@@ -42,14 +42,30 @@ class RodaliesWidget extends RemoteViews {
 			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
 			if(schedule != null && schedule.size() > 0) {
-				if (schedule.get(0).getTransfer() > 0) {
-					String transferStation = null;
-					try {
-						transferStation = String.format(context.getResources().getString(R.string.transfer_station_one),
-								StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one())));
-					} catch (NumberFormatException ignored) {}
-					if(transferStation != null) this.setTextViewText(R.id.transferOneTitleText, transferStation);
-					else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+				switch (schedule.get(0).getTransfer()) {
+					case 1: {
+						String transferStation = null;
+						try {
+							transferStation = String.format(context.getResources().getString(R.string.transfer_station_one),
+									StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one())));
+						} catch (NumberFormatException ignored) {}
+						if(transferStation != null) this.setTextViewText(R.id.transferOneTitleText, transferStation);
+						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+					} break;
+					case 2: {
+						String transferStation = null, transferStationTwo = null;
+						try {
+							transferStation = String.format(context.getResources().getString(R.string.transfer_stations_one),
+									StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one())));
+							transferStationTwo = String.format(context.getResources().getString(R.string.transfer_stations_two),
+									StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_two())));
+							System.out.println("TRANSFER TWO: " + transferStationTwo);
+						} catch (NumberFormatException ignored) { }
+						if(transferStation != null) this.setTextViewText(R.id.transferOneTitleText, transferStation);
+						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+						if(transferStationTwo != null) this.setTextViewText(R.id.transferTwoTitleText, transferStationTwo);
+						else this.setViewVisibility(R.id.transferTwoTitleText, View.GONE);
+					} break;
 				}
 			}
 			this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);

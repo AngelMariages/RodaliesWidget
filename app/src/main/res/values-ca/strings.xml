@@ -13,4 +13,8 @@
     <string name="travel_time_toast">Duracio del trajecte: %s</string>
     <string name="dataInfoText">Horaris oferits per Rodalies de Catalunya</string>
     <string name="transfer_station_one">Transbord: %s</string>
+    <string name="transfer_departure_two">2n transbord</string>
+    <string name="transfer_stations_one">1r transbord: %s</string>
+    <string name="transfer_stations_two">2n transbord: %s</string>
+    <string name="transfer_departure_one">1r transbord</string>
 </resources>
