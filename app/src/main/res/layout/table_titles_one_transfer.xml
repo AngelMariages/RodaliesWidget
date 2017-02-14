@@ -52,8 +52,8 @@
             android:gravity="end"
             android:maxLines="1"
             android:text="@string/arrival"
-            android:paddingRight="10dp"
-            android:paddingEnd="10dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
