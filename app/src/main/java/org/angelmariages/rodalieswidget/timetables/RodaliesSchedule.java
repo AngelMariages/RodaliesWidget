@@ -1,5 +1,6 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.U;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -56,9 +57,9 @@ class RodaliesSchedule {
 				html.append(line);
 			}
 		} catch (MalformedURLException e) {
-			System.out.println("ERROR: URL malformada.");
+			U.log("ERROR: URL malformada.");
 		} catch (IOException e) {
-			System.out.println("No es pot obrir el stream.");
+			U.log("No es pot obrir el stream.");
 		}
 
 		return html.toString();
@@ -151,7 +152,7 @@ class RodaliesSchedule {
 					} else {//Direct train
 						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
-						times.add(new TrainTime(line, departure_time, arrival_time, null, null, null, null, journey_time, origin, destination));
+						times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, journey_time, origin, destination));
 					}
 				}
 			}
@@ -189,11 +190,11 @@ class RodaliesSchedule {
 						if(recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
+								arrival_time_transfer_two = recorregutElement2.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
 								Element insideItem3 = (Element) recorregutElement2.getElementsByTagName("item").item(0);
 								line_transfer_one = insideItem3.getAttribute("linea");
 								departure_time_transfer_one = insideItem3.getElementsByTagName("hora_sortida").item(0).getTextContent();
-								arrival_time = insideItem3.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
 								Element insideItem4 = (Element) recorregutElement2.getElementsByTagName("item").item(1);
 								line_transfer_two = insideItem4.getAttribute("linea");

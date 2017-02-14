@@ -32,6 +32,8 @@
         android:weightSum="4">
 
         <TextView
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -76,6 +78,8 @@
             android:layout_weight="1"
             android:gravity="end"
             android:maxLines="1"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
             android:ellipsize="end"
             android:text="@string/arrival"
             android:textAllCaps="true"

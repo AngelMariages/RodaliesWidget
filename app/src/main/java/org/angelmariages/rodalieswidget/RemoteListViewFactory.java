@@ -92,7 +92,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				row.setTextViewText(R.id.lineTransferTwoText, schedule.get(position).getLine_transfer_two());
 				row.setTextViewText(R.id.transferTwoDepartureTimeText, schedule.get(position).getDeparture_time_transfer_two());
 				if (schedule.get(position).getArrival_time_transfer_one() != null)
-					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_one());
+					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time_transfer_two());
 				else
 					row.setTextViewText(R.id.arrivalTimeText, schedule.get(position).getArrival_time());
 			}
