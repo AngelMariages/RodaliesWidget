@@ -59,7 +59,6 @@ class RodaliesWidget extends RemoteViews {
 									StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one())));
 							transferStationTwo = String.format(context.getResources().getString(R.string.transfer_stations_two),
 									StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_two())));
-							System.out.println("TRANSFER TWO: " + transferStationTwo);
 						} catch (NumberFormatException ignored) { }
 						if(transferStation != null) this.setTextViewText(R.id.transferOneTitleText, transferStation);
 						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);

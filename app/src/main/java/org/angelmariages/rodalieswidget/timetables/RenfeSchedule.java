@@ -1,5 +1,7 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.U;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,9 +45,9 @@ class RenfeSchedule {
 				html.append(line);
 			}
 		} catch (MalformedURLException e) {
-			System.out.println("ERROR: URL malformada.");
+			U.log("ERROR: URL malformada.");
 		} catch (IOException e) {
-			System.out.println("No es pot obrir el stream.");
+			U.log("No es pot obrir el stream.");
 		}
 
 		return html.toString();
