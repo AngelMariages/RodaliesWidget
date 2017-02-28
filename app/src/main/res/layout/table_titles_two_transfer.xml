@@ -29,54 +29,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="4">
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="start"
             android:maxLines="1"
+            android:gravity="center_horizontal"
             android:text="@string/departure"
-            android:ellipsize="end"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
 
         <TextView
-            android:layout_marginLeft="15dp"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:maxLines="1"
             android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:text="@string/transfer_departure_one"
-            android:ellipsize="end"
-            android:textAllCaps="true"
-            android:textColor="#FFFFFF"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:text="@string/transfer_departure_two"
-            android:ellipsize="end"
-            android:textAllCaps="true"
-            android:textColor="#FFFFFF"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:text="@string/arrival"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
