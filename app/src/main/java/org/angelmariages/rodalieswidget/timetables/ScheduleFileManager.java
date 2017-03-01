@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 final class ScheduleFileManager {
 	private static final String KEY_TRANSFERS = "transfers";
@@ -63,7 +64,7 @@ final class ScheduleFileManager {
 			}
 			scheduleObject.put(KEY_TIMES, timesArray);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			U.log("Error on getJSONString: " + e.getMessage());
 		}
 		return scheduleObject.toString();
 	}
@@ -135,7 +136,7 @@ final class ScheduleFileManager {
 				break;
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			U.log("Error on getJSONString: " + Arrays.toString(e.getStackTrace()));
 		}
 		return schedule;
 	}

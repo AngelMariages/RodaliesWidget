@@ -17,6 +17,8 @@
         android:id="@+id/scheduleListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:divider="@color/data_separator"
+        android:dividerHeight="2dp"
         android:background="@color/data_background"
         android:textAlignment="center"/>
 </LinearLayout>

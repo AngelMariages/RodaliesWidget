@@ -117,4 +117,26 @@ public final class StationUtils {
 				return STATION_NAMES[i];
 		return null;
 	}
+
+	public static enum ColorLines {
+		R1("#79BDE8"),
+		R2("#00A650"),
+		R3("#EF3E33"),
+		R4("#F9A13A"),
+		R7("#B77CB6"),
+		R8("#8B0066"),
+		R11("#0069AA"),
+		R12("#FFDD00"),
+		R13("#EA4498"),
+		R14("#6658A6"),
+		R15("#948671"),
+		R16("#B30738"),
+		RG1("#1A75CE"),
+		RT1("#00C3B5"),
+		RT2("#E56BC2");
+
+		private final String s;
+		ColorLines(String s) { this.s = s; }
+		public String getColor() { return s; }
+	}
 }
