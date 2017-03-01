@@ -1,5 +1,6 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.U;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -67,14 +69,8 @@ class RodaliesSchedule {
 	ArrayList<TrainTime> getSchedule() {
 		try {
 			return parseXMLFile(getPageFromInternet());
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
 		}
 		return null;
 	}
