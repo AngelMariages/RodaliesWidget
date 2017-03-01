@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/timesListLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_element_background"
     android:orientation="vertical"
     android:weightSum="2">
 
     <LinearLayout
+        android:id="@+id/timesListLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/lineText"
             android:layout_width="30dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
             android:textColor="@color/data_text"
@@ -45,13 +45,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/timesListLayoutTransferOne"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/lineTransferOneText"
             android:layout_width="30dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
             android:textColor="@color/data_text"

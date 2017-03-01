@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -128,7 +129,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			outputStreamWriter.write(jsonFile);
 			outputStreamWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			U.log("Error on saveJSONFile: " + Arrays.toString(e.getStackTrace()));
 		}
 	}
 
