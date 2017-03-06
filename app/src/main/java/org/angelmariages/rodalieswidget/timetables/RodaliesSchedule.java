@@ -145,6 +145,7 @@ class RodaliesSchedule {
 							}
 						}
 					} else {//Direct train
+						line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 						times.add(new TrainTime(line, departure_time, arrival_time, null, null, null, null, journey_time, origin, destination));

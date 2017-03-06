@@ -36,7 +36,6 @@ final class ScheduleFileManager {
 
 		try {
 			scheduleObject.put(KEY_TRANSFERS, transfers);
-			scheduleObject.put(KEY_LINE, trainTimes.get(0).getLine());
 			if (transfers > 0) {
 				scheduleObject.put(KEY_LINE_TRANSFER_ONE, trainTimes.get(0).getLine_transfer_one());
 				scheduleObject.put(KEY_STATION_TRANSFER_ONE, trainTimes.get(0).getStation_transfer_one());
@@ -49,6 +48,7 @@ final class ScheduleFileManager {
 			JSONArray timesArray = new JSONArray();
 			for (TrainTime trainTime : trainTimes) {
 				JSONObject timeObject = new JSONObject();
+				timeObject.put(KEY_LINE, trainTimes.get(0).getLine());
 				timeObject.put(KEY_DEPARTURE, trainTime.getDeparture_time());
 				timeObject.put(KEY_ARRIVAL, trainTime.getArrival_time());
 				timeObject.put(KEY_TRAVEL_TIME, trainTime.getTravel_time());

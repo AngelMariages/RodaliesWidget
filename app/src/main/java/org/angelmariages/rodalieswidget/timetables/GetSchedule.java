@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,15 +51,20 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 					String departureTime = trainTime.getDeparture_time();
 					String departureTime_one = trainTime.getDeparture_time_transfer_one();
 					String departureTime_two = trainTime.getDeparture_time_transfer_two();
-					int hour = 24;
-					if (departureTime != null)
-						hour = Integer.parseInt(departureTime.split(":")[0]);
-					else if (departureTime_one != null)
-						hour = Integer.parseInt(departureTime_one.split(":")[0]);
-					else if (departureTime_two != null)
-						hour = Integer.parseInt(departureTime_two.split(":")[0]);
+					boolean show_all_times = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_all_times", false);
+					if(!show_all_times) {
+						int hour = 24;
+						if (departureTime != null)
+							hour = Integer.parseInt(departureTime.split(":")[0]);
+						else if (departureTime_one != null)
+							hour = Integer.parseInt(departureTime_one.split(":")[0]);
+						else if (departureTime_two != null)
+							hour = Integer.parseInt(departureTime_two.split(":")[0]);
 
-					if (hour == 0 || hour >= currentHour) {
+						if (hour == 0 || hour >= currentHour) {
+							hourSchedule.add(trainTime);
+						}
+					} else {
 						hourSchedule.add(trainTime);
 					}
 				}
@@ -80,15 +86,20 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 					String departureTime = trainTime.getDeparture_time();
 					String departureTime_one = trainTime.getDeparture_time_transfer_one();
 					String departureTime_two = trainTime.getDeparture_time_transfer_two();
-					int hour = 24;
-					if (departureTime != null)
-						hour = Integer.parseInt(departureTime.split(":")[0]);
-					else if (departureTime_one != null)
-						hour = Integer.parseInt(departureTime_one.split(":")[0]);
-					else if (departureTime_two != null)
-						hour = Integer.parseInt(departureTime_two.split(":")[0]);
+					boolean show_all_times = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_all_times", false);
+					if(!show_all_times) {
+						int hour = 24;
+						if (departureTime != null)
+							hour = Integer.parseInt(departureTime.split(":")[0]);
+						else if (departureTime_one != null)
+							hour = Integer.parseInt(departureTime_one.split(":")[0]);
+						else if (departureTime_two != null)
+							hour = Integer.parseInt(departureTime_two.split(":")[0]);
 
-					if (hour == 0 || hour >= currentHour) {
+						if (hour == 0 || hour >= currentHour) {
+							hourSchedule.add(trainTime);
+						}
+					} else {
 						hourSchedule.add(trainTime);
 					}
 				}

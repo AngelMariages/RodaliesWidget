@@ -17,4 +17,12 @@
     <string name="transfer_stations_one">1r transbord: %s</string>
     <string name="transfer_stations_two">2n transbord: %s</string>
     <string name="transfer_departure_one">1r transbord</string>
+    <string name="pref_schedule_title" >Horaris</string>
+    <string name="pref_show_all_times" >Mostra horaris de tot el dia</string>
+    <string name="pref_download_return_schedule" >Descarregar horaris de tornada</string>
+    <string name="pref_receive_notifications" >Rebre notificacions d\'incidències</string>
+    <string name="pref_about_title" >Sobre</string>
+    <string name="pref_show_licenses" >Llicències</string>
+    <string name="pref_version" >Versió 1.6</string>
+    <string name="title_activity_settings">Configuració</string>
 </resources>

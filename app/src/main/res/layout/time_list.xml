@@ -13,11 +13,12 @@
         android:id="@+id/lineText"
         android:layout_width="30dp"
         android:layout_height="match_parent"
-        android:textColor="@color/data_text"
+        android:enabled="true"
         android:gravity="center_vertical|center_horizontal"
-        android:textSize="14sp"
         android:maxLines="1"
-        tools:text="R1"/>
+        android:textColor="@color/data_text"
+        android:textSize="14sp"
+        tools:text="R1" />
 
     <TextView
         android:id="@+id/departureTimeText"
