@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_schedule_title">
+        <SwitchPreference
+            android:key="show_all_times"
+            android:title="@string/pref_show_all_times" />
+
+        <SwitchPreference
+            android:key="download_return_schedule"
+            android:title="@string/pref_download_return_schedule" />
+
+        <SwitchPreference
+            android:key="line_notifications"
+            android:title="@string/pref_receive_notifications" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_about_title">
+        <Preference android:title="@string/pref_show_licenses">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </Preference>
+
+        <Preference android:title="@string/pref_version" />
+    </PreferenceCategory>
+</PreferenceScreen>

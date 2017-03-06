@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.angelmariages.rodalieswidget">
+    package="org.angelmariages.rodalieswidget">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -14,27 +13,36 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <receiver android:name="org.angelmariages.rodalieswidget.WidgetManager">
+        <receiver android:name=".WidgetManager">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info"/>
+                android:resource="@xml/widget_info" />
         </receiver>
-
-        <receiver android:name="org.angelmariages.rodalieswidget.WidgetReceiver"/>
+        <receiver android:name=".WidgetReceiver" />
 
         <activity
-            android:name="org.angelmariages.rodalieswidget.SelectStation"
+            android:name=".SelectStation"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_select_station"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:excludeFromRecents="true">
+            android:theme="@style/Theme.AppCompat.Dialog"/>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
-        <service android:name="org.angelmariages.rodalieswidget.WidgetService"
+        <service
+            android:name=".WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
