@@ -15,6 +15,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 public final class U {
 	//====================== [ CONSTANTS ] ======================
 	public static final int ORIGIN = 100;
@@ -176,5 +179,21 @@ public final class U {
 		noStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
 		noStationsIntent.putExtra(U.EXTRA_WIDGET_STATE, U.WIDGET_STATE_NO_STATIONS);
 		context.sendBroadcast(noStationsIntent);
+	}
+
+	public static int getCurrentHour() {
+		Calendar cal = Calendar.getInstance();
+		return Integer.parseInt(String.format(Locale.getDefault(), "%02d", cal.get(Calendar.HOUR_OF_DAY)));
+	}
+
+	public static int getCurrentMinute() {
+		Calendar cal = Calendar.getInstance();
+		return Integer.parseInt(String.format(Locale.getDefault(), "%02d", cal.get(Calendar.MINUTE)));
+	}
+
+	public static String getTodayDateWithoutPath() {
+		Calendar cal = Calendar.getInstance();
+		return String.format(Locale.getDefault(), "%02d%02d%d",
+				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}
 }

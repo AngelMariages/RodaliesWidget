@@ -128,9 +128,9 @@ class RodaliesSchedule {
 						departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false));
 
-						if(recorreguts > 1) {
+						if(recorreguts >= 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
 
@@ -141,14 +141,14 @@ class RodaliesSchedule {
 								line_transfer_one = insideItem2.getAttribute("linea");
 								departure_time_transfer_one = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-								times.add(new TrainTime(null, null, null, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, true));
 							}
 						}
 					} else {//Direct train
 						line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
-						times.add(new TrainTime(line, departure_time, arrival_time, null, null, null, null, journey_time, origin, destination));
+						times.add(new TrainTime(line, departure_time, arrival_time, null, null, null, null, journey_time, origin, destination, true, false));
 					}
 				}
 			}
@@ -181,7 +181,7 @@ class RodaliesSchedule {
 						departure_time_transfer_two = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time_transfer_one = insideItem2.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false));
 
 						if(recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
@@ -197,7 +197,7 @@ class RodaliesSchedule {
 								departure_time_transfer_two = insideItem4.getElementsByTagName("hora_sortida").item(0).getTextContent();
 								arrival_time_transfer_one = insideItem4.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-								times.add(new TrainTime(null, null, null, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, true));
 							}
 						}
 					}

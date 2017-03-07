@@ -5,6 +5,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.preference.PreferenceManager;
+import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -12,6 +17,8 @@ import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class WidgetManager extends AppWidgetProvider {
 
@@ -140,15 +147,47 @@ public class WidgetManager extends AppWidgetProvider {
 		context.sendBroadcast(swapIntent);
 	}
 
-	private void loadSchedule(Context context, int widgetID, ArrayList<TrainTime> schedule) {
+	private void loadSchedule(final Context context, final int widgetID, final ArrayList<TrainTime> schedule) {
 		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule);
 		if (schedule != null && schedule.size() > 0) {
 			if (schedule.get(0).getTransfer() == 1)
 				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule);
 			else if(schedule.get(0).getTransfer() == 2)
 				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule);
+
+			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
+
+			if(scroll_to_time) {
+				final RodaliesWidget finalWidget = widget;
+				final HandlerThread scrollHandlerThread = new HandlerThread("ScrollHandlerThread");
+				scrollHandlerThread.start();
+				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						//finalWidget.setRelativeScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+						finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
+					}
+				}, 500);
+			}
 		}
 		AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
+	}
+
+	private int getScrollPosition(ArrayList<TrainTime> schedule) {
+		int currentHour = U.getCurrentHour();
+		int currentMinute = U.getCurrentMinute();
+		for (int i = 0; i < schedule.size(); i++) {
+			String departureTime = schedule.get(i).getDeparture_time();
+			int hour = -1, minute = -1;
+			if (departureTime != null) {
+				String[] split = departureTime.split(":");
+				hour = Integer.parseInt(split[0]);
+				minute = Integer.parseInt(split[1]);
+			}
+			if((hour == currentHour && minute >= currentMinute) || hour > currentHour) return i;
+		}
+		return 0;
 	}
 
 	private RodaliesWidget reloadWidget(Context context, int widgetID) {
