@@ -14,14 +14,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetSchedule extends AsyncTask<Integer, Void, Void> {
-	private final Calendar cal = Calendar.getInstance();
 	private final Context context;
 	private int origin = -1;
 	private int destination = -1;
@@ -46,28 +43,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
 			if (schedule != null && schedule.size() > 0) {
-				int currentHour = getCurrentHour();
-				for (TrainTime trainTime : schedule) {
-					String departureTime = trainTime.getDeparture_time();
-					String departureTime_one = trainTime.getDeparture_time_transfer_one();
-					String departureTime_two = trainTime.getDeparture_time_transfer_two();
-					boolean show_all_times = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_all_times", false);
-					if(!show_all_times) {
-						int hour = 24;
-						if (departureTime != null)
-							hour = Integer.parseInt(departureTime.split(":")[0]);
-						else if (departureTime_one != null)
-							hour = Integer.parseInt(departureTime_one.split(":")[0]);
-						else if (departureTime_two != null)
-							hour = Integer.parseInt(departureTime_two.split(":")[0]);
-
-						if (hour == 0 || hour >= currentHour) {
-							hourSchedule.add(trainTime);
-						}
-					} else {
-						hourSchedule.add(trainTime);
-					}
-				}
+				addHoursToShedule(schedule, hourSchedule);
 
 				jsonFileRead = ScheduleFileManager.getJSONString(schedule);
 				saveJSONFile(jsonFileRead);
@@ -81,36 +57,53 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonFileRead, origin, destination);
 			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
 			if (scheduleFromJSON.size() > 0) {
-				int currentHour = getCurrentHour();
-				for (TrainTime trainTime : scheduleFromJSON) {
-					String departureTime = trainTime.getDeparture_time();
-					String departureTime_one = trainTime.getDeparture_time_transfer_one();
-					String departureTime_two = trainTime.getDeparture_time_transfer_two();
-					boolean show_all_times = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_all_times", false);
-					if(!show_all_times) {
-						int hour = 24;
-						if (departureTime != null)
-							hour = Integer.parseInt(departureTime.split(":")[0]);
-						else if (departureTime_one != null)
-							hour = Integer.parseInt(departureTime_one.split(":")[0]);
-						else if (departureTime_two != null)
-							hour = Integer.parseInt(departureTime_two.split(":")[0]);
-
-						if (hour == 0 || hour >= currentHour) {
-							hourSchedule.add(trainTime);
-						}
-					} else {
-						hourSchedule.add(trainTime);
-					}
-				}
+				addHoursToShedule(scheduleFromJSON, hourSchedule);
 			}
 
 			return hourSchedule;
 		}
 	}
 
+	private void addHoursToShedule(ArrayList<TrainTime> scheduleFromJSON, ArrayList<TrainTime> hourSchedule) {
+		int currentHour = U.getCurrentHour();
+		int currentMinute = U.getCurrentMinute();
+		boolean show_all_times = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_all_times", false);
+
+		for (TrainTime trainTime : scheduleFromJSON) {
+			String departureTime = trainTime.getDeparture_time();
+			String departureTime_one = trainTime.getDeparture_time_transfer_one();
+			String departureTime_two = trainTime.getDeparture_time_transfer_two();
+			if (!show_all_times) {
+				int hour = -1, minute = -1;
+				if (departureTime != null) {
+					String[] split = departureTime.split(":");
+					hour = Integer.parseInt(split[0]);
+					minute = Integer.parseInt(split[1]);
+				} else if (departureTime_one != null) {
+					String[] split1 = departureTime_one.split(":");
+					hour = Integer.parseInt(split1[0]);
+					minute = Integer.parseInt(split1[1]);
+				} else if (departureTime_two != null) {
+					String[] split2 = departureTime_two.split(":");
+					hour = Integer.parseInt(split2[0]);
+					minute = Integer.parseInt(split2[1]);
+				}
+
+				if(hour == 0) {
+					hourSchedule.add(trainTime);
+				} else if (hour == currentHour && minute >= currentMinute) {
+					hourSchedule.add(trainTime);
+				} else if(hour > currentHour) {
+					hourSchedule.add(trainTime);
+				}
+			} else {
+				hourSchedule.add(trainTime);
+			}
+		}
+	}
+
 	private String readJSONFile() {
-		String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".json";
+		String fileName = "horaris_" + origin + "_" + destination + "_" + U.getTodayDateWithoutPath() + ".json";
 
 		StringBuilder allLines = new StringBuilder();
 
@@ -132,7 +125,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	private void saveJSONFile(String jsonFile) {
 		if (jsonFile.isEmpty()) return;
 
-		String fileName = "horaris_" + origin + "_" + destination + "_" + getTodayDateWithoutPath() + ".json";
+		String fileName = "horaris_" + origin + "_" + destination + "_" + U.getTodayDateWithoutPath() + ".json";
 
 		OutputStreamWriter outputStreamWriter;
 		try {
@@ -146,7 +139,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 	private void removeOldJSON() {
 		File filesDir = context.getFilesDir();
-		final String endsWith = "_" + getTodayDateWithoutPath() + ".json";
+		final String endsWith = "_" + U.getTodayDateWithoutPath() + ".json";
 
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
@@ -164,7 +157,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 	private void removeOldXML() {
 		File filesDir = context.getFilesDir();
-		final String endsWith = "_" + getTodayDateWithoutPath() + ".xml";
+		final String endsWith = "_" + U.getTodayDateWithoutPath() + ".xml";
 
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
@@ -178,15 +171,6 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 		}
 	}
 
-	private String getTodayDateWithoutPath() {
-		return String.format(Locale.getDefault(), "%02d%02d%d",
-				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
-	}
-
-	private int getCurrentHour() {
-		return Integer.parseInt(String.format(Locale.getDefault(), "%02d", cal.get(Calendar.HOUR_OF_DAY)));
-	}
-
 	@Override
 	protected Void doInBackground(Integer... params) {
 		if (params.length == 1) {
@@ -198,6 +182,10 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 						U.sendNoTimesError(widgetId, context);
 					} else {
 						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
+						boolean download_return_schedule = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("download_return_schedule", false);
+						if(download_return_schedule) {
+							get(stations[1], stations[0]);
+						}
 
 						if (trainTimes != null) {
 							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);

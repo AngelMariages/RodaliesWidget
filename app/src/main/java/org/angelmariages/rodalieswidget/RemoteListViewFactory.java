@@ -84,10 +84,16 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 				break;
 				case 2: {
-					row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
-					setTexts(row, trainTime);
-					setTransferOneTexts(row, trainTime);
-					setTransferTwoTexts(row, trainTime);
+					if(trainTime.getDeparture_time() != null) {
+						row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
+						setTexts(row, trainTime);
+						setTransferOneTexts(row, trainTime);
+						setTransferTwoTexts(row, trainTime);
+					} else {
+						row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
+						setTextsSingleTwoTransfers(row, trainTime);
+						setTransferOneTextsSingleTwoTransfers(row, trainTime);
+					}
 				}
 				break;
 			}
@@ -109,7 +115,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		try {
 			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine()).getColor()));
 		} catch (Exception e) {
-			U.log("Unknown color for: " + trainTime.getLine());
+			U.log("Unknown color for setTexts: " + trainTime.getLine());
 		}
 	}
 
@@ -120,7 +126,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		try {
 			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
 		} catch (Exception e) {
-			U.log("Unknown color for: " + trainTime.getLine());
+			U.log("Unknown color for singleOneTransfer: " + trainTime.getLine_transfer_one());
 		}
 	}
 
@@ -132,7 +138,30 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		try {
 			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
 		} catch (Exception e) {
-			U.log("Unknown color for: " + trainTime.getLine_transfer_one());
+			U.log("Unknown color for transferOneTexts: " + trainTime.getLine_transfer_one());
+		}
+	}
+
+	private void setTextsSingleTwoTransfers(RemoteViews row, TrainTime trainTime) {
+		row.setTextViewText(R.id.lineText, trainTime.getLine_transfer_one());
+		row.setTextViewText(R.id.departureTimeText, trainTime.getDeparture_time_transfer_one());
+		row.setTextViewText(R.id.arrivalTimeText, trainTime.getArrival_time_transfer_one());
+		try {
+			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
+		} catch (Exception e) {
+			U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one());
+		}
+	}
+
+	private void setTransferOneTextsSingleTwoTransfers(RemoteViews row, TrainTime trainTime) {
+		row.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_two());
+		row.setTextViewText(R.id.transferOneDepartureTimeText, trainTime.getDeparture_time_transfer_two());
+		row.setTextViewText(R.id.transferOneArrivalTimeText, trainTime.getArrival_time_transfer_two());
+
+		try {
+			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two()).getColor()));
+		} catch (Exception e) {
+			U.log("Unknown color for transferOneTexts: " + trainTime.getLine_transfer_two());
 		}
 	}
 
@@ -147,7 +176,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			try {
 				row.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two()).getColor()));
 			} catch (Exception e) {
-				U.log("Unknown color for: " + trainTime.getLine_transfer_two());
+				U.log("Unknown color for transferTwoTexts: " + trainTime.getLine_transfer_two());
 			}
 		}
 	}
