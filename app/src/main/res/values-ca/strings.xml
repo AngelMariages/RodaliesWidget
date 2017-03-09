@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_destination_set">Toca per la destinació</string>
     <string name="no_internet">No es pot accedir a internet i tampoc tenim dades guardades d\'aquestes estacions</string>
     <string name="no_origin_set">Toca per l\'origin</string>
     <string name="title_activity_select_station">Selecciona l\'estació</string>
-    <string name="no_stations">L\'origin o la destinació no estan configurats</string>
+    <string name="no_stations">L\'origen o la destinació no estan configurats</string>
     <string name="departure">Sortida</string>
     <string name="arrival">Arribada</string>
     <string name="no_times">No hi han horaris per aquesta combinació d\'estacions</string>
     <string name="search_text">Escriu el nom d\'una estacio</string>
     <string name="transfer_departure">Transbord</string>
     <string name="travel_time_toast">Duracio del trajecte: %s</string>
-    <string name="dataInfoText">Horaris oferits per Rodalies de Catalunya</string>
+    <string name="dataInfoText">Horaris oferts per Rodalies de Catalunya</string>
     <string name="transfer_station_one">Transbord: %s</string>
     <string name="transfer_departure_two">2n transbord</string>
     <string name="transfer_stations_one">1r transbord: %s</string>
@@ -25,9 +24,9 @@
     <string name="pref_show_licenses" >Llicències</string>
     <string name="pref_version" >Versió 1.6</string>
     <string name="title_activity_settings">Configuració</string>
-    <string name="pref_group_transfer_exits"/>
-    <string name="pref_group_transfer_exits_summary"/>
-    <string name="pref_show_more_transfer_trains"/>
-    <string name="pref_show_more_transfer_trains_summary"/>
-    <string name="pref_scroll_to_time">Scroll to the current time (BETA)</string>
+    <string name="pref_show_more_transfer_trains">Veure més trens del transbord</string>
+    <string name="pref_show_more_transfer_trains_summary">Trens que pots agafar a l\'estació de transbord cap al mateix destí</string>
+    <string name="pref_group_transfer_exits">Agrupar trens del transbord</string>
+    <string name="pref_group_transfer_exits_summary">Mostra només els trens de l\'estació de transbord si el tren d\'origen és el mateix</string>
+    <string name="pref_scroll_to_time">Desplaça fins a l\'hora actual (BETA)</string>
 </resources>

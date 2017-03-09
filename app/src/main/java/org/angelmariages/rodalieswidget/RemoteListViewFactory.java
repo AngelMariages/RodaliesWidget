@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -16,6 +17,8 @@ import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
+	private final boolean group_transfer_exits, show_more_transfer_trains;
+	private final int currentHour, currentMinute;
 	private int transfers = 0;
 	private Context context = null;
 
@@ -26,6 +29,13 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		this.context = context;
 		int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
 				AppWidgetManager.INVALID_APPWIDGET_ID);
+
+		group_transfer_exits = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("group_transfer_exits", false);
+		show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
+
+		currentHour = U.getCurrentHour();
+		currentMinute = U.getCurrentMinute();
+
 		U.log("RemoteListViewFactory()");
 		if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
 			Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
@@ -65,34 +75,92 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 					setTexts(row, trainTime);
+					if(isAfterCurrentHour(trainTime.getDeparture_time())) {
+						row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+						row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+					} else {
+						row.setTextColor(R.id.departureTimeText, Color.BLACK);
+						row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+					}
 				}
 				break;
 				case 1: {
-					if (trainTime.getDeparture_time() != null) {
-						if(trainTime.getDeparture_time_transfer_one() != null) {
+					if (trainTime.isDirect_train()) {
+						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
+						setTexts(row, trainTime);
+						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
+							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+						} else {
+							row.setTextColor(R.id.departureTimeText, Color.BLACK);
+							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+						}
+					} else {
+						if(show_more_transfer_trains && group_transfer_exits && trainTime.isSame_origin_train()) {
+							row = new RemoteViews(context.getPackageName(), R.layout.time_list);
+							setTextsSingleOneTransfer(row, trainTime);
+							if(isAfterCurrentHour(trainTime.getDeparture_time_transfer_one())) {
+								row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+								row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+							} else {
+								row.setTextColor(R.id.departureTimeText, Color.BLACK);
+								row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+							}
+						} else {
 							row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
 							setTexts(row, trainTime);
 							setTransferOneTexts(row, trainTime);
-						} else {
-							row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-							setTexts(row, trainTime);
+							if(isAfterCurrentHour(trainTime.getDeparture_time())) {
+								row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+								row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+								row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
+								row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
+							} else {
+								row.setTextColor(R.id.departureTimeText, Color.BLACK);
+								row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+								row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
+								row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
+							}
 						}
-					} else {
-						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-						setTextsSingleOneTransfer(row, trainTime);
 					}
 				}
 				break;
 				case 2: {
-					if(trainTime.getDeparture_time() != null) {
+					if(show_more_transfer_trains && group_transfer_exits && trainTime.isSame_origin_train()) {
+						row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
+						setTextsSingleTwoTransfers(row, trainTime);
+						setTransferOneTextsSingleTwoTransfers(row, trainTime);
+						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
+							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
+						} else {
+							row.setTextColor(R.id.departureTimeText, Color.BLACK);
+							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
+						}
+					} else {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
 						setTexts(row, trainTime);
 						setTransferOneTexts(row, trainTime);
 						setTransferTwoTexts(row, trainTime);
-					} else {
-						row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-						setTextsSingleTwoTransfers(row, trainTime);
-						setTransferOneTextsSingleTwoTransfers(row, trainTime);
+						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
+							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferTwoDepartureTimeText, Color.LTGRAY);
+							row.setTextColor(R.id.transferTwoArrivalTimeText, Color.LTGRAY);
+						} else {
+							row.setTextColor(R.id.departureTimeText, Color.BLACK);
+							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferTwoDepartureTimeText, Color.BLACK);
+							row.setTextColor(R.id.transferTwoArrivalTimeText, Color.BLACK);
+						}
 					}
 				}
 				break;
@@ -179,6 +247,15 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				U.log("Unknown color for transferTwoTexts: " + trainTime.getLine_transfer_two());
 			}
 		}
+	}
+
+	//@TODO Move this to Utils
+	private boolean isAfterCurrentHour(String time) {
+		String[] split = time.split(":");
+		int hour = Integer.parseInt(split[0]);
+		int minute = Integer.parseInt(split[1]);
+
+		return hour < currentHour || hour == currentHour && minute < currentMinute;
 	}
 
 	@Override
