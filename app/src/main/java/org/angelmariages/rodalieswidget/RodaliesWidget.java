@@ -27,6 +27,7 @@ class RodaliesWidget extends RemoteViews {
 		this.widgetID = widgetID;
 		setStationNames();
 		setPendingIntents();
+		//@TODO manage web service status !important
 
 		this.state = state;
 

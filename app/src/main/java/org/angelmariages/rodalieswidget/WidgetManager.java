@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.preference.PreferenceManager;
-import android.widget.ListView;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -17,8 +15,6 @@ import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class WidgetManager extends AppWidgetProvider {
 
@@ -164,8 +160,8 @@ public class WidgetManager extends AppWidgetProvider {
 				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						//finalWidget.setRelativeScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
-						finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
 						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
 					}
 				}, 500);
@@ -185,7 +181,7 @@ public class WidgetManager extends AppWidgetProvider {
 				hour = Integer.parseInt(split[0]);
 				minute = Integer.parseInt(split[1]);
 			}
-			if((hour == currentHour && minute >= currentMinute) || hour > currentHour) return i;
+			if((hour == currentHour && minute >= currentMinute) || hour > currentHour) return i == 0 ? i : i - 1;
 		}
 		return 0;
 	}
