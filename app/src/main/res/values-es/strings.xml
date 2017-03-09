@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_destination_set">Toca para la destinación</string>
     <string name="no_internet">No se puede acceder a internet y tampoco tenemos datos guardados de estas estaciones</string>
@@ -25,9 +24,9 @@
     <string name="pref_show_licenses" >Licencias</string>
     <string name="pref_version" >Versión 1.6</string>
     <string name="title_activity_settings">Configuración</string>
-    <string name="pref_group_transfer_exits"/>
-    <string name="pref_group_transfer_exits_summary"/>
-    <string name="pref_show_more_transfer_trains"/>
-    <string name="pref_show_more_transfer_trains_summary"/>
-    <string name="pref_scroll_to_time">Scroll to the current time (BETA)</string>
+    <string name="pref_show_more_transfer_trains">Mostrar más trenes del transbordo</string>
+    <string name="pref_show_more_transfer_trains_summary">Trenes que puedes coger en la estación de transbordo hacia el mismo destino</string>
+    <string name="pref_group_transfer_exits">Agrupar trenes de la estación de transbordo</string>
+    <string name="pref_group_transfer_exits_summary">Muestra solo los trenes de la estación de transbordo si el tren del origen es el mismo</string>
+    <string name="pref_scroll_to_time">Desplazar hasta la hora actual (BETA)</string>
 </resources>
