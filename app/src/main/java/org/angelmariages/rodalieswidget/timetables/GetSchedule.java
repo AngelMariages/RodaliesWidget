@@ -41,8 +41,9 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			RodaliesSchedule rodaliesSchedule = new RodaliesSchedule(origin, destination);
 			ArrayList<TrainTime> schedule = rodaliesSchedule.getSchedule();
 
-			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
+			ArrayList<TrainTime> hourSchedule = null;
 			if (schedule != null && schedule.size() > 0) {
+				hourSchedule = new ArrayList<>();
 				addHoursToShedule(schedule, hourSchedule);
 
 				jsonFileRead = ScheduleFileManager.getJSONString(schedule);
@@ -176,32 +177,28 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 		if (params.length == 1) {
 			int widgetId = params[0];
 			int[] stations = U.getStations(context, widgetId);
-			if (stations.length == 2) {
-				if (stations[0] != -1 && stations[1] != -1) {
-					if (stations[0] == stations[1]) {
-						U.sendNoTimesError(widgetId, context);
-					} else {
-						ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
-						boolean download_return_schedule = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("download_return_schedule", false);
-						if(download_return_schedule) {
-							get(stations[1], stations[0]);
-						}
-
-						if (trainTimes != null) {
-							Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-							sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
-							sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
-							Bundle bundle = new Bundle();
-
-							bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
-							sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
-							context.sendBroadcast(sendScheduleIntent);
-						} else {
-							U.sendNoInternetError(widgetId, context);
-						}
-					}
+			if (stations.length == 2 && stations[0] != -1 && stations[1] != -1) {
+				if (stations[0] == stations[1]) {
+					U.sendNoTimesError(widgetId, context);
 				} else {
-					U.sendNoStationsSetError(widgetId, context);
+					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
+					boolean download_return_schedule = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("download_return_schedule", false);
+					if(download_return_schedule) {
+						get(stations[1], stations[0]);
+					}
+
+					if (trainTimes != null) {
+						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+						sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
+						sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+						Bundle bundle = new Bundle();
+
+						bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
+						sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+						context.sendBroadcast(sendScheduleIntent);
+					} else {
+						U.sendNoInternetError(widgetId, context);
+					}
 				}
 			} else {
 				U.sendNoStationsSetError(widgetId, context);
