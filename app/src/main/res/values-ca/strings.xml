@@ -11,10 +11,10 @@
     <string name="transfer_departure">Transbord</string>
     <string name="travel_time_toast">Duracio del trajecte: %s</string>
     <string name="dataInfoText">Horaris oferts per Rodalies de Catalunya</string>
-    <string name="transfer_station_one">Transbord: %s</string>
+    <string name="transfer_station_one">Transbord:</string>
     <string name="transfer_departure_two">2n transbord</string>
-    <string name="transfer_stations_one">1r transbord: %s</string>
-    <string name="transfer_stations_two">2n transbord: %s</string>
+    <string name="transfer_stations_one">1r transbord:</string>
+    <string name="transfer_stations_two">2n transbord:</string>
     <string name="transfer_departure_one">1r transbord</string>
     <string name="pref_schedule_title" >Horaris</string>
     <string name="pref_show_all_times" >Mostra horaris de tot el dia</string>

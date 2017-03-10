@@ -120,7 +120,7 @@ public final class StationUtils {
 		return null;
 	}
 
-	public static enum ColorLines {
+	public enum ColorLines {
 		R1("#79BDE8", Color.WHITE),
 		R2("#00A650", Color.WHITE),
 		R3("#EF3E33", Color.WHITE),
