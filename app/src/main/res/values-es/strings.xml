@@ -11,10 +11,10 @@
     <string name="transfer_departure" >Transbordo</string>
     <string name="travel_time_toast">Duracion del trayecto: %s</string>
     <string name="dataInfoText">Horarios ofrecidos por Rodalies de Cataluña</string>
-    <string name="transfer_station_one">Transbordo: %s</string>
+    <string name="transfer_station_one">Transbordo:</string>
     <string name="transfer_departure_two">2º transbordo</string>
-    <string name="transfer_stations_one">1r transbordo: %s</string>
-    <string name="transfer_stations_two">2º transbordo: %s</string>
+    <string name="transfer_stations_one">1r transbordo:</string>
+    <string name="transfer_stations_two">2º transbordo:</string>
     <string name="transfer_departure_one">1r transbordo</string>
     <string name="pref_schedule_title" >Horarios</string>
     <string name="pref_show_all_times" >Mostrar horarios de todo el día</string>
