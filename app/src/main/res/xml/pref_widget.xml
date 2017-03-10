@@ -25,20 +25,15 @@
             android:title="@string/pref_group_transfer_exits"
             android:summary="@string/pref_group_transfer_exits_summary"/>
 
-        <SwitchPreference
+        <!--<SwitchPreference
             android:key="line_notifications"
-            android:title="@string/pref_receive_notifications" />
+            android:title="@string/pref_receive_notifications" />-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_about_title">
         <Preference android:title="@string/pref_donation">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=JAFCPFEAET4JL" />
-        </Preference>
-        <Preference android:title="@string/pref_show_licenses">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="http://www.android.com" />
         </Preference>
 
         <Preference android:title="@string/pref_version" />

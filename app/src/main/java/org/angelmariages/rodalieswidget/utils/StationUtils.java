@@ -1,5 +1,7 @@
 package org.angelmariages.rodalieswidget.utils;
 
+import android.graphics.Color;
+
 public final class StationUtils {
 	/*public static final String[] STATION_NAMES = new String[]{"Aeroport", "Arenys de Mar", "Badalona", "Balenyà-Els Hostalets", "Balenyà-Tona-Seva",
 			"Barberà del Vallès", "Barcelona-Arc de Triomf", "Barcelona-El Clot-Aragó", "Barcelona-Estació de França",
@@ -119,24 +121,26 @@ public final class StationUtils {
 	}
 
 	public static enum ColorLines {
-		R1("#79BDE8"),
-		R2("#00A650"),
-		R3("#EF3E33"),
-		R4("#F9A13A"),
-		R7("#B77CB6"),
-		R8("#8B0066"),
-		R11("#0069AA"),
-		R12("#FFDD00"),
-		R13("#EA4498"),
-		R14("#6658A6"),
-		R15("#948671"),
-		R16("#B30738"),
-		RG1("#1A75CE"),
-		RT1("#00C3B5"),
-		RT2("#E56BC2");
+		R1("#79BDE8", Color.WHITE),
+		R2("#00A650", Color.WHITE),
+		R3("#EF3E33", Color.WHITE),
+		R4("#F9A13A", Color.WHITE),
+		R7("#B77CB6", Color.WHITE),
+		R8("#8B0066", Color.WHITE),
+		R11("#0069AA", Color.WHITE),
+		R12("#FFDD00", Color.BLACK),
+		R13("#EA4498", Color.WHITE),
+		R14("#6658A6", Color.WHITE),
+		R15("#948671", Color.WHITE),
+		R16("#B30738", Color.WHITE),
+		RG1("#1A75CE", Color.WHITE),
+		RT1("#00C3B5", Color.WHITE),
+		RT2("#E56BC2", Color.WHITE);
 
 		private final String s;
-		ColorLines(String s) { this.s = s; }
-		public String getColor() { return s; }
+		private final int c;
+		ColorLines(String s, int c) { this.s = s; this.c = c; }
+		public String getBColor() { return s; }
+		public int getTColor() { return c; }
 	}
 }

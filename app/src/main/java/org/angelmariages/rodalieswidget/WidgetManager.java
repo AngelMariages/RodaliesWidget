@@ -152,6 +152,15 @@ public class WidgetManager extends AppWidgetProvider {
 				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule);
 
 			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
+			boolean show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
+
+
+			if(!show_more_transfer_trains) {
+				ArrayList<TrainTime> scheduleTmp = new ArrayList<>(schedule);
+				for (TrainTime trainTime : scheduleTmp) {
+					if(trainTime.isSame_origin_train()) schedule.remove(trainTime);
+				}
+			}
 
 			if(scroll_to_time) {
 				final RodaliesWidget finalWidget = widget;
@@ -160,7 +169,9 @@ public class WidgetManager extends AppWidgetProvider {
 				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+						int scrollPosition = getScrollPosition(schedule);
+						if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
+						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
 						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
 						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
 					}
@@ -181,7 +192,7 @@ public class WidgetManager extends AppWidgetProvider {
 				hour = Integer.parseInt(split[0]);
 				minute = Integer.parseInt(split[1]);
 			}
-			if((hour == currentHour && minute >= currentMinute) || hour > currentHour) return i == 0 ? i : i - 1;
+			if((hour == currentHour && minute > currentMinute) || hour > currentHour) return i;
 		}
 		return 0;
 	}
