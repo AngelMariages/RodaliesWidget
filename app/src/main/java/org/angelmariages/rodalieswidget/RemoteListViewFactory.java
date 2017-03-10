@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -42,7 +41,9 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
 			if (schedule == null) U.sendNoInternetError(widgetId, context);
 			else if (schedule.size() == 0) U.sendNoTimesError(widgetId, context);
-			else transfers = schedule.get(0).getTransfer();
+			else {
+				transfers = schedule.get(0).getTransfer();
+			}
 		}
 	}
 
@@ -66,101 +67,84 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public RemoteViews getViewAt(int position) {
-		if (position == schedule.size()) {
+		if (position == schedule.size()) {//Data origin row
 			return new RemoteViews(context.getPackageName(), R.layout.data_info_line);
 		} else {
 			RemoteViews row = null;
 			TrainTime trainTime = schedule.get(position);
+			boolean afterCurrentHour = isAfterCurrentHour(trainTime.getDeparture_time());
 			switch (transfers) {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-					setTexts(row, trainTime);
-					if(isAfterCurrentHour(trainTime.getDeparture_time())) {
-						row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-						row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-					} else {
-						row.setTextColor(R.id.departureTimeText, Color.BLACK);
-						row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
-					}
+					setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+
+					setDisabledTexts(row, afterCurrentHour);
 				}
 				break;
 				case 1: {
 					if (trainTime.isDirect_train()) {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-						setTexts(row, trainTime);
-						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
-							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-						} else {
-							row.setTextColor(R.id.departureTimeText, Color.BLACK);
-							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
-						}
+						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+
+						setDisabledTexts(row, afterCurrentHour);
 					} else {
-						if(show_more_transfer_trains && group_transfer_exits && trainTime.isSame_origin_train()) {
-							row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-							setTextsSingleOneTransfer(row, trainTime);
-							if(isAfterCurrentHour(trainTime.getDeparture_time_transfer_one())) {
-								row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-								row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-							} else {
-								row.setTextColor(R.id.departureTimeText, Color.BLACK);
-								row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
+						if (trainTime.isSame_origin_train()) {
+							if (show_more_transfer_trains) {
+								if (group_transfer_exits) {
+									row = new RemoteViews(context.getPackageName(), R.layout.time_list);
+									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+
+									setDisabledTexts(row, afterCurrentHour);
+								} else {
+									row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
+									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+									setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+
+									setDisabledTexts(row, afterCurrentHour);
+									setDisabledTextsTransferOne(row, afterCurrentHour);
+								}
 							}
 						} else {
 							row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-							setTexts(row, trainTime);
-							setTransferOneTexts(row, trainTime);
-							if(isAfterCurrentHour(trainTime.getDeparture_time())) {
-								row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-								row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-								row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
-								row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
-							} else {
-								row.setTextColor(R.id.departureTimeText, Color.BLACK);
-								row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
-								row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
-								row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
-							}
+							setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+							setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+
+							setDisabledTexts(row, afterCurrentHour);
+							setDisabledTextsTransferOne(row, afterCurrentHour);
 						}
 					}
 				}
 				break;
 				case 2: {
-					if(show_more_transfer_trains && group_transfer_exits && trainTime.isSame_origin_train()) {
-						row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-						setTextsSingleTwoTransfers(row, trainTime);
-						setTransferOneTextsSingleTwoTransfers(row, trainTime);
-						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
-							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
-						} else {
-							row.setTextColor(R.id.departureTimeText, Color.BLACK);
-							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
+					if (trainTime.isSame_origin_train()) {
+						if (show_more_transfer_trains) {
+							if (group_transfer_exits) {
+								row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
+								setTexts(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+								setTextsTransferOne(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+
+								setDisabledTexts(row, afterCurrentHour);
+								setDisabledTextsTransferOne(row, afterCurrentHour);
+							} else {
+								row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
+								setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+								setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+								setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+
+								setDisabledTexts(row, afterCurrentHour);
+								setDisabledTextsTransferOne(row, afterCurrentHour);
+								setDisabledTextsTransferTwo(row, afterCurrentHour);
+							}
 						}
 					} else {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
-						setTexts(row, trainTime);
-						setTransferOneTexts(row, trainTime);
-						setTransferTwoTexts(row, trainTime);
-						if(isAfterCurrentHour(trainTime.getDeparture_time())) {
-							row.setTextColor(R.id.departureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.arrivalTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferOneDepartureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferOneArrivalTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferTwoDepartureTimeText, Color.LTGRAY);
-							row.setTextColor(R.id.transferTwoArrivalTimeText, Color.LTGRAY);
-						} else {
-							row.setTextColor(R.id.departureTimeText, Color.BLACK);
-							row.setTextColor(R.id.arrivalTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferOneDepartureTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferOneArrivalTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferTwoDepartureTimeText, Color.BLACK);
-							row.setTextColor(R.id.transferTwoArrivalTimeText, Color.BLACK);
-						}
+						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+						setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+						setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+
+						setDisabledTexts(row, afterCurrentHour);
+						setDisabledTextsTransferOne(row, afterCurrentHour);
+						setDisabledTextsTransferTwo(row, afterCurrentHour);
 					}
 				}
 				break;
@@ -176,81 +160,60 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 	}
 
-	private void setTexts(RemoteViews row, TrainTime trainTime) {
-		row.setTextViewText(R.id.lineText, trainTime.getLine());
-		row.setTextViewText(R.id.departureTimeText, trainTime.getDeparture_time());
-		row.setTextViewText(R.id.arrivalTimeText, trainTime.getArrival_time());
+	private void setTexts(RemoteViews row, String line, String departure_time, String arrival_time) {
+		row.setTextViewText(R.id.lineText, line);
+		row.setTextViewText(R.id.departureTimeText, departure_time);
+		row.setTextViewText(R.id.arrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine()).getColor()));
+			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
+			row.setTextColor(R.id.lineText, StationUtils.ColorLines.valueOf(line).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for setTexts: " + trainTime.getLine());
+			U.log("Unknown color for setTexts: " + line);
 		}
 	}
 
-	private void setTextsSingleOneTransfer(RemoteViews row, TrainTime trainTime) {
-		row.setTextViewText(R.id.lineText, trainTime.getLine_transfer_one());
-		row.setTextViewText(R.id.departureTimeText, trainTime.getDeparture_time_transfer_one());
-		row.setTextViewText(R.id.arrivalTimeText, trainTime.getArrival_time_transfer_one());
+	private void setTextsTransferOne(RemoteViews row, String line, String departure_time, String arrival_time) {
+		row.setTextViewText(R.id.lineTransferOneText, line);
+		row.setTextViewText(R.id.transferOneDepartureTimeText, departure_time);
+		row.setTextViewText(R.id.transferOneArrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
+			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
+			row.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(line).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for singleOneTransfer: " + trainTime.getLine_transfer_one());
+			U.log("Unknown color for setTexts: " + line);
 		}
 	}
 
-	private void setTransferOneTexts(RemoteViews row, TrainTime trainTime) {
-		row.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_one());
-		row.setTextViewText(R.id.transferOneDepartureTimeText, trainTime.getDeparture_time_transfer_one());
-		row.setTextViewText(R.id.transferOneArrivalTimeText, trainTime.getArrival_time_transfer_one());
-
+	private void setTextsTransferTwo(RemoteViews row, String line, String departure_time, String arrival_time) {
+		row.setTextViewText(R.id.lineTransferTwoText, line);
+		row.setTextViewText(R.id.transferTwoDepartureTimeText, departure_time);
+		row.setTextViewText(R.id.transferTwoArrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
+			row.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
+			row.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(line).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for transferOneTexts: " + trainTime.getLine_transfer_one());
+			U.log("Unknown color for setTexts: " + line);
 		}
 	}
 
-	private void setTextsSingleTwoTransfers(RemoteViews row, TrainTime trainTime) {
-		row.setTextViewText(R.id.lineText, trainTime.getLine_transfer_one());
-		row.setTextViewText(R.id.departureTimeText, trainTime.getDeparture_time_transfer_one());
-		row.setTextViewText(R.id.arrivalTimeText, trainTime.getArrival_time_transfer_one());
-		try {
-			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one()).getColor()));
-		} catch (Exception e) {
-			U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one());
-		}
+	private void setDisabledTexts(RemoteViews row, boolean disabled) {
+		row.setTextColor(R.id.departureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.arrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
 	}
 
-	private void setTransferOneTextsSingleTwoTransfers(RemoteViews row, TrainTime trainTime) {
-		row.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_two());
-		row.setTextViewText(R.id.transferOneDepartureTimeText, trainTime.getDeparture_time_transfer_two());
-		row.setTextViewText(R.id.transferOneArrivalTimeText, trainTime.getArrival_time_transfer_two());
-
-		try {
-			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two()).getColor()));
-		} catch (Exception e) {
-			U.log("Unknown color for transferOneTexts: " + trainTime.getLine_transfer_two());
-		}
+	private void setDisabledTextsTransferOne(RemoteViews row, boolean disabled) {
+		row.setTextColor(R.id.transferOneDepartureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.transferOneArrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
 	}
 
-	private void setTransferTwoTexts(RemoteViews row, TrainTime trainTime) {
-		if (trainTime.getDeparture_time_transfer_two() == null) {
-			row.setViewVisibility(R.id.timesListLayoutTransferTwo, View.GONE);
-		} else {
-			row.setTextViewText(R.id.lineTransferTwoText, trainTime.getLine_transfer_two());
-			row.setTextViewText(R.id.transferTwoDepartureTimeText, trainTime.getDeparture_time_transfer_two());
-			row.setTextViewText(R.id.transferTwoArrivalTimeText, trainTime.getArrival_time_transfer_two());
-
-			try {
-				row.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two()).getColor()));
-			} catch (Exception e) {
-				U.log("Unknown color for transferTwoTexts: " + trainTime.getLine_transfer_two());
-			}
-		}
+	private void setDisabledTextsTransferTwo(RemoteViews row, boolean disabled) {
+		row.setTextColor(R.id.transferTwoDepartureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.transferTwoArrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
 	}
 
 	//@TODO Move this to Utils
 	private boolean isAfterCurrentHour(String time) {
+		if (time == null) return false;
 		String[] split = time.split(":");
 		int hour = Integer.parseInt(split[0]);
 		int minute = Integer.parseInt(split[1]);
