@@ -6,24 +6,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/title_background"
     android:orientation="vertical">
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/transferOneTitleText"
-        android:maxLines="1"
-        android:scrollHorizontally="true"
-        android:textColor="#FFFFFF"
-        tools:text="1st transfer on: Barcelona-Sants"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <TextView
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingEnd="3dp"
+            android:paddingRight="3dp"
+            android:scrollHorizontally="true"
+            android:textColor="#FFFFFF"
+            android:text="@string/transfer_departure_one" />
+
+        <TextView
+            android:id="@+id/lineTransferOneText"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:enabled="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:maxLines="1"
+            android:textColor="@color/data_text"
+            android:textSize="14sp"
+            tools:text="R1" />
+
+        <TextView
+            android:id="@+id/transferOneTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="3dp"
+            android:paddingLeft="3dp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="#FFFFFF"
+            tools:text="Barcelona-Sants"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/transferTwoTitleText"
-        android:maxLines="1"
-        android:scrollHorizontally="true"
-        android:textColor="#FFFFFF"
-        tools:text="2nd transfer on: Barcelona-Sants"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="#FFFFFF"
+            android:paddingEnd="3dp"
+            android:paddingRight="3dp"
+            android:text="@string/transfer_departure_two" />
+
+        <TextView
+            android:id="@+id/lineTransferTwoText"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:enabled="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:maxLines="1"
+            android:textColor="@color/data_text"
+            android:textSize="14sp"
+            tools:text="R1" />
+
+        <TextView
+            android:id="@+id/transferTwoTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:paddingStart="3dp"
+            android:paddingLeft="3dp"
+            android:scrollHorizontally="true"
+            android:textColor="#FFFFFF"
+            tools:text="Barcelona-Sants"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
