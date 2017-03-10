@@ -107,7 +107,7 @@ public class TrainTime implements Serializable {
 	}
 
 	private String getTravelTime(String departure_time, String arrival_time) {
-		if(departure_time == null || arrival_time == null) return "00:00";
+		if (departure_time == null || arrival_time == null) return "00:00";
 		try {
 			SimpleDateFormat format;
 			if (departure_time.contains(":")) format = new SimpleDateFormat("HH:mm");
@@ -117,7 +117,8 @@ public class TrainTime implements Serializable {
 			Date arrivalTime = new Date(format.parse(arrival_time).getTime());
 			return format.format(new Date((arrivalTime.getTime() - departureDate.getTime())));
 		} catch (ParseException e) {
-			U.log("Error on getTravelTime: " + e.getMessage());
+			U.log("PARSE EXCEPTION: ");
+			U.log(e.getMessage());
 		}
 		return "00:00";
 	}
