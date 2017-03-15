@@ -3,7 +3,9 @@
     <PreferenceCategory android:title="@string/pref_schedule_title">
         <SwitchPreference
             android:key="show_all_times"
-            android:title="@string/pref_show_all_times" />
+            android:title="@string/pref_show_all_times"
+            android:summaryOn="@string/pref_show_all_times_on"
+            android:summaryOff="@string/pref_show_all_times_off"/>
 
         <SwitchPreference
             android:dependency="show_all_times"
@@ -12,18 +14,22 @@
 
         <SwitchPreference
             android:key="download_return_schedule"
-            android:title="@string/pref_download_return_schedule"/>
+            android:title="@string/pref_download_return_schedule"
+            android:summaryOn="@string/pref_download_return_schedule_summary_on"
+            android:summaryOff="@string/pref_download_return_schedule_summary_off"/>
 
         <SwitchPreference
             android:key="show_more_transfer_trains"
             android:title="@string/pref_show_more_transfer_trains"
-            android:summary="@string/pref_show_more_transfer_trains_summary"/>
+            android:summaryOff="@string/pref_show_more_transfer_trains_summary_off"
+            android:summaryOn="@string/pref_show_more_transfer_trains_summary_on"/>
 
         <SwitchPreference
             android:dependency="show_more_transfer_trains"
             android:key="group_transfer_exits"
             android:title="@string/pref_group_transfer_exits"
-            android:summary="@string/pref_group_transfer_exits_summary"/>
+            android:summaryOn="@string/pref_group_transfer_exits_summary_on"
+            android:summaryOff="@string/pref_group_transfer_exits_summary_off"/>
 
         <!--<SwitchPreference
             android:key="line_notifications"
