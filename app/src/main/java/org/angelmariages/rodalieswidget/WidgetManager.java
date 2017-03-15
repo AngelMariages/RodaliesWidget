@@ -170,7 +170,7 @@ public class WidgetManager extends AppWidgetProvider {
 					@Override
 					public void run() {
 						int scrollPosition = getScrollPosition(schedule);
-						if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
+						//if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
 						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
 						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
 						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
