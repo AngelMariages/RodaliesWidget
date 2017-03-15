@@ -72,13 +72,13 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		} else {
 			RemoteViews row = null;
 			TrainTime trainTime = schedule.get(position);
-			boolean afterCurrentHour = isAfterCurrentHour(trainTime.getDeparture_time());
+			boolean isBeforeCurrentHour = isBeforeCurrentHour(trainTime.getDeparture_time());
 			switch (transfers) {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 					setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 
-					setDisabledTexts(row, afterCurrentHour);
+					setDisabledTexts(row, isBeforeCurrentHour);
 				}
 				break;
 				case 1: {
@@ -86,7 +86,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 
-						setDisabledTexts(row, afterCurrentHour);
+						setDisabledTexts(row, isBeforeCurrentHour);
 					} else {
 						if (trainTime.isSame_origin_train()) {
 							if (show_more_transfer_trains) {
@@ -94,14 +94,14 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 									row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 
-									setDisabledTexts(row, afterCurrentHour);
+									setDisabledTexts(row, isBeforeCurrentHour);
 								} else {
 									row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
 									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 									setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
 
-									setDisabledTexts(row, afterCurrentHour);
-									setDisabledTextsTransferOne(row, afterCurrentHour);
+									setDisabledTexts(row, isBeforeCurrentHour);
+									setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 								}
 							}
 						} else {
@@ -109,8 +109,8 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 							setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 							setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
 
-							setDisabledTexts(row, afterCurrentHour);
-							setDisabledTextsTransferOne(row, afterCurrentHour);
+							setDisabledTexts(row, isBeforeCurrentHour);
+							setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 						}
 					}
 				}
@@ -123,17 +123,17 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 								setTexts(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
 								setTextsTransferOne(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
 
-								setDisabledTexts(row, afterCurrentHour);
-								setDisabledTextsTransferOne(row, afterCurrentHour);
+								setDisabledTexts(row, isBeforeCurrentHour);
+								setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 							} else {
 								row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
 								setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 								setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
 								setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
 
-								setDisabledTexts(row, afterCurrentHour);
-								setDisabledTextsTransferOne(row, afterCurrentHour);
-								setDisabledTextsTransferTwo(row, afterCurrentHour);
+								setDisabledTexts(row, isBeforeCurrentHour);
+								setDisabledTextsTransferOne(row, isBeforeCurrentHour);
+								setDisabledTextsTransferTwo(row, isBeforeCurrentHour);
 							}
 						}
 					} else {
@@ -142,9 +142,9 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
 						setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
 
-						setDisabledTexts(row, afterCurrentHour);
-						setDisabledTextsTransferOne(row, afterCurrentHour);
-						setDisabledTextsTransferTwo(row, afterCurrentHour);
+						setDisabledTexts(row, isBeforeCurrentHour);
+						setDisabledTextsTransferOne(row, isBeforeCurrentHour);
+						setDisabledTextsTransferTwo(row, isBeforeCurrentHour);
 					}
 				}
 				break;
@@ -212,13 +212,13 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	//@TODO Move this to Utils
-	private boolean isAfterCurrentHour(String time) {
+	private boolean isBeforeCurrentHour(String time) {
 		if (time == null) return false;
 		String[] split = time.split(":");
 		int hour = Integer.parseInt(split[0]);
 		int minute = Integer.parseInt(split[1]);
 
-		return hour < currentHour || hour == currentHour && minute < currentMinute;
+		return hour != 0 && (hour < currentHour || hour == currentHour && minute <= currentMinute);
 	}
 
 	@Override
