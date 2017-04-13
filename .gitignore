@@ -5,3 +5,4 @@
 app/build/*
 app/google-services.json
 .idea/
+.DS_Store
