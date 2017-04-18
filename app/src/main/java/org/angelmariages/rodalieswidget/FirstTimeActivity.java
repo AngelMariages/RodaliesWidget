@@ -1,6 +1,7 @@
 package org.angelmariages.rodalieswidget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 					// move to next screen
 					viewPager.setCurrentItem(current);
 				} else {
+					startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
 					//launchHomeScreen();
 				}
 			}
@@ -155,7 +157,11 @@ public class FirstTimeActivity extends AppCompatActivity {
 		dotsLayout.removeAllViews();
 		for (int i = 0; i < dots.length; i++) {
 			dots[i] = new TextView(this);
-			dots[i].setText(Html.fromHtml("&#8226;"));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				dots[i].setText(Html.fromHtml("&#8226;", Html.FROM_HTML_MODE_COMPACT));
+			} else {
+				dots[i].setText(Html.fromHtml("&#8226;"));
+			}
 			dots[i].setTextSize(35);
 			dots[i].setTextColor(colorsInactive[currentPage]);
 			dotsLayout.addView(dots[i]);
