@@ -37,21 +37,18 @@ public class FirstTimeActivity extends AppCompatActivity {
 		}
 		setContentView(R.layout.first_time_activity);
 
+		changeStatusBarColor();
+
 		viewPager = (ViewPager) findViewById(R.id.view_pager);
 		dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
 		btnSkip = (Button) findViewById(R.id.btn_skip);
 		btnNext = (Button) findViewById(R.id.btn_next);
 
-		changeStatusBarColor();
-
-		// layouts of all welcome sliders
-		// add few more layouts if you want
 		layouts = new int[]{
 				R.layout.tutorial_slide_1,
-				R.layout.tutorial_slide_1,
-				R.layout.tutorial_slide_1};
+				R.layout.tutorial_slide_2,
+				R.layout.tutorial_slide_3};
 
-		// adding bottom dots
 		addBottomDots(0);
 
 		viewPager.setAdapter(new MyViewPagerAdapter());
@@ -60,22 +57,18 @@ public class FirstTimeActivity extends AppCompatActivity {
 		btnSkip.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//launchHomeScreen();
+				startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
 			}
 		});
 
 		btnNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// checking for last page
-				// if last page home screen will be launched
 				int current = getItem(+1);
 				if (current < layouts.length) {
-					// move to next screen
 					viewPager.setCurrentItem(current);
 				} else {
 					startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
-					//launchHomeScreen();
 				}
 			}
 		});
@@ -125,34 +118,24 @@ public class FirstTimeActivity extends AppCompatActivity {
 		public void onPageSelected(int position) {
 			addBottomDots(position);
 
-			// changing the next button text 'NEXT' / 'GOT IT'
 			if (position == layouts.length - 1) {
-				// last page. make button text to GOT IT
-				btnNext.setText("start");
+				btnNext.setText("Començar");
 				btnSkip.setVisibility(View.GONE);
 			} else {
-				// still pages are left
-				btnNext.setText("next");
+				btnNext.setText("Següent");
 				btnSkip.setVisibility(View.VISIBLE);
 			}
 		}
 
 		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-		}
+		public void onPageScrolled(int arg0, float arg1, int arg2) { }
 
 		@Override
-		public void onPageScrollStateChanged(int arg0) {
-
-		}
+		public void onPageScrollStateChanged(int arg0) { }
 	};
 
 	private void addBottomDots(int currentPage) {
 		dots = new TextView[layouts.length];
-
-		int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
-		int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
 
 		dotsLayout.removeAllViews();
 		for (int i = 0; i < dots.length; i++) {
@@ -163,12 +146,12 @@ public class FirstTimeActivity extends AppCompatActivity {
 				dots[i].setText(Html.fromHtml("&#8226;"));
 			}
 			dots[i].setTextSize(35);
-			dots[i].setTextColor(colorsInactive[currentPage]);
+			dots[i].setTextColor(getResources().getColor(R.color.dot_inactive));
 			dotsLayout.addView(dots[i]);
 		}
 
 		if (dots.length > 0)
-			dots[currentPage].setTextColor(colorsActive[currentPage]);
+			dots[currentPage].setTextColor(getResources().getColor(R.color.dot_active));
 	}
 
 	private int getItem(int i) {
