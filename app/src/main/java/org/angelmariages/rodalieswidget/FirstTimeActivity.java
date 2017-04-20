@@ -10,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,8 @@ public class FirstTimeActivity extends AppCompatActivity {
 
 		viewPager = (ViewPager) findViewById(R.id.view_pager);
 		dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-		btnSkip = (Button) findViewById(R.id.btn_skip);
-		btnNext = (Button) findViewById(R.id.btn_next);
+		btnSkip = (Button) findViewById(R.id.skipButton);
+		btnNext = (Button) findViewById(R.id.nextButton);
 
 		layouts = new int[]{
 				R.layout.tutorial_slide_1,
@@ -120,7 +121,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 
 			if (position == layouts.length - 1) {
 				btnNext.setText("Començar");
-				btnSkip.setVisibility(View.GONE);
+				btnSkip.setVisibility(View.INVISIBLE);
 			} else {
 				btnNext.setText("Següent");
 				btnSkip.setVisibility(View.VISIBLE);
@@ -140,12 +141,8 @@ public class FirstTimeActivity extends AppCompatActivity {
 		dotsLayout.removeAllViews();
 		for (int i = 0; i < dots.length; i++) {
 			dots[i] = new TextView(this);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-				dots[i].setText(Html.fromHtml("&#8226;", Html.FROM_HTML_MODE_COMPACT));
-			} else {
-				dots[i].setText(Html.fromHtml("&#8226;"));
-			}
-			dots[i].setTextSize(35);
+			dots[i].setText("\u2022");
+			dots[i].setTextSize(36);
 			dots[i].setTextColor(getResources().getColor(R.color.dot_inactive));
 			dotsLayout.addView(dots[i]);
 		}
