@@ -37,4 +37,6 @@
     <string name="pref_show_all_times_off">Don\'t show the schedules for all day</string>
     <string name="pref_show_more_transfer_trains_summary_off">Don\'t show more trains from the transfer station</string>
     <string name="pref_group_transfer_exits_summary_off">Show the origin train duplicated if there are more trains from the transfer station that leave before any train from the origin</string>
+    <string name="tutorial_next_button">Next</string>
+    <string name="tutorial_skip_button">Skip</string>
 </resources>
