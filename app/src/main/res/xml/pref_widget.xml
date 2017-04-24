@@ -12,11 +12,11 @@
             android:key="scroll_to_time"
             android:title="@string/pref_scroll_to_time" />
 
-        <SwitchPreference
+        <!-- <SwitchPreference
             android:key="download_return_schedule"
             android:title="@string/pref_download_return_schedule"
             android:summaryOn="@string/pref_download_return_schedule_summary_on"
-            android:summaryOff="@string/pref_download_return_schedule_summary_off"/>
+            android:summaryOff="@string/pref_download_return_schedule_summary_off"/>-->
 
         <SwitchPreference
             android:key="show_more_transfer_trains"
@@ -36,6 +36,8 @@
             android:title="@string/pref_receive_notifications" />-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_about_title">
+        <Preference android:title="@string/pref_view_tutorial" android:key="pref_view_tutorial"/>
+
         <Preference android:title="@string/pref_donation"
             android:key="pref_donation">
             <intent
