@@ -19,6 +19,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.angelmariages.rodalieswidget.utils.U;
+
 public class FirstTimeActivity extends AppCompatActivity {
 	private ViewPager viewPager;
 	private LinearLayout dotsLayout;
@@ -60,6 +68,26 @@ public class FirstTimeActivity extends AppCompatActivity {
 		btnSkip.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot) {
+						DataSnapshot skip = dataSnapshot.child("skip");
+
+						if (skip.exists()) {
+							int value = Integer.parseInt(String.valueOf(skip.getValue()));
+							skip.getRef().setValue(value + 1);
+						} else {
+							skip.getRef().setValue(1);
+						}
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {
+						U.log("FirebaseError (skip): " + databaseError.getMessage());
+					}
+				});
+
 				startSettings();
 			}
 		});
@@ -122,15 +150,55 @@ public class FirstTimeActivity extends AppCompatActivity {
 	ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
 		@Override
-		public void onPageSelected(int position) {
+		public void onPageSelected(final int position) {
 			addBottomDots(position);
 
 			if (position == layouts.length - 1) {
 				btnNext.setText(getString(R.string.tutorial_start_button));
 				btnSkip.setVisibility(View.INVISIBLE);
+
+				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot) {
+						DataSnapshot skip = dataSnapshot.child("start");
+
+						if (skip.exists()) {
+							int value = Integer.parseInt(String.valueOf(skip.getValue()));
+							skip.getRef().setValue(value + 1);
+						} else {
+							skip.getRef().setValue(1);
+						}
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {
+						U.log("FirebaseError (skip): " + databaseError.getMessage());
+					}
+				});
 			} else {
 				btnNext.setText(getString(R.string.tutorial_next_button));
 				btnSkip.setVisibility(View.VISIBLE);
+
+				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot) {
+						DataSnapshot skip = dataSnapshot.child("tutorial_" + position);
+
+						if (skip.exists()) {
+							int value = Integer.parseInt(String.valueOf(skip.getValue()));
+							skip.getRef().setValue(value + 1);
+						} else {
+							skip.getRef().setValue(1);
+						}
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {
+						U.log("FirebaseError (skip): " + databaseError.getMessage());
+					}
+				});
 			}
 		}
 

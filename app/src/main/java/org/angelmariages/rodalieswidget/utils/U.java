@@ -91,7 +91,7 @@ public final class U {
 		return new int[]{-1, -1};
 	}
 
-	private static FirebaseDatabase getFirebaseDatabase() {
+	public static FirebaseDatabase getFirebaseDatabase() {
 		if (mFirebaseDatabase == null) {
 			mFirebaseDatabase = FirebaseDatabase.getInstance();
 		}
