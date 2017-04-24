@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,6 +29,10 @@ public class FirstTimeActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("tutorial_viewed", false)) {
+			startSettings();
+		}
 
 		// Making notification bar transparent
 		if (Build.VERSION.SDK_INT >= 21) {
@@ -74,6 +79,9 @@ public class FirstTimeActivity extends AppCompatActivity {
 
 	private void startSettings() {
 		startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+
+		PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("tutorial_viewed", true).apply();
+
 		finish();
 	}
 

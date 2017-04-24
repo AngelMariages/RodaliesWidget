@@ -22,7 +22,7 @@
     <string name="pref_receive_notifications" >Recibir notificaciones de incidencias</string>
     <string name="pref_about_title" >Sobre</string>
     <string name="pref_show_licenses" >Licencias</string>
-    <string name="pref_version" >Versión 1.6.1</string>
+    <string name="pref_version" >Versión 1.6.2</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="pref_show_more_transfer_trains">Más trenes de transbordo</string>
     <string name="pref_show_more_transfer_trains_summary_on">Muestra más trenes que puedes coger en la estación de transbordo hacia el mismo destino</string>
@@ -36,8 +36,6 @@
     <string name="pref_show_all_times_on">Muestra los horarios de todo el día</string>
     <string name="pref_show_all_times_off">No muestres los horarios de todo el día</string>
     <string name="pref_group_transfer_exits_summary_off">Muestra el tren de origen duplicado si salen más trenes desde la estación de transbordo antes de que salga alguno de la estación de origen</string>
-    <string name="tutorial_skip_button">Saltar</string>
-    <string name="tutorial_next_button">Siguiente</string>
     <string name="tutorial_start_button">Empezar</string>
     <string name="tutorial_1_title">Bienvenido a Cercanías Widget</string>
     <string name="tutorial_1_desc">Esta aplicación es un widget. Si no sabes como usarla te animamos a que sigas este tutorial.\n\nPresiona SALTAR para acceder directamente a la configuración.</string>
@@ -45,4 +43,7 @@
     <string name="tutorial_2_desc">En los dispositivos Android existen este tipo de widgets que nos permiten ver información actualizada de algún servicio, como el de Cercanías, rápidamente desde nuestro escritorio.\n\nPara añadirlo solo tienes que ir a tu pantalla principal y mantener presionado el dedo en cualquier parte vacía. Un menú aparecerá para que puedas añadir un widget.\n\nTienes un ejemplo en la siguiente pantalla. </string>
     <string name="tutorial_3_title">Solo hace falta buscar el widget dentro del menú que aparecerá</string>
     <string name="tutorial_3_desc">Accede a la configuración presionando el botón EMPEZAR</string>
+    <string name="pref_view_tutorial">Cómo instalar un widget</string>
+    <string name="tutorial_next_button">Siguiente</string>
+    <string name="tutorial_skip_button">Saltar</string>
 </resources>
