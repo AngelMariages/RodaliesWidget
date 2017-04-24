@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,6 @@ public class FirstTimeActivity extends AppCompatActivity {
 	private Button btnSkip;
 	private Button btnNext;
 	private int[] layouts;
-	private TextView[] dots;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +55,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 		btnSkip.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+				startSettings();
 			}
 		});
 
@@ -69,20 +66,21 @@ public class FirstTimeActivity extends AppCompatActivity {
 				if (current < layouts.length) {
 					viewPager.setCurrentItem(current);
 				} else {
-					startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+					startSettings();
 				}
 			}
 		});
 	}
 
-	/**
-	 * View pager adapter
-	 */
-	public class MyViewPagerAdapter extends PagerAdapter {
+	private void startSettings() {
+		startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+		finish();
+	}
+
+	private class MyViewPagerAdapter extends PagerAdapter {
 		private LayoutInflater layoutInflater;
 
-		public MyViewPagerAdapter() {
-		}
+		MyViewPagerAdapter() { }
 
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
@@ -120,10 +118,10 @@ public class FirstTimeActivity extends AppCompatActivity {
 			addBottomDots(position);
 
 			if (position == layouts.length - 1) {
-				btnNext.setText("Començar");
+				btnNext.setText(getString(R.string.tutorial_start_button));
 				btnSkip.setVisibility(View.INVISIBLE);
 			} else {
-				btnNext.setText("Següent");
+				btnNext.setText(getString(R.string.tutorial_next_button));
 				btnSkip.setVisibility(View.VISIBLE);
 			}
 		}
@@ -136,7 +134,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 	};
 
 	private void addBottomDots(int currentPage) {
-		dots = new TextView[layouts.length];
+		TextView[] dots = new TextView[layouts.length];
 
 		dotsLayout.removeAllViews();
 		for (int i = 0; i < dots.length; i++) {

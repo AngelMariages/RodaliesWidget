@@ -39,4 +39,11 @@
     <string name="pref_group_transfer_exits_summary_off">Show the origin train duplicated if there are more trains from the transfer station that leave before any train from the origin</string>
     <string name="tutorial_next_button">Next</string>
     <string name="tutorial_skip_button">Skip</string>
+    <string name="tutorial_start_button">Start</string>
+    <string name="tutorial_1_title">Welcome to Rodalies Widget</string>
+    <string name="tutorial_1_desc">This application is a widget. If you don\'t know how to use it we encourage you to follow this tutorial.\n\nTouch SKIP to access directly to the configuration.</string>
+    <string name="tutorial_2_title">How to configure a Widget</string>
+    <string name="tutorial_2_desc">In the Android devices there are this kind of applications called widgets that allow to view updated information, like the train schedules, quickly from our desktop.\n\nTo add a widget you just need to go to the main screen and press in blank space and a menu will show up.\n\nYou have an example in the next slide.</string>
+    <string name="tutorial_3_title">You just need to search for the widget in the list that will appear</string>
+    <string name="tutorial_3_desc">Access the configuration of the widget touching the START button</string>
 </resources>
