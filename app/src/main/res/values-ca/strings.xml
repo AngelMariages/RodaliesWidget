@@ -36,4 +36,13 @@
     <string name="pref_show_all_times_on">Mostra els horaris de tot el dia</string>
     <string name="pref_show_all_times_off">No mostris els horaris de tot el dia</string>
     <string name="pref_group_transfer_exits_summary_off">Mostra el tren d\'origen duplicat si surten més trens des de l\'estació de transbord cap al mateix destí abans que surti un des de l\'origen</string>
+    <string name="tutorial_1_title">Benvingut a Rodalies Widget</string>
+    <string name="tutorial_1_desc">Aquesta aplicació és un giny(widget). Si no saps com fer-la servir t\'animem a que segueixis aquest tutorial.\n\nPrem SALTAR per accedir directament a la configuració.</string>
+    <string name="tutorial_2_title">Com configurar un Giny(Widget)</string>
+    <string name="tutorial_2_desc">Als dispositius Android existeixen aquests tipus de ginys que ens permeten veure informació actualitzada d\'algun servei, com ara el de Rodalies, ràpidament des del nostre escriptori.\n\nPer tal d\'afegir-lo nomes has d\'anar a la pantalla principal i mantenir polsat el dit durant uns segons. Un menú apareixerà per tal d\'afegir el giny.\n\nTens un exemple a la següent pantalla.</string>
+    <string name="tutorial_3_title">Només cal buscar el widget dins del menú que apareixerà</string>
+    <string name="tutorial_3_desc">Accedeix a la configuració prement el botó COMENÇAR</string>
+    <string name="tutorial_next_button">Següent</string>
+    <string name="tutorial_skip_button">Saltar</string>
+    <string name="tutorial_start_button">Començar</string>
 </resources>
