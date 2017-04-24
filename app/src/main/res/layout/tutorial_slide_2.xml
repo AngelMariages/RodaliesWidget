@@ -11,7 +11,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Com configurar un Giny(Widget)"
+        android:text="@string/tutorial_2_title"
         android:textColor="@color/data_text"
         android:textSize="@dimen/slide_title"
         android:textAlignment="center"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
-        android:text="Als dispositius Android existeixen aquests tipus de ginys que ens permeten veure informació actualitzada d'algun servei, com ara el de Rodalies.\n\nPer tal d'afegir-lo nomes has d'anar a la pantalla principal i mantenir polsat el dit durant uns segons. Un menú apareixerà per tal d'afegir el giny.\n\nTens un exemple a la següent pantalla."
+        android:text="@string/tutorial_2_desc"
         android:textColor="@android:color/white"
         android:textSize="@dimen/slide_desc"/>
 

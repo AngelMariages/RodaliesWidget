@@ -12,23 +12,23 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Només cal buscar el widget dins del menú que apareixerà"
+        android:text="@string/tutorial_3_title"
         android:textColor="@android:color/white"
         android:textSize="@dimen/slide_desc"/>
 
     <ImageView
         android:id="@+id/imageView"
-        android:paddingTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:paddingTop="20dp"
         app:srcCompat="@drawable/tutorial"/>
 
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:paddingTop="20dp"
-        android:text="Accedeix a la configuració prement el botó COMENÇAR"
+        android:text="@string/tutorial_3_desc"
         android:textColor="@android:color/white"
         android:textSize="@dimen/slide_desc"
         android:paddingBottom="10dp"/>
