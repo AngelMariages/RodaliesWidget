@@ -100,6 +100,26 @@ public class FirstTimeActivity extends AppCompatActivity {
 					viewPager.setCurrentItem(current);
 				} else {
 					startSettings();
+
+					DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+					tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+						@Override
+						public void onDataChange(DataSnapshot dataSnapshot) {
+							DataSnapshot skip = dataSnapshot.child("start");
+
+							if (skip.exists()) {
+								int value = Integer.parseInt(String.valueOf(skip.getValue()));
+								skip.getRef().setValue(value + 1);
+							} else {
+								skip.getRef().setValue(1);
+							}
+						}
+
+						@Override
+						public void onCancelled(DatabaseError databaseError) {
+							U.log("FirebaseError (skip): " + databaseError.getMessage());
+						}
+					});
 				}
 			}
 		});
@@ -156,50 +176,30 @@ public class FirstTimeActivity extends AppCompatActivity {
 			if (position == layouts.length - 1) {
 				btnNext.setText(getString(R.string.tutorial_start_button));
 				btnSkip.setVisibility(View.INVISIBLE);
-
-				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-					@Override
-					public void onDataChange(DataSnapshot dataSnapshot) {
-						DataSnapshot skip = dataSnapshot.child("start");
-
-						if (skip.exists()) {
-							int value = Integer.parseInt(String.valueOf(skip.getValue()));
-							skip.getRef().setValue(value + 1);
-						} else {
-							skip.getRef().setValue(1);
-						}
-					}
-
-					@Override
-					public void onCancelled(DatabaseError databaseError) {
-						U.log("FirebaseError (skip): " + databaseError.getMessage());
-					}
-				});
 			} else {
 				btnNext.setText(getString(R.string.tutorial_next_button));
 				btnSkip.setVisibility(View.VISIBLE);
-
-				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-					@Override
-					public void onDataChange(DataSnapshot dataSnapshot) {
-						DataSnapshot skip = dataSnapshot.child("tutorial_" + position);
-
-						if (skip.exists()) {
-							int value = Integer.parseInt(String.valueOf(skip.getValue()));
-							skip.getRef().setValue(value + 1);
-						} else {
-							skip.getRef().setValue(1);
-						}
-					}
-
-					@Override
-					public void onCancelled(DatabaseError databaseError) {
-						U.log("FirebaseError (skip): " + databaseError.getMessage());
-					}
-				});
 			}
+
+			DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+			tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot) {
+					DataSnapshot skip = dataSnapshot.child("tutorial_" + position);
+
+					if (skip.exists()) {
+						int value = Integer.parseInt(String.valueOf(skip.getValue()));
+						skip.getRef().setValue(value + 1);
+					} else {
+						skip.getRef().setValue(1);
+					}
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError) {
+					U.log("FirebaseError (skip): " + databaseError.getMessage());
+				}
+			});
 		}
 
 		@Override
