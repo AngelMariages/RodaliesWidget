@@ -154,7 +154,6 @@ public class WidgetManager extends AppWidgetProvider {
 			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
 			boolean show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
 
-
 			if(!show_more_transfer_trains) {
 				ArrayList<TrainTime> scheduleTmp = new ArrayList<>(schedule);
 				for (TrainTime trainTime : scheduleTmp) {

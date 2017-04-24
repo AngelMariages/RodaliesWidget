@@ -182,10 +182,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 					U.sendNoTimesError(widgetId, context);
 				} else {
 					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
-					boolean download_return_schedule = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("download_return_schedule", false);
-					if(download_return_schedule) {
-						get(stations[1], stations[0]);
-					}
+					get(stations[1], stations[0]);
 
 					if (trainTimes != null) {
 						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);

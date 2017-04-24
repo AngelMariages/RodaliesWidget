@@ -1,8 +1,10 @@
 package org.angelmariages.rodalieswidget;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,10 +29,11 @@ public class SettingsActivity extends AppCompatActivity {
 
 	        SwitchPreference show_all_times = (SwitchPreference) findPreference("show_all_times");
 	        SwitchPreference scroll_to_time = (SwitchPreference) findPreference("scroll_to_time");
-	        SwitchPreference download_return_schedule = (SwitchPreference) findPreference("download_return_schedule");
+	        //SwitchPreference download_return_schedule = (SwitchPreference) findPreference("download_return_schedule");
 	        SwitchPreference show_more_transfer_trains = (SwitchPreference) findPreference("show_more_transfer_trains");
 	        SwitchPreference group_transfer_exits = (SwitchPreference) findPreference("group_transfer_exits");
 	        Preference pref_donation = findPreference("pref_donation");
+	        Preference pref_view_tutorial = findPreference("pref_view_tutorial");
 
 	        show_all_times.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 		        @Override
@@ -48,13 +51,13 @@ public class SettingsActivity extends AppCompatActivity {
 		        }
 	        });
 
-	        download_return_schedule.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+	        /*download_return_schedule.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 		        @Override
 		        public boolean onPreferenceChange(Preference preference, Object newValue) {
 			        onPreferenceChangeC("download_return_schedule", newValue);
 			        return true;
 		        }
-	        });
+	        });*/
 
 	        show_more_transfer_trains.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 		        @Override
@@ -79,6 +82,17 @@ public class SettingsActivity extends AppCompatActivity {
 			        return false;
 		        }
 	        });
+
+		    pref_view_tutorial.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			    @Override
+			    public boolean onPreferenceClick(Preference preference) {
+				    PreferenceManager.getDefaultSharedPreferences(PreferencesFragment.this.getActivity()).edit().putBoolean("tutorial_viewed", false).apply();
+
+				    startActivity(new Intent(PreferencesFragment.this.getActivity(), FirstTimeActivity.class));
+
+				    return false;
+			    }
+		    });
         }
 
         private void onPreferenceChangeC(String key, Object newValue) {
