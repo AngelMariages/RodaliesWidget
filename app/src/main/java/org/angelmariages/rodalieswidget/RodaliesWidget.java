@@ -124,6 +124,7 @@ class RodaliesWidget extends RemoteViews {
 		//It this intent is not set the intent when on click on a row of the list view doesn't work
 		Intent listViewClickIntent = new Intent(context, WidgetManager.class);
 		listViewClickIntent.setAction(U.ACTION_CLICK_LIST_ITEM + getWidgetID());
+		listViewClickIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 		PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
 				listViewClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setPendingIntentTemplate(R.id.scheduleListView, clickPI);
