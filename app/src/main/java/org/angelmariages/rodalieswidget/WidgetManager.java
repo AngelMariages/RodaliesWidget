@@ -112,6 +112,8 @@ public class WidgetManager extends AppWidgetProvider {
 			if(test_alarm == null || !test_alarm.equalsIgnoreCase(travelTime)) {
 				U.log("test_alarm is: " + test_alarm);
 				defaultSharedPreferences.edit().putString("test_alarm", travelTime).apply();
+
+				Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
 			} else {
 				U.log("test_alarm is: " + test_alarm + ", setting null");
 				defaultSharedPreferences.edit().remove("test_alarm").apply();
@@ -119,7 +121,6 @@ public class WidgetManager extends AppWidgetProvider {
 
 			notifyUpdate(context, widgetID);
 
-			Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
 		} else if (intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
 			int widgetID = U.getIdFromIntent(intent);
 			int widgetState = U.getStateFromIntent(intent);
