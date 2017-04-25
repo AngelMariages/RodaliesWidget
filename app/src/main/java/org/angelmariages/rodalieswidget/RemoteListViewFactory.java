@@ -18,6 +18,7 @@ import org.angelmariages.rodalieswidget.utils.U;
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final boolean group_transfer_exits, show_more_transfer_trains;
 	private final int currentHour, currentMinute;
+	private String alarm_departure_time;
 	private int transfers = 0;
 	private Context context = null;
 
@@ -31,6 +32,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		group_transfer_exits = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("group_transfer_exits", false);
 		show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
+		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString("test_alarm", null);
 
 		currentHour = U.getCurrentHour();
 		currentMinute = U.getCurrentMinute();
@@ -53,6 +55,18 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDataSetChanged() {
+		U.log("onDataSetChanged()");
+
+		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString("test_alarm", null);
+
+		if(alarm_departure_time != null) {
+			for (int i = 0; i < schedule.size(); i++) {
+				TrainTime trainTime = schedule.get(i);
+				if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
+					this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -79,6 +93,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 					setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 
 					setDisabledTexts(row, isBeforeCurrentHour);
+
+					if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+						row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+					} else {
+						row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+					}
 				}
 				break;
 				case 1: {
@@ -152,7 +172,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 			if (row != null) {
 				Intent intent = new Intent(context, WidgetManager.class);
-				intent.putExtra(U.EXTRA_RIDE_LENGTH, schedule.get(position).getTravel_time());
+				intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
 				row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 			}
 
