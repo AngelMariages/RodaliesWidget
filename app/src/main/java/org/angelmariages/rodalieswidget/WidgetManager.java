@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -101,8 +102,22 @@ public class WidgetManager extends AppWidgetProvider {
 			updateStationTexts(StationUtils.getNameFromID(newOrigin), StationUtils.getNameFromID(newDestination),
 					context, widgetID);
 		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
-			String travelTime = intent.getStringExtra(U.EXTRA_RIDE_LENGTH);
+			int widgetID = U.getIdFromIntent(intent);
+
+			String travelTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
 			String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), travelTime);
+
+			SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+			String test_alarm = defaultSharedPreferences.getString("test_alarm", null);
+			if(test_alarm == null || !test_alarm.equalsIgnoreCase(travelTime)) {
+				U.log("test_alarm is: " + test_alarm);
+				defaultSharedPreferences.edit().putString("test_alarm", travelTime).apply();
+			} else {
+				U.log("test_alarm is: " + test_alarm + ", setting null");
+				defaultSharedPreferences.edit().remove("test_alarm").apply();
+			}
+
+			notifyUpdate(context, widgetID);
 
 			Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
 		} else if (intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
@@ -197,8 +212,15 @@ public class WidgetManager extends AppWidgetProvider {
 	}
 
 	private RodaliesWidget reloadWidget(Context context, int widgetID) {
-		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null);
-		AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
-		return widget;
+		if(widgetID != -1) {
+			RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null);
+			AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
+			return widget;
+		}
+		return null;
+	}
+
+	private void notifyUpdate(Context context, int widgetID) {
+		AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(widgetID, R.id.scheduleListView);
 	}
 }

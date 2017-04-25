@@ -34,7 +34,7 @@ public final class U {
 	public static final String EXTRA_ORIGIN = "org.angelmariages.RodaliesWidget.extraOrigin";
 	public static final String EXTRA_DESTINATION = "org.angelmariages.RodaliesWidget.extraDestination";
 	public static final String EXTRA_WIDGET_ID = "org.angelmariages.RodaliesWidget.extraWidgetId";
-	public static final String EXTRA_RIDE_LENGTH = "org.angelmariages.RodaliesWidget.extraRideLength";
+	public static final String EXTRA_ALARM_DEPARTURE_TIME = "org.angelmariages.RodaliesWidget.extraRideLength";
 	public static final String EXTRA_CONFIG_STATION = "org.angelmariages.RodaliesWidget.newSettings";
 	public static final String EXTRA_WIDGET_STATE = "org.angelmariages.RodaliesWidget.extraWidgetState";
 	public static final String EXTRA_SCHEDULE_DATA = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_DATA";

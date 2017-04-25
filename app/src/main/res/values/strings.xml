@@ -10,7 +10,7 @@
     <string name="no_times">There are no current times for this pair of stations</string>
     <string name="search_text">Type the name of a station</string>
     <string name="transfer_departure">Transfer</string>
-    <string name="travel_time_toast">Travel time: %s</string>
+    <string name="travel_time_toast">Alarm set: %s</string>
     <string name="dataInfoText">Schedules offered by Rodalies de Catalunya</string>
     <string name="transfer_station_one">Transfer:</string>
     <string name="transfer_stations_one">1st transfer:</string>
