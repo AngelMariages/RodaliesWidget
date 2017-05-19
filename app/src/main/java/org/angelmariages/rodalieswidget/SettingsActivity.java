@@ -95,8 +95,12 @@ public class SettingsActivity extends AppCompatActivity {
 		    });
         }
 
-        private void onPreferenceChangeC(String key, Object newValue) {
+        private void onPreferenceChangeC(String key, final Object newValue) {
+	        if(key.equalsIgnoreCase("show_more_transfer_trains")) key = "more_transfer_trains";
 	        mFirebaseAnalytics.setUserProperty(key, newValue.toString());
+			Bundle bundle = new Bundle();
+			bundle.putString(key, newValue.toString());
+			mFirebaseAnalytics.logEvent("preference_changed", bundle);
         }
     }
 }
