@@ -3,8 +3,10 @@ package org.angelmariages.rodalieswidget.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,7 +14,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
+import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -153,6 +157,27 @@ public final class U {
 				}
 			});
 		}
+	}
+
+	public static void logEventUpdate(ArrayList<TrainTime> trainTimes, Context context) {
+		Bundle bundle = null;
+		int origin = -1, destination = -1;
+
+		if(trainTimes.size() > 0) {
+			origin = trainTimes.get(0).getOrigin();
+			destination = trainTimes.get(0).getDestination();
+		}
+
+		if(origin != -1 && destination != -1) {
+			bundle = new Bundle();
+			bundle.putInt("origin_station", origin);
+			bundle.putInt("destination_station", destination);
+		}
+		FirebaseAnalytics.getInstance(context).logEvent("update_schedules", bundle);
+	}
+
+	public static void logEventSwap(Context context) {
+		FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {
