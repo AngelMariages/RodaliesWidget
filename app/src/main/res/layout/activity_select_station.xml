@@ -22,7 +22,9 @@
         android:hint="@string/search_text"/>
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/stationListView"/>
+        android:id="@+id/stationListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
 </LinearLayout>
