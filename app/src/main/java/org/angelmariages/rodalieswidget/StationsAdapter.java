@@ -12,6 +12,8 @@ import android.widget.TextView;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
+import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -75,12 +77,16 @@ class StationsAdapter extends BaseAdapter {
 	}
 
 	void filterStations(String input) {
-		input = input.toLowerCase();
-
 		stationList.clear();
 		if (!input.isEmpty() && input.length() != 0) {
+			input = input.toLowerCase();
+			input = Normalizer.normalize(input, Normalizer.Form.NFD)
+					.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+			String tmpName;
 			for (String station : initialStationList) {
-				if (station.toLowerCase().contains(input)) {
+				tmpName = Normalizer.normalize(station, Normalizer.Form.NFD)
+						.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+				if (tmpName.toLowerCase().contains(input)) {
 					stationList.add(station);
 				}
 			}
