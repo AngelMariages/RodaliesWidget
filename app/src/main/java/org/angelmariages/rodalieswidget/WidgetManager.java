@@ -11,6 +11,8 @@ import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -65,6 +67,8 @@ public class WidgetManager extends AppWidgetProvider {
 				ArrayList<TrainTime> schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
 
 				loadSchedule(context, widgetID, schedule);
+
+				U.logEventUpdate(schedule, context);
 			}
 
 		} else if (intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
@@ -78,6 +82,8 @@ public class WidgetManager extends AppWidgetProvider {
 			int widgetState = U.getStateFromIntent(intent);
 
 			swapStations(context, widgetID, widgetState);
+
+			U.logEventSwap(context);
 		} else if (intentAction.startsWith(U.ACTION_CLICK_STATIONS_TEXT)) {
 			int widgetID = U.getIdFromIntent(intent);
 

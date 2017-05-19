@@ -182,4 +182,12 @@ public class TrainTime implements Serializable {
 	public boolean isSame_origin_train() {
 		return same_origin_train;
 	}
+
+	public int getOrigin() {
+		return origin;
+	}
+
+	public int getDestination() {
+		return destination;
+	}
 }
