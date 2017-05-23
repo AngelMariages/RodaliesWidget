@@ -227,17 +227,16 @@ public final class U {
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}
 
-	public static boolean setAlarm(Context context, @NonNull String alarmTime) {
+	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime) {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Calendar calendar = Calendar.getInstance();
 		String[] hourMinutes = alarmTime.split(":");
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829, new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829, new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
 
 		if(hourMinutes.length == 2) {
 			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
 			calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
 			calendar.set(Calendar.SECOND, 0);
-			U.log("Times:" + calendar.getTimeInMillis());
 			alarmManager.cancel(pendingIntent);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -245,7 +244,7 @@ public final class U {
 				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 			}
 
-			PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREFERENCE_STRING_ALARM, alarmTime).apply();
+			PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREFERENCE_STRING_ALARM, departureTime).apply();
 			return true;
 		}
 		return false;

@@ -47,4 +47,10 @@
     <string name="tutorial_3_title">You just need to search for the widget in the list that will appear</string>
     <string name="tutorial_3_desc">Access the configuration of the widget touching the START button</string>
     <string name="pref_view_tutorial">How to install a widget</string>
+    <string name="alarm_set_train_departure_text">Train departure: %s</string>
+    <string name="alarm_set_train_alarm_text">Alarm time: %s</string>
+    <string name="alarm_set_train_before_text">%d minutes before</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="alarm_set_train_will_text">The alarm will ring</string>
 </resources>
