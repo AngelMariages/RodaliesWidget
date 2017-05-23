@@ -29,7 +29,14 @@
             android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_select_station"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+
+        <activity
+            android:name=".SelectAlarmActivity"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_select_station"
+            android:theme="@style/Theme_Dialog"/>
 
         <activity
             android:name=".SettingsActivity"

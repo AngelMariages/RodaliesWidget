@@ -110,15 +110,14 @@ public class WidgetManager extends AppWidgetProvider {
 		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			String travelTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
-			//String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), travelTime);
+			String departureTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
+			//String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), departureTime);
 
 			if (PreferenceManager.getDefaultSharedPreferences(context).contains(U.PREFERENCE_STRING_ALARM)) {
 				U.removeAlarm(context);
 				U.log("Removing alarm");
 			} else {
-				U.setAlarm(context, travelTime);
-				U.log("Setting alarm");
+				context.startActivity(new Intent(context, SelectAlarmActivity.class).setAction(departureTime));
 			}
 
 			notifyUpdate(context, widgetID);
