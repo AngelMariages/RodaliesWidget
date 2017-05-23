@@ -117,7 +117,10 @@ public class WidgetManager extends AppWidgetProvider {
 				U.removeAlarm(context);
 				U.log("Removing alarm");
 			} else {
-				context.startActivity(new Intent(context, SelectAlarmActivity.class).setAction(departureTime));
+				context.startActivity(new Intent(context, SelectAlarmActivity.class)
+						.setAction(departureTime)
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+				);
 			}
 
 			notifyUpdate(context, widgetID);
