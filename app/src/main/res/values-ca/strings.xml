@@ -46,4 +46,10 @@
     <string name="tutorial_skip_button">Saltar</string>
     <string name="tutorial_start_button">Començar</string>
     <string name="pref_view_tutorial">Com instal·lar un widget</string>
+    <string name="alarm_set_train_departure_text">Sortida del tren: %s</string>
+    <string name="alarm_set_train_alarm_text">Hora de l\'alarma: %s</string>
+    <string name="alarm_set_train_before_text">%d minuts abans</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel·lar</string>
+    <string name="alarm_set_train_will_text">L\'alarma sonarà</string>
 </resources>
