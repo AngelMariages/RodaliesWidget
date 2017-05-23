@@ -56,6 +56,8 @@
         <service
             android:name=".WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver android:process=":alarm" android:name=".AlarmReceiver"/>
     </application>
 
 </manifest>

@@ -32,7 +32,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		group_transfer_exits = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("group_transfer_exits", false);
 		show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
-		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString("test_alarm", null);
+		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString(U.PREFERENCE_STRING_ALARM, null);
 
 		currentHour = U.getCurrentHour();
 		currentMinute = U.getCurrentMinute();
