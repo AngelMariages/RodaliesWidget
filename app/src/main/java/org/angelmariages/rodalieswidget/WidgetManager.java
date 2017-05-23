@@ -111,18 +111,14 @@ public class WidgetManager extends AppWidgetProvider {
 			int widgetID = U.getIdFromIntent(intent);
 
 			String travelTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
-			String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), travelTime);
+			//String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), travelTime);
 
-			SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-			String test_alarm = defaultSharedPreferences.getString("test_alarm", null);
-			if(test_alarm == null || !test_alarm.equalsIgnoreCase(travelTime)) {
-				U.log("test_alarm is: " + test_alarm);
-				defaultSharedPreferences.edit().putString("test_alarm", travelTime).apply();
-
-				Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
+			if (PreferenceManager.getDefaultSharedPreferences(context).contains(U.PREFERENCE_STRING_ALARM)) {
+				U.removeAlarm(context);
+				U.log("Removing alarm");
 			} else {
-				U.log("test_alarm is: " + test_alarm + ", setting null");
-				defaultSharedPreferences.edit().remove("test_alarm").apply();
+				U.setAlarm(context, travelTime);
+				U.log("Setting alarm");
 			}
 
 			notifyUpdate(context, widgetID);

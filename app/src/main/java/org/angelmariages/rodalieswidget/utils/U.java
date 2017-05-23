@@ -1,9 +1,14 @@
 package org.angelmariages.rodalieswidget.utils;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -13,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.angelmariages.rodalieswidget.AlarmReceiver;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
@@ -47,6 +53,7 @@ public final class U {
 	private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
 	private static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
 	private static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
+	public static final String PREFERENCE_STRING_ALARM = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM";
 
 	//====================== [ END_CONSTANTS ] ======================
 	private static final boolean LOGGING = true;
@@ -218,5 +225,33 @@ public final class U {
 		Calendar cal = Calendar.getInstance();
 		return String.format(Locale.getDefault(), "%02d%02d%d",
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
+	}
+
+	public static boolean setAlarm(Context context, @NonNull String alarmTime) {
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Calendar calendar = Calendar.getInstance();
+		String[] hourMinutes = alarmTime.split(":");
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829, new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+		if(hourMinutes.length == 2) {
+			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
+			calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
+			calendar.set(Calendar.SECOND, 0);
+			U.log("Times:" + calendar.getTimeInMillis());
+			alarmManager.cancel(pendingIntent);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+			} else {
+				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+			}
+
+			PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREFERENCE_STRING_ALARM, alarmTime).apply();
+			return true;
+		}
+		return false;
+	}
+
+	public static void removeAlarm(Context context) {
+		PreferenceManager.getDefaultSharedPreferences(context).edit().remove(U.PREFERENCE_STRING_ALARM).apply();
 	}
 }
