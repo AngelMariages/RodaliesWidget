@@ -17,6 +17,8 @@
 #}
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
+-keep class net.grandcentrix.tray.** { *; }
+-keep public class * extends android.content.ContentProvider
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.angelmariages.rodalieswidget">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="org.angelmariages.rodalieswidget">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -13,58 +14,69 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name="net.grandcentrix.tray.provider.TrayContentProvider"
+            android:authorities="org.angelmariages.rodalieswidget"
+            android:exported="true"
+            tools:replace="android:exported,android:authorities" />
+
         <receiver android:name=".WidgetManager">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+                android:resource="@xml/widget_info"/>
         </receiver>
-        <receiver android:name=".WidgetReceiver" />
+        <receiver android:name=".WidgetReceiver"/>
 
         <activity
             android:name=".SelectStation"
-            android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_select_station"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog"/>
 
         <activity
             android:name=".SelectAlarmActivity"
-            android:noHistory="true"
             android:excludeFromRecents="true"
-            android:label="@string/title_activity_select_station"
+            android:label="@string/title_activity_select_alarm"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme_Dialog"/>
 
         <activity
             android:name=".SettingsActivity"
-            android:theme="@style/AppTheme"
+            android:label="@string/app_name"
             android:noHistory="true"
-            android:label="@string/app_name">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
         </activity>
 
         <!-- noHistory! -->
         <activity
             android:name=".FirstTimeActivity"
-            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/app_name"
             android:noHistory="true"
-            android:label="@string/app_name">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <service
             android:name=".WidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
-        <receiver android:process=":alarm" android:name=".AlarmReceiver"/>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":alarm"/>
     </application>
 
 </manifest>

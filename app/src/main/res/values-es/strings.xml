@@ -22,7 +22,7 @@
     <string name="pref_receive_notifications" >Recibir notificaciones de incidencias</string>
     <string name="pref_about_title" >Sobre</string>
     <string name="pref_show_licenses" >Licencias</string>
-    <string name="pref_version" >Versión 1.6.2</string>
+    <string name="pref_version" >Versión 1.6.3</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="pref_show_more_transfer_trains">Más trenes de transbordo</string>
     <string name="pref_show_more_transfer_trains_summary_on">Muestra más trenes que puedes coger en la estación de transbordo hacia el mismo destino</string>
@@ -52,4 +52,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
     <string name="alarm_set_train_will_text">La alarma sonará</string>
+    <string name="alarm_set_alarm_toast">Alarma configurada a las %s</string>
+    <string name="notification_content_text">Tu tren està en camino!</string>
+    <string name="alarm_already_configured">Ya tienes una alarma configurada! \n¿Quieres eliminarla?</string>
+    <string name="title_activity_select_alarm">Configuración de la alarma</string>
+    <string name="toast_alarm_removed">Alarma eliminada</string>
+    <string name="pref_set_sound">Sonido de la alarma</string>
 </resources>

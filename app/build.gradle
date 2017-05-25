@@ -8,8 +8,8 @@ android {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 22
-        versionName "1.6.2"
+        versionCode 23
+        versionName "1.6.3"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -32,6 +32,8 @@ dependencies {
     compile 'com.google.firebase:firebase-database:10.0.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'
+
+    compile 'net.grandcentrix.tray:tray:0.12.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

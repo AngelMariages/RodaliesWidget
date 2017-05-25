@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.grandcentrix.tray.AppPreferences;
+
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -111,20 +113,16 @@ public class WidgetManager extends AppWidgetProvider {
 			int widgetID = U.getIdFromIntent(intent);
 
 			String departureTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
-			//String toastText = String.format(context.getResources().getString(R.string.travel_time_toast), departureTime);
 
-			if (PreferenceManager.getDefaultSharedPreferences(context).contains(U.PREFERENCE_STRING_ALARM)) {
-				U.removeAlarm(context);
-				U.log("Removing alarm");
-			} else {
-				context.startActivity(new Intent(context, SelectAlarmActivity.class)
-						.setAction(departureTime)
-						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-				);
-			}
+			context.startActivity(new Intent(context, SelectAlarmActivity.class)
+					.setAction(departureTime)
+					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+					.putExtra(U.EXTRA_WIDGET_ID, widgetID)
+			);
+		} else if(intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
+			int widgetID = U.getIdFromIntent(intent);
 
 			notifyUpdate(context, widgetID);
-
 		} else if (intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
 			int widgetID = U.getIdFromIntent(intent);
 			int widgetState = U.getStateFromIntent(intent);
