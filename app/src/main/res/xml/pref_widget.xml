@@ -31,6 +31,8 @@
             android:summaryOn="@string/pref_group_transfer_exits_summary_on"
             android:summaryOff="@string/pref_group_transfer_exits_summary_off"/>
 
+        <Preference android:title="@string/pref_set_sound" android:key="pref_set_sound"/>
+
         <!--<SwitchPreference
             android:key="line_notifications"
             android:title="@string/pref_receive_notifications" />-->
