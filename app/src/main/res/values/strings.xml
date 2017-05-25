@@ -24,7 +24,7 @@
     <string name="pref_receive_notifications" >Receive incident notifications</string>
     <string name="pref_about_title" >About</string>
     <string name="pref_show_licenses" >Licenses</string>
-    <string name="pref_version" >Version 1.6.2</string>
+    <string name="pref_version" >Version 1.6.3</string>
     <string name="pref_show_more_transfer_trains">More transfer trains</string>
     <string name="pref_show_more_transfer_trains_summary_on">Show more trains that you can go into in your transfer station going to the same destination</string>
     <string name="pref_group_transfer_exits">Group transfer trains</string>
@@ -53,4 +53,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="alarm_set_train_will_text">The alarm will ring</string>
+    <string name="alarm_set_alarm_toast">Alarm set at %s</string>
+    <string name="notification_content_text">Your train is coming!</string>
+    <string name="alarm_already_configured">You already have an alarm configured! \nDo you want to remove it?</string>
+    <string name="title_activity_select_alarm">Configure the alarm</string>
+    <string name="toast_alarm_removed">Alarm removed</string>
+    <string name="pref_set_sound">Select alarm sound</string>
 </resources>

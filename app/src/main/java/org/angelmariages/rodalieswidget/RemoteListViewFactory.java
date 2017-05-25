@@ -18,6 +18,7 @@ import org.angelmariages.rodalieswidget.utils.U;
 class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final boolean group_transfer_exits, show_more_transfer_trains;
 	private final int currentHour, currentMinute;
+	private final int widgetID;
 	private String alarm_departure_time;
 	private int transfers = 0;
 	private Context context = null;
@@ -27,12 +28,11 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	@SuppressWarnings("unchecked")
 	RemoteListViewFactory(Context context, Intent intent) {
 		this.context = context;
-		int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+		widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
 				AppWidgetManager.INVALID_APPWIDGET_ID);
 
 		group_transfer_exits = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("group_transfer_exits", false);
 		show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
-		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString(U.PREFERENCE_STRING_ALARM, null);
 
 		currentHour = U.getCurrentHour();
 		currentMinute = U.getCurrentMinute();
@@ -41,10 +41,13 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
 			Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
 			schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
-			if (schedule == null) U.sendNoInternetError(widgetId, context);
-			else if (schedule.size() == 0) U.sendNoTimesError(widgetId, context);
+			if (schedule == null) U.sendNoInternetError(widgetID, context);
+			else if (schedule.size() == 0) U.sendNoTimesError(widgetID, context);
 			else {
-				transfers = schedule.get(0).getTransfer();
+				TrainTime trainTime = schedule.get(0);
+				transfers = trainTime.getTransfer();
+
+				alarm_departure_time = U.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
 			}
 		}
 	}
@@ -57,7 +60,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		U.log("onDataSetChanged()");
 
-		alarm_departure_time = PreferenceManager.getDefaultSharedPreferences(context).getString("test_alarm", null);
+		if (schedule.size() > 0) {
+			TrainTime trainTime = schedule.get(0);
+			alarm_departure_time = U.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
+		}
+
+		U.log("Alarm departure time: " + alarm_departure_time);
 
 		if(alarm_departure_time != null) {
 			for (int i = 0; i < schedule.size(); i++) {
@@ -65,6 +73,10 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
 					this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
 				}
+			}
+		} else {
+			for (int i = 0; i < schedule.size(); i++) {
+				this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_no_alarm);
 			}
 		}
 	}

@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import net.grandcentrix.tray.AppPreferences;
+
 import org.angelmariages.rodalieswidget.AlarmReceiver;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -39,6 +41,7 @@ public final class U {
 	public static final String ACTION_CLICK_LIST_ITEM = "org.angelmariages.RodaliesWidget.clickListItem_";
 	public static final String ACTION_WIDGET_NO_DATA = "org.angelmariages.RodaliesWidget.widgetNoData_";
 	public static final String ACTION_SEND_SCHEDULE = "org.angelmariages.RodaliesWidget.ACTION_WIDGET_SEND_SCHEDULE_";
+	public static final String ACTION_NOTIFY_UPDATE = "org.angelmariages.RodaliesWidget.ACTION_NOTIFY_UPDATE_";
 
 	public static final String EXTRA_OREGNorDESTINATION = "org.angelmariages.RodaliesWidget.originOrDestination";
 	public static final String EXTRA_ORIGIN = "org.angelmariages.RodaliesWidget.extraOrigin";
@@ -53,7 +56,8 @@ public final class U {
 	private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
 	private static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
 	private static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
-	public static final String PREFERENCE_STRING_ALARM = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM";
+	public static final String PREFERENCE_STRING_ALARM_FOR_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_FOR_ID_";
+	public static final String PREFERENCE_STRING_ALARM_URI = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_URI";
 
 	//====================== [ END_CONSTANTS ] ======================
 	private static final boolean LOGGING = true;
@@ -62,6 +66,7 @@ public final class U {
 	public static final int WIDGET_STATE_NO_STATIONS = 2;
 	public static final int WIDGET_STATE_NO_TIMES = 3;
 	public static final int WIDGET_STATE_UPDATING_TABLES = 4;
+	public static final int RINGTONE_SELECT_REQUEST_CODE = 5;
 
 	private static FirebaseDatabase mFirebaseDatabase;
 
@@ -187,6 +192,22 @@ public final class U {
 		FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
 	}
 
+	public static void logEventAlarmSet(Context context, String departure_time, int origin, int destination) {
+		Bundle bundle = null;
+		if(origin != -1 && destination != -1) {
+			bundle = new Bundle();
+			bundle.putInt("origin_station", origin);
+			bundle.putInt("destination_station", destination);
+			bundle.putString("departure_time", departure_time);
+		}
+
+		FirebaseAnalytics.getInstance(context).logEvent("alarm_set", bundle);
+	}
+
+	public static void logEventAlarmFired(Context context) {
+		FirebaseAnalytics.getInstance(context).logEvent("alarm_fired", null);
+	}
+
 	public static void sendNoInternetError(int widgetId, Context context) {
 		Intent noDataIntent = new Intent(context, WidgetManager.class);
 		noDataIntent.setAction(U.ACTION_WIDGET_NO_DATA + widgetId);
@@ -211,6 +232,13 @@ public final class U {
 		context.sendBroadcast(noStationsIntent);
 	}
 
+	public static void sendNotifyUpdate(int widgetID, Context context) {
+		Intent notifyUpdateIntent = new Intent(context, WidgetManager.class);
+		notifyUpdateIntent.setAction(U.ACTION_NOTIFY_UPDATE + widgetID);
+		notifyUpdateIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+		context.sendBroadcast(notifyUpdateIntent);
+	}
+
 	public static int getCurrentHour() {
 		Calendar cal = Calendar.getInstance();
 		return Integer.parseInt(String.format(Locale.getDefault(), "%02d", cal.get(Calendar.HOUR_OF_DAY)));
@@ -227,11 +255,13 @@ public final class U {
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}
 
-	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime) {
+	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, int origin, int destination) {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Calendar calendar = Calendar.getInstance();
 		String[] hourMinutes = alarmTime.split(":");
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829, new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
+				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
+				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
 
 		if(hourMinutes.length == 2) {
 			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
@@ -244,13 +274,29 @@ public final class U {
 				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 			}
 
-			PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREFERENCE_STRING_ALARM, departureTime).apply();
+			new AppPreferences(context).put(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, departureTime);
+
+			sendNotifyUpdate(widgetID, context);
+
+			logEventAlarmSet(context, departureTime, origin, destination);
+
 			return true;
 		}
 		return false;
 	}
 
-	public static void removeAlarm(Context context) {
-		PreferenceManager.getDefaultSharedPreferences(context).edit().remove(U.PREFERENCE_STRING_ALARM).apply();
+	public static String getAlarm(Context context, int widgetID, int origin, int destination) {
+		return new AppPreferences(context).getString(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
+	}
+
+	public static void removeAlarm(Context context, int widgetID, int origin, int destination) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
+				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
+				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		alarmManager.cancel(pendingIntent);
+
+		new AppPreferences(context).remove(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
+		sendNotifyUpdate(widgetID, context);
 	}
 }
