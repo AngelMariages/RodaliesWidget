@@ -67,11 +67,17 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		U.log("Alarm departure time: " + alarm_departure_time);
 
-		if(alarm_departure_time != null) {
+		if (alarm_departure_time != null) {
 			for (int i = 0; i < schedule.size(); i++) {
 				TrainTime trainTime = schedule.get(i);
-				if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
-					this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+				if (trainTime.getTransfer() == 2 && trainTime.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits) {
+					if (trainTime.getDeparture_time_transfer_one().equalsIgnoreCase(alarm_departure_time)) {
+						this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+					}
+				} else {
+					if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
+						this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+					}
 				}
 			}
 		} else {
@@ -119,6 +125,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
 
 						setDisabledTexts(row, isBeforeCurrentHour);
+
+						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+						} else {
+							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+						}
 					} else {
 						if (trainTime.isSame_origin_train()) {
 							if (show_more_transfer_trains) {
@@ -135,6 +147,11 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 									setDisabledTexts(row, isBeforeCurrentHour);
 									setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 								}
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+								} else {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+								}
 							}
 						} else {
 							row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
@@ -143,6 +160,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 							setDisabledTexts(row, isBeforeCurrentHour);
 							setDisabledTextsTransferOne(row, isBeforeCurrentHour);
+
+							if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+								row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+							} else {
+								row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+							}
 						}
 					}
 				}
@@ -157,6 +180,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 								setDisabledTexts(row, isBeforeCurrentHour);
 								setDisabledTextsTransferOne(row, isBeforeCurrentHour);
+
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time_transfer_one())) {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+								} else {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+								}
 							} else {
 								row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
 								setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
@@ -166,6 +195,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 								setDisabledTexts(row, isBeforeCurrentHour);
 								setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 								setDisabledTextsTransferTwo(row, isBeforeCurrentHour);
+
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+								} else {
+									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+								}
 							}
 						}
 					} else {
@@ -177,6 +212,12 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						setDisabledTexts(row, isBeforeCurrentHour);
 						setDisabledTextsTransferOne(row, isBeforeCurrentHour);
 						setDisabledTextsTransferTwo(row, isBeforeCurrentHour);
+
+						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
+						} else {
+							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
+						}
 					}
 				}
 				break;
@@ -184,7 +225,11 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 			if (row != null) {
 				Intent intent = new Intent(context, WidgetManager.class);
-				intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
+				TrainTime trainT = schedule.get(0);
+				if (trainT.getTransfer() == 2 && trainT.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits)
+					intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, trainT.getDeparture_time_transfer_one());
+				else
+					intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
 				row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 			}
 
