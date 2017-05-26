@@ -48,7 +48,7 @@
     <string name="tutorial_skip_button">Saltar</string>
     <string name="alarm_set_train_departure_text">Salida del tren: %s</string>
     <string name="alarm_set_train_alarm_text">Hora de la alarma: %s</string>
-    <string name="alarm_set_train_before_text">%d minuts antes</string>
+    <string name="alarm_set_train_before_text">%d minutos antes</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
     <string name="alarm_set_train_will_text">La alarma sonará</string>

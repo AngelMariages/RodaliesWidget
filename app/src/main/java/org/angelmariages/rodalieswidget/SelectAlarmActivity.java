@@ -10,8 +10,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.grandcentrix.tray.AppPreferences;
-
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.text.ParseException;

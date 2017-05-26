@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -66,7 +65,6 @@ public final class U {
 	public static final int WIDGET_STATE_NO_STATIONS = 2;
 	public static final int WIDGET_STATE_NO_TIMES = 3;
 	public static final int WIDGET_STATE_UPDATING_TABLES = 4;
-	public static final int RINGTONE_SELECT_REQUEST_CODE = 5;
 
 	private static FirebaseDatabase mFirebaseDatabase;
 
@@ -192,7 +190,7 @@ public final class U {
 		FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
 	}
 
-	public static void logEventAlarmSet(Context context, String departure_time, int origin, int destination) {
+	private static void logEventAlarmSet(Context context, String departure_time, int origin, int destination) {
 		Bundle bundle = null;
 		if(origin != -1 && destination != -1) {
 			bundle = new Bundle();
