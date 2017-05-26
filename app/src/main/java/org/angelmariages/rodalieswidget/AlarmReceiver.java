@@ -28,7 +28,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
 		String customUri = new AppPreferences(context).getString(U.PREFERENCE_STRING_ALARM_URI, null);
-		if(customUri != null) soundUri = Uri.parse(customUri);
+		if(customUri != null) {
+			if(customUri.equalsIgnoreCase("--silent--")) soundUri = null;
+			else soundUri = Uri.parse(customUri);
+		}
 
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
 		notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
@@ -36,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		notificationBuilder.setContentText(context.getString(R.string.notification_content_text));
 		notificationBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });
 		notificationBuilder.setLights(Color.RED, 1000, 1000);
-		notificationBuilder.setSound(soundUri);
+		if(soundUri != null) notificationBuilder.setSound(soundUri);
 		notificationBuilder.setAutoCancel(true);
 
 		Notification notification = notificationBuilder.build();

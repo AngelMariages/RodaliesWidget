@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/title_background"
     android:orientation="vertical">
 
@@ -19,8 +19,8 @@
             android:paddingEnd="3dp"
             android:paddingRight="3dp"
             android:scrollHorizontally="true"
-            android:textColor="#FFFFFF"
-            android:text="@string/transfer_departure" />
+            android:text="@string/transfer_departure"
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:id="@+id/lineTransferOneText"
@@ -31,7 +31,7 @@
             android:maxLines="1"
             android:textColor="@color/data_text"
             android:textSize="14sp"
-            tools:text="R1" />
+            tools:text="R1"/>
 
         <TextView
             android:id="@+id/transferOneTitleText"
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:maxLines="1"
-            android:paddingStart="3dp"
             android:paddingLeft="3dp"
+            android:paddingStart="3dp"
             android:scrollHorizontally="true"
             android:textColor="#FFFFFF"
             tools:text="Barcelona-Sants"/>
@@ -61,8 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:maxLines="1"
             android:gravity="center_horizontal"
+            android:maxLines="1"
             android:text="@string/departure"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
@@ -72,12 +72,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:maxLines="1"
             android:gravity="center_horizontal"
-            android:text="@string/arrival"
-            android:paddingRight="20dp"
+            android:maxLines="1"
             android:paddingEnd="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/arrival"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"/>
     </LinearLayout>
 </LinearLayout>
