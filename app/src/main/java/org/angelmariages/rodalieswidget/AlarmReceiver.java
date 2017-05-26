@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 
 import net.grandcentrix.tray.AppPreferences;
@@ -34,7 +35,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 		}
 
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-		notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			notificationBuilder.setSmallIcon(R.mipmap.ic_notification_white);
+		} else {
+			notificationBuilder.setSmallIcon(R.mipmap.ic_notification);
+		}
 		notificationBuilder.setContentTitle(context.getString(R.string.app_name));
 		notificationBuilder.setContentText(context.getString(R.string.notification_content_text));
 		notificationBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });

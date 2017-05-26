@@ -19,9 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,6 +40,8 @@ class RodaliesSchedule {
 	}
 
 	private String getPageFromInternet() {
+		HttpURLConnection connection = null;
+		BufferedReader in = null;
 		StringBuilder html = new StringBuilder();
 		String query = "origen=" + origin +
 				"&desti=" + destination +
@@ -48,11 +50,12 @@ class RodaliesSchedule {
 
 		try {
 			String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
-			URLConnection urlConnection = new URL(url + query).openConnection();
-			urlConnection.setConnectTimeout(5000);
-			urlConnection.setReadTimeout(5000);
+			connection = (HttpURLConnection)new URL(url + query).openConnection();
+			connection.setConnectTimeout(2500);
+			connection.setReadTimeout(2500);
+			connection.setRequestMethod("GET");
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
 			while ((line = in.readLine()) != null) {
 				html.append(line);
@@ -61,6 +64,17 @@ class RodaliesSchedule {
 			U.log("ERROR: URL malformada.");
 		} catch (IOException e) {
 			U.log("No es pot obrir el stream.");
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					U.log("Errpr tancant l'stream: " + e.getMessage());
+				}
+			}
 		}
 
 		return html.toString();
@@ -76,6 +90,7 @@ class RodaliesSchedule {
 	}
 
 	private ArrayList<TrainTime> parseXMLFile(String xmlData) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+		if(xmlData == null) return null;
 		InputSource source = new InputSource(new StringReader(xmlData));
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
