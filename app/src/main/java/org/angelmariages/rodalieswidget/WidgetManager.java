@@ -92,7 +92,7 @@ public class WidgetManager extends AppWidgetProvider {
 			int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
 			if (widgetID != -1 && originOrDestination != -1) {
 				Intent dialogActivity = new Intent(context, SelectStation.class);
-				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				dialogActivity.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
 				dialogActivity.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 
@@ -116,7 +116,7 @@ public class WidgetManager extends AppWidgetProvider {
 
 			context.startActivity(new Intent(context, SelectAlarmActivity.class)
 					.setAction(departureTime)
-					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK)
 					.putExtra(U.EXTRA_WIDGET_ID, widgetID)
 			);
 		} else if(intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
