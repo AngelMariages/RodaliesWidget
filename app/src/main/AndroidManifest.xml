@@ -54,6 +54,13 @@
             android:theme="@style/AppTheme">
         </activity>
 
+        <activity android:name="org.angelmariages.rodalieswidget.SelectCore">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+
         <!-- noHistory! -->
         <activity
             android:name=".FirstTimeActivity"
