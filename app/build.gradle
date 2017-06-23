@@ -8,8 +8,8 @@ android {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 24
-        versionName "1.6.31"
+        versionCode 25
+        versionName "1.6.4"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
