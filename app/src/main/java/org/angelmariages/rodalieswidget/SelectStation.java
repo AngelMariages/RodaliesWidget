@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -32,15 +33,37 @@ public class SelectStation extends AppCompatActivity {
 		//This should not had been created
 		if (originOrDestination == -1) finish();
 
-		setListView();
+		setCoreListView();
+		setStationListView();
 
 		if (this.getWindow() != null) {
 			this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		}
 	}
 
+	private void setCoreListView() {
+		final ListView coreListView = (ListView) findViewById(R.id.coreListView);
 
-	private void setListView() {
+		if(coreListView != null) {
+			final ArrayList<String> coreList = new ArrayList<>();
+			coreList.add("Barcelona");
+			coreList.add("Madrid");
+			coreList.add("Zaragoza");
+			coreList.add("Valencia");
+			coreList.add("Andalucia");
+
+			final CoreSelectAdapter coreSelectAdapter = new CoreSelectAdapter(this, coreList, widgetID);
+			coreSelectAdapter.setOnCoreSelectListener(new CoreSelectAdapter.OnCoreSelectListener() {
+				@Override
+				public void onCoreSelect(String coreName) {
+					U.log("Core selected: " + coreName);
+					coreListView.setVisibility(View.GONE);
+				}
+			});
+		}
+	}
+
+	private void setStationListView() {
 		EditText searchEditView = (EditText) findViewById(R.id.searchEditText);
 		ListView stationListView = (ListView) findViewById(R.id.stationListView);
 
