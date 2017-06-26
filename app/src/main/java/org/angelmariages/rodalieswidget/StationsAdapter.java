@@ -38,9 +38,6 @@ class StationsAdapter extends BaseAdapter {
 
 	@Override
 	public String getItem(int i) {
-		for (String s : stationList) {
-			U.log(s);
-		}
 		return stationList.get(i);
 	}
 
