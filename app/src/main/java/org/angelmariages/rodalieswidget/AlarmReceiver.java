@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		if(widgetID == -1) return;
 
 		U.log("Alarm received, removing it " + widgetID);
-		int[] stations = U.getStations(context, widgetID);
+		String[] stations = U.getStations(context, widgetID);
 		if (stations.length == 2) {
 			U.removeAlarm(context, widgetID, stations[0], stations[1]);
 		}

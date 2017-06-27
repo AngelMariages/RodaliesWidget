@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,14 +58,16 @@ public final class U {
 	private static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
 	private static final String PREFERENCE_STRING_ALARM_FOR_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_FOR_ID_";
 	public static final String PREFERENCE_STRING_ALARM_URI = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_URI";
+	private static final String PREFERENCE_STRING_CORE_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_CORE_ID_";
 
-	//====================== [ END_CONSTANTS ] ======================
-	private static final boolean LOGGING = true;
 	public static final int WIDGET_STATE_SCHEDULE_LOADED = 0;
 	public static final int WIDGET_STATE_NO_INTERNET = 1;
 	public static final int WIDGET_STATE_NO_STATIONS = 2;
 	public static final int WIDGET_STATE_NO_TIMES = 3;
 	public static final int WIDGET_STATE_UPDATING_TABLES = 4;
+
+	//====================== [ END_CONSTANTS ] ======================
+	private static final boolean LOGGING = true;
 
 	private static FirebaseDatabase mFirebaseDatabase;
 
@@ -82,27 +85,82 @@ public final class U {
 		return intent.getIntExtra(U.EXTRA_WIDGET_STATE, -1);
 	}
 
-	public static void saveStations(Context context, int widgetID, String origin, String destination) {
-		saveStations(context, widgetID, StationUtils.getIDFromName(origin), StationUtils.getIDFromName(destination));
+	public static void saveCore(Context context, int widgetID, int coreID) {
+		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		sharedPreferences.edit().putInt(U.PREFERENCE_STRING_CORE_ID, coreID).apply();
 	}
 
-	public static void saveStations(Context context, int widgetID, int origin, int destination) {
+	public static int getCore(Context context, int widgetID) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		int core = sharedPreferences.getInt(U.PREFERENCE_STRING_CORE_ID, -1);
+
+		// TODO: 27/06/2017 Remove for next versions
+		String[] stations = U.getStations(context, widgetID);
+		if(core == -1 && stations.length == 2) {
+			if (StationUtils.nuclis.get(50).containsKey(stations[0]) && StationUtils.nuclis.get(50).containsKey(stations[1])) {
+			 	saveCore(context, widgetID, 50);
+				return 50;
+			}
+		}
+
+		return core;
+	}
+
+	public static void saveStations(Context context, int widgetID, String origin, String destination) {
+		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+
+		removeOldPreferences(sharedPreferences);
+
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putInt(U.PREFERENCE_STRING_ORIGIN, origin);
-		editor.putInt(U.PREFERENCE_STRING_DESTINATION, destination);
+		editor.putString(U.PREFERENCE_STRING_ORIGIN, origin);
+		editor.putString(U.PREFERENCE_STRING_DESTINATION, destination);
 		editor.apply();
 	}
 
-	public static int[] getStations(Context context, int widgetID) {
+	public static String[] getStations(Context context, int widgetID) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+
+		updateOldPreferences(sharedPreferences);
+
 		if (sharedPreferences != null) {
-			return new int[]{
-					sharedPreferences.getInt(U.PREFERENCE_STRING_ORIGIN, -1),
-					sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1)
+			return new String[]{
+					sharedPreferences.getString(U.PREFERENCE_STRING_ORIGIN, "-1"),
+					sharedPreferences.getString(U.PREFERENCE_STRING_DESTINATION, "-1")
 			};
 		}
-		return new int[]{-1, -1};
+		return new String[]{"-1", "-1"};
+	}
+
+	private static void updateOldPreferences(SharedPreferences sharedPreferences) {
+		int origin, destination;
+		if(sharedPreferences != null) {
+			try {
+				if ((origin = sharedPreferences.getInt(U.PREFERENCE_STRING_ORIGIN, -1)) != -1) {
+					sharedPreferences.edit().remove(U.PREFERENCE_STRING_ORIGIN).apply();
+					sharedPreferences.edit().putString(U.PREFERENCE_STRING_ORIGIN, String.valueOf(origin)).apply();
+				}
+			} catch (RuntimeException ignored) {}
+
+			try {
+				if ((destination = sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1)) != -1) {
+					sharedPreferences.edit().remove(U.PREFERENCE_STRING_DESTINATION).apply();
+					sharedPreferences.edit().putString(U.PREFERENCE_STRING_DESTINATION, String.valueOf(destination)).apply();
+				}
+			} catch (RuntimeException ignored) {}
+		}
+	}
+
+	private static void removeOldPreferences(SharedPreferences sharedPreferences) {
+		if(sharedPreferences != null) {
+			try {
+				if (sharedPreferences.getInt(U.PREFERENCE_STRING_ORIGIN, -1) != -1)
+					sharedPreferences.edit().remove(U.PREFERENCE_STRING_ORIGIN).apply();
+			} catch (RuntimeException ignored) {}
+			try {
+				if (sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1) != -1)
+					sharedPreferences.edit().remove(U.PREFERENCE_STRING_DESTINATION).apply();
+			} catch (RuntimeException ignored) {}
+		}
 	}
 
 	public static FirebaseDatabase getFirebaseDatabase() {
@@ -115,9 +173,9 @@ public final class U {
 	public static void logUpdates(Context context, int widgetID) {
 		mFirebaseDatabase = U.getFirebaseDatabase();
 
-		final int[] stations = U.getStations(context, widgetID);
+		final String[] stations = U.getStations(context, widgetID);
 
-		if (stations.length == 2 && stations[0] != -1 && stations[1] != -1) {
+		if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
 			DatabaseReference mRefJourneys = mFirebaseDatabase.getReference("statics/journeys");
 			DatabaseReference mRefStations = mFirebaseDatabase.getReference("statics/stations");
 
@@ -171,17 +229,17 @@ public final class U {
 
 	public static void logEventUpdate(ArrayList<TrainTime> trainTimes, Context context) {
 		Bundle bundle = null;
-		int origin = -1, destination = -1;
+		String origin = "-1", destination = "-1";
 
 		if(trainTimes.size() > 0) {
 			origin = trainTimes.get(0).getOrigin();
 			destination = trainTimes.get(0).getDestination();
 		}
 
-		if(origin != -1 && destination != -1) {
+		if(!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
 			bundle = new Bundle();
-			bundle.putInt("origin_station", origin);
-			bundle.putInt("destination_station", destination);
+			bundle.putString("origin_station", origin);
+			bundle.putString("destination_station", destination);
 		}
 		FirebaseAnalytics.getInstance(context).logEvent("update_schedules", bundle);
 	}
@@ -190,12 +248,12 @@ public final class U {
 		FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
 	}
 
-	private static void logEventAlarmSet(Context context, String departure_time, int origin, int destination) {
+	private static void logEventAlarmSet(Context context, String departure_time, String origin, String destination) {
 		Bundle bundle = null;
-		if(origin != -1 && destination != -1) {
+		if(!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
 			bundle = new Bundle();
-			bundle.putInt("origin_station", origin);
-			bundle.putInt("destination_station", destination);
+			bundle.putString("origin_station", origin);
+			bundle.putString("destination_station", destination);
 			bundle.putString("departure_time", departure_time);
 		}
 
@@ -253,7 +311,7 @@ public final class U {
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}
 
-	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, int origin, int destination) {
+	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Calendar calendar = Calendar.getInstance();
 		String[] hourMinutes = alarmTime.split(":");
@@ -283,11 +341,11 @@ public final class U {
 		return false;
 	}
 
-	public static String getAlarm(Context context, int widgetID, int origin, int destination) {
+	public static String getAlarm(Context context, int widgetID, String origin, String destination) {
 		return new AppPreferences(context).getString(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
 	}
 
-	public static void removeAlarm(Context context, int widgetID, int origin, int destination) {
+	public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
 				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
 				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);

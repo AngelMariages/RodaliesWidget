@@ -21,11 +21,11 @@ public class WidgetReceiver extends BroadcastReceiver {
 
 		if (widgetID != -1) {
 			if (intentAction.equalsIgnoreCase(U.ACTION_CLICK_SWAP_BUTTON)) {
-				int[] oldStations = U.getStations(context, widgetID);
-				if (oldStations[0] == -1 || oldStations[1] == -1) {
+				String[] oldStations = U.getStations(context, widgetID);
+				if (oldStations[0].equalsIgnoreCase("-1") || oldStations[1].equalsIgnoreCase("-1")) {
 					U.sendNoStationsSetError(widgetID, context);
 				} else {
-					int[] stationsTmp = new int[2];
+					String[] stationsTmp = new String[2];
 
 					stationsTmp[0] = oldStations[1];
 					stationsTmp[1] = oldStations[0];
@@ -35,11 +35,11 @@ public class WidgetReceiver extends BroadcastReceiver {
 				}
 			} else if (intentAction.equalsIgnoreCase(U.ACTION_SEND_NEW_STATIONS)) {
 				int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
-				int newStation = intent.getIntExtra(U.EXTRA_CONFIG_STATION, -1);
+				String newStation = intent.getStringExtra(U.EXTRA_CONFIG_STATION);
 				U.log("OR= " + originOrDestination + " , " + newStation);
 
-				if (originOrDestination != -1 && newStation != -1) {
-					int[] stations = U.getStations(context, widgetID);
+				if (originOrDestination != -1 && newStation != null) {
+					String[] stations = U.getStations(context, widgetID);
 
 					if (originOrDestination == U.ORIGIN) stations[0] = newStation;
 					else stations[1] = newStation;
@@ -52,7 +52,7 @@ public class WidgetReceiver extends BroadcastReceiver {
 	}
 
 	private void updateStationsTextViews(Context context, int widgetID) {
-		int[] stations = U.getStations(context, widgetID);
+		String[] stations = U.getStations(context, widgetID);
 		Intent updateStationsTextIntent = new Intent(context, WidgetManager.class);
 		updateStationsTextIntent.setAction(U.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
 		updateStationsTextIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);

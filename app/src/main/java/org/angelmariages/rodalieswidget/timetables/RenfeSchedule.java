@@ -16,15 +16,15 @@ import java.util.Locale;
 class RenfeSchedule {
 	private final Calendar cal = Calendar.getInstance();
 
-	private final int origin;
-	private final int destination;
+	private final String origin;
+	private final String destination;
 	private final int nucli;
 	private String transferStationOne;
 	private String transferStationTwo;
 
 	private int lastRowIndex;
 
-	RenfeSchedule(int origin, int destination, int nucli) {
+	RenfeSchedule(String origin, String destination, int nucli) {
 		this.origin = origin;
 		this.destination = destination;
 		this.nucli = nucli;
