@@ -29,7 +29,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 
 		Intent intent = getIntent();
 		final int widgetID = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
-		final int stations[] = U.getStations(this, widgetID);
+		final String stations[] = U.getStations(this, widgetID);
 
 		if(widgetID == -1 && stations.length != 2) {
 			U.log("Error getting the widget ID, finishing alarm activity");
@@ -48,7 +48,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		}
 	}
 
-	private void setResourcesForRemovingAlarm(final int widgetID, final int origin, final int destination) {
+	private void setResourcesForRemovingAlarm(final int widgetID, final String origin, final String destination) {
 		final Button cancelButton = (Button) findViewById(R.id.cancelButton);
 		final Button okButton = (Button) findViewById(R.id.okButton);
 
@@ -71,7 +71,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		});
 	}
 
-	private void setResourcesForAddingAlarm(final int widgetID, final int origin, final int destination) {
+	private void setResourcesForAddingAlarm(final int widgetID, final String origin, final String destination) {
 		final Resources res = getResources();
 		final String departureTime = getIntent().getAction();
 

@@ -28,13 +28,13 @@ import java.util.Calendar;
 import java.util.Locale;
 
 class RodaliesSchedule {
-	private final int origin;
-	private final int destination;
+	private final String origin;
+	private final String destination;
 	private final Calendar cal = Calendar.getInstance();
 	private String station_transfer_one;
 	private String station_transfer_two;
 
-	RodaliesSchedule(int origin, int destination) {
+	RodaliesSchedule(String origin, String destination) {
 		this.origin = origin;
 		this.destination = destination;
 	}
