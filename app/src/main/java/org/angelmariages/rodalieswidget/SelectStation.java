@@ -35,37 +35,31 @@ public class SelectStation extends AppCompatActivity {
 		if (originOrDestination == -1) finish();
 
 		setCoreListView();
-		setStationListView();
 	}
 
 	private void setCoreListView() {
+		final Context context = this;
+		final int widgetID = this.widgetID;
 		final ListView coreListView = (ListView) findViewById(R.id.coreListView);
 
 		if (coreListView != null) {
 			final ArrayList<String> coreList = new ArrayList<>();
-			coreList.add("Asturias");//20
-			coreList.add("Barcelona");//50
-			coreList.add("Bilbao");//60
-			coreList.add("Cádiz");//31
-			coreList.add("Madrid");//10
-			coreList.add("Málaga");//32
-			coreList.add("Murcia/Alicante");//41
-			coreList.add("Santander");//62
-			coreList.add("San Sebastián");//61
-			coreList.add("Sevilla");//30
-			coreList.add("Valencia");//40
-			coreList.add("Zaragoza");//70
+			coreList.addAll(StationUtils.nucliIDs.values());
 
 			final CoreSelectAdapter coreSelectAdapter = new CoreSelectAdapter(this, coreList, widgetID);
 			coreSelectAdapter.setOnCoreSelectListener(new CoreSelectAdapter.OnCoreSelectListener() {
 				@Override
 				public void onCoreSelect(String coreName) {
-					U.log("Core selected: " + coreName);
 					coreListView.setVisibility(View.GONE);
+
+					int idFromNucli = StationUtils.getIDFromNucli(coreName);
+					U.saveCore(context, widgetID, idFromNucli);
+
+					setStationListView(idFromNucli);
 
 					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					inputMethodManager.toggleSoftInputFromWindow(coreListView.getApplicationWindowToken(),
-							InputMethodManager.SHOW_FORCED, 0);
+							InputMethodManager.SHOW_IMPLICIT, 0);
 				}
 			});
 
@@ -73,13 +67,13 @@ public class SelectStation extends AppCompatActivity {
 		}
 	}
 
-	private void setStationListView() {
+	private void setStationListView(int idFromNucli) {
 		EditText searchEditView = (EditText) findViewById(R.id.searchEditText);
 		ListView stationListView = (ListView) findViewById(R.id.stationListView);
 
 		if (stationListView != null) {
 			final ArrayList<String> stationList = new ArrayList<>();
-			Collection<String> values = StationUtils.nucli50.values();
+			Collection<String> values = StationUtils.nuclis.get(idFromNucli).values();
 
 			stationList.addAll(values);
 
@@ -107,4 +101,15 @@ public class SelectStation extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	protected void onStop() {
+		View view = this.getCurrentFocus();
+		if (view != null) {
+			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			inputMethodManager.toggleSoftInputFromWindow(view.getApplicationWindowToken(),
+					InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+			inputMethodManager.hideSoftInputFromInputMethod(view.getWindowToken(), 0);
+		}
+		super.onStop();
+	}
 }

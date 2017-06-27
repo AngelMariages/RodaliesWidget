@@ -22,12 +22,12 @@ public class TrainTime implements Serializable {
 	private String station_transfer_two = null;
 	private String departure_time_transfer_two = null;
 	private String arrival_time_transfer_two = null;
-	private final int origin;
-	private final int destination;
+	private final String origin;
+	private final String destination;
 	private boolean direct_train = false;
 	private boolean same_origin_train = false;
 
-	TrainTime(String line, String departure_time, String arrival_time, String travel_time, int origin, int destination) {
+	TrainTime(String line, String departure_time, String arrival_time, String travel_time, String origin, String destination) {
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
@@ -36,7 +36,7 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, int origin, int destination, boolean direct_train, boolean same_origin_train) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, String origin, String destination, boolean direct_train, boolean same_origin_train) {
 		this.transfer = 1;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
@@ -52,7 +52,7 @@ public class TrainTime implements Serializable {
 		this.same_origin_train = same_origin_train;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, int origin, int destination, boolean same_origin_train) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, String origin, String destination, boolean same_origin_train) {
 		this.transfer = 2;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
@@ -183,11 +183,11 @@ public class TrainTime implements Serializable {
 		return same_origin_train;
 	}
 
-	public int getOrigin() {
+	public String getOrigin() {
 		return origin;
 	}
 
-	public int getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 }

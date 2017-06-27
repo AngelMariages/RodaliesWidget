@@ -95,13 +95,13 @@ public class WidgetManager extends AppWidgetProvider {
 		} else if (intentAction.startsWith(U.ACTION_UPDATE_STATIONS)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			int newOrigin = intent.getIntExtra(U.EXTRA_ORIGIN, -1);
-			int newDestination = intent.getIntExtra(U.EXTRA_DESTINATION, -1);
+			String newOrigin = intent.getStringExtra(U.EXTRA_ORIGIN);
+			String newDestination = intent.getStringExtra(U.EXTRA_DESTINATION);
 
 			U.log("Got update to: " + widgetID);
 			U.log("UpdateContains: " + newOrigin + "," + newDestination);
 
-			updateStationTexts(StationUtils.getNameFromID(newOrigin), StationUtils.getNameFromID(newDestination),
+			updateStationTexts(StationUtils.getNameFromID(newOrigin, 50), StationUtils.getNameFromID(newDestination, U.getCore(context, widgetID)),
 					context, widgetID);
 		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
 			int widgetID = U.getIdFromIntent(intent);
@@ -140,7 +140,8 @@ public class WidgetManager extends AppWidgetProvider {
 
 	private void updateStationTexts(String originText, String destinationText, Context context, int widgetID) {
 		if (widgetID != -1) {
-			U.saveStations(context, widgetID, originText, destinationText);
+			int core = U.getCore(context, widgetID);
+			U.saveStations(context, widgetID, StationUtils.getIDFromName(originText, core), StationUtils.getIDFromName(destinationText, core));
 			reloadWidget(context, widgetID);
 		} else {
 			U.log("ERROR: Widget id not found");

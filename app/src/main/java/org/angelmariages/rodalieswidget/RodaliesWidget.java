@@ -44,11 +44,12 @@ class RodaliesWidget extends RemoteViews {
 			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
 			if(schedule != null && schedule.size() > 0) {
+				int core = U.getCore(context, widgetID);
 				switch (schedule.get(0).getTransfer()) {
 					case 1: {
 						String transferStation = null;
 						try {
-							transferStation = StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one()));
+							transferStation = StationUtils.getNameFromID(schedule.get(0).getStation_transfer_one(), core);
 						} catch (NumberFormatException ignored) {}
 						if(transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
@@ -65,8 +66,8 @@ class RodaliesWidget extends RemoteViews {
 					case 2: {
 						String transferStation = null, transferStationTwo = null;
 						try {
-							transferStation = StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_one()));
-							transferStationTwo = StationUtils.getNameFromID(Integer.parseInt(schedule.get(0).getStation_transfer_two()));
+							transferStation = StationUtils.getNameFromID(schedule.get(0).getStation_transfer_one(), core);
+							transferStationTwo = StationUtils.getNameFromID(schedule.get(0).getStation_transfer_two(), core);
 						} catch (NumberFormatException ignored) { }
 						if(transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
@@ -107,9 +108,10 @@ class RodaliesWidget extends RemoteViews {
 	}
 
 	private void setStationNames() {
-		int[] stations = U.getStations(context, widgetID);
+		String[] stations = U.getStations(context, widgetID);
 		if (stations.length > 0) {
-			updateStationsText(StationUtils.getNameFromID(stations[0]), StationUtils.getNameFromID(stations[1]));
+			int core = U.getCore(context, widgetID);
+			updateStationsText(StationUtils.getNameFromID(stations[0], core), StationUtils.getNameFromID(stations[1], core));
 		}
 	}
 

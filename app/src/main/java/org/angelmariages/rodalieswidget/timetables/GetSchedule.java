@@ -20,14 +20,14 @@ import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	private final Context context;
-	private int origin = -1;
-	private int destination = -1;
+	private String origin = "-1";
+	private String destination = "-1";
 
 	public GetSchedule(Context context) {
 		this.context = context;
 	}
 
-	private ArrayList<TrainTime> get(int origin, int destination) {
+	private ArrayList<TrainTime> get(String origin, String destination) {
 		this.origin = origin;
 		this.destination = destination;
 		return getJSONFromToday();
@@ -176,9 +176,9 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	protected Void doInBackground(Integer... params) {
 		if (params.length == 1) {
 			int widgetId = params[0];
-			int[] stations = U.getStations(context, widgetId);
-			if (stations.length == 2 && stations[0] != -1 && stations[1] != -1) {
-				if (stations[0] == stations[1]) {
+			String[] stations = U.getStations(context, widgetId);
+			if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
+				if (stations[0].equals(stations[1])) {
 					U.sendNoTimesError(widgetId, context);
 				} else {
 					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);

@@ -73,7 +73,7 @@ final class ScheduleFileManager {
 		return scheduleObject.toString();
 	}
 
-	static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, int origin, int destination) {
+	static ArrayList<TrainTime> getScheduleFromJSON(String jsonString, String origin, String destination) {
 		ArrayList<TrainTime> schedule = new ArrayList<>();
 
 		try {
