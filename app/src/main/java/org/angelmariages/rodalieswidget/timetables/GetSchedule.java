@@ -22,14 +22,16 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	private final Context context;
 	private String origin = "-1";
 	private String destination = "-1";
+	private int core;
 
 	public GetSchedule(Context context) {
 		this.context = context;
 	}
 
-	private ArrayList<TrainTime> get(String origin, String destination) {
+	private ArrayList<TrainTime> get(String origin, String destination, int core) {
 		this.origin = origin;
 		this.destination = destination;
+		this.core = core;
 		return getJSONFromToday();
 	}
 
@@ -38,8 +40,12 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 
 		if (jsonFileRead.isEmpty()) {
 			U.log("Getting json from internet...");
-			RodaliesSchedule rodaliesSchedule = new RodaliesSchedule(origin, destination);
-			ArrayList<TrainTime> schedule = rodaliesSchedule.getSchedule();
+			ArrayList<TrainTime> schedule;
+			if(core == 50) {
+				schedule = new RodaliesSchedule(origin, destination).getSchedule();
+			} else {
+				schedule = new RenfeSchedule(origin, destination, core).getSchedule();
+			}
 
 			ArrayList<TrainTime> hourSchedule = null;
 			if (schedule != null && schedule.size() > 0) {
@@ -176,13 +182,15 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	protected Void doInBackground(Integer... params) {
 		if (params.length == 1) {
 			int widgetId = params[0];
+			int core = U.getCore(context, widgetId);
 			String[] stations = U.getStations(context, widgetId);
+
 			if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
 				if (stations[0].equals(stations[1])) {
 					U.sendNoTimesError(widgetId, context);
 				} else {
-					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1]);
-					get(stations[1], stations[0]);
+					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1], core);
+					get(stations[1], stations[0], core);
 
 					if (trainTimes != null) {
 						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
