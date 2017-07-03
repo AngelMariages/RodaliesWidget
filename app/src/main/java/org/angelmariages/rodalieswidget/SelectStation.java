@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.angelmariages.rodalieswidget.utils.U;
 public class SelectStation extends AppCompatActivity {
 	private int widgetID;
 	private int originOrDestination;
+	private ListView coreListView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +36,22 @@ public class SelectStation extends AppCompatActivity {
 		//This should not had been created
 		if (originOrDestination == -1) finish();
 
+		coreListView = (ListView) findViewById(R.id.coreListView);
+
 		setCoreListView();
 	}
 
 	private void setCoreListView() {
 		final Context context = this;
-		final int widgetID = this.widgetID;
-		final ListView coreListView = (ListView) findViewById(R.id.coreListView);
+
+		int core = U.getCore(context, widgetID);
+
+		if(core != -1) {
+			coreListView.setVisibility(View.GONE);
+
+			setStationListView(core);
+		}
+
 
 		if (coreListView != null) {
 			final ArrayList<String> coreList = new ArrayList<>();
@@ -56,10 +67,6 @@ public class SelectStation extends AppCompatActivity {
 					U.saveCore(context, widgetID, idFromNucli);
 
 					setStationListView(idFromNucli);
-
-					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-					inputMethodManager.toggleSoftInputFromWindow(coreListView.getApplicationWindowToken(),
-							InputMethodManager.SHOW_IMPLICIT, 0);
 				}
 			});
 
@@ -70,6 +77,18 @@ public class SelectStation extends AppCompatActivity {
 	private void setStationListView(int idFromNucli) {
 		EditText searchEditView = (EditText) findViewById(R.id.searchEditText);
 		ListView stationListView = (ListView) findViewById(R.id.stationListView);
+		ImageButton changeCoreButton = (ImageButton) findViewById(R.id.changeZoneButton);
+
+		changeCoreButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				coreListView.setVisibility(View.VISIBLE);
+			}
+		});
+
+		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.toggleSoftInputFromWindow(searchEditView.getApplicationWindowToken(),
+				InputMethodManager.SHOW_IMPLICIT, 0);
 
 		if (stationListView != null) {
 			final ArrayList<String> stationList = new ArrayList<>();
