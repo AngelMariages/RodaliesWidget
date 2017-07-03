@@ -1,5 +1,6 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.io.BufferedReader;
@@ -97,6 +98,9 @@ class RenfeSchedule {
 
 		ArrayList<String> rows = getRows(html);
 
+		transferStationOne = StationUtils.getIDFromName(transferStationOne, nucli);
+		transferStationTwo = StationUtils.getIDFromName(transferStationTwo, nucli);
+
 		return parseTimes(rows, getTransfers(rows));
 	}
 
@@ -104,14 +108,15 @@ class RenfeSchedule {
 		ArrayList<TrainTime> times = new ArrayList<>();
 		//int startRow = transfers == 0 ? 2 : 4;
 
+		String line = null, line_transfer_one = null, line_transfer_two = null, line_tmp = null;
+		String departure_time = null, arrival_time = null;
+		String departure_time_tmp = null, arrival_time_tmp = null;
+		String journey_time = null;
+		String departure_time_transfer_one = null, arrival_time_transfer_one = null;
+		String departure_time_transfer_two = null, arrival_time_transfer_two = null;
+
 		for (String row : rows) {
 			ArrayList<String> cols = getCols(row);
-
-			String line = null, line_transfer_one = null, line_transfer_two = null;
-			String departure_time = null, arrival_time = null;
-			String journey_time = null;
-			String departure_time_transfer_one = null, arrival_time_transfer_one = null;
-			String departure_time_transfer_two = null, arrival_time_transfer_two = null;
 
 			switch (transfers) {
 				case 0: {
@@ -140,15 +145,21 @@ class RenfeSchedule {
 					for (int y = 0; y < cols.size(); y++) {
 						switch (y) {
 							case 0:
-								line = getTextInsideTd(cols.get(y));
+								line_tmp = getTextInsideTd(cols.get(y));
+								if(line_tmp != null && !line_tmp.isEmpty())
+									line = line_tmp;
 								break;
 							case 1:
 								break; // Accesible tren 1
 							case 2:
-								departure_time = getTextInsideTd(cols.get(y));
+								departure_time_tmp = getTextInsideTd(cols.get(y));
+								if(departure_time_tmp != null && !departure_time_tmp.isEmpty())
+									departure_time = departure_time_tmp;
 								break;
 							case 3:
-								arrival_time = getTextInsideTd(cols.get(y));
+								arrival_time_tmp = getTextInsideTd(cols.get(y));
+								if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
+									arrival_time = arrival_time_tmp;
 								break;
 							case 4:
 								departure_time_transfer_one = getTextInsideTd(cols.get(y));
@@ -168,9 +179,9 @@ class RenfeSchedule {
 					}
 					// TODO: 21/06/2017 Check direct train, maybe there aren't direct trains
 
-					boolean isSameOrigin = (line == null || line.isEmpty()) &&
-							(departure_time == null || departure_time.isEmpty()) &&
-							(arrival_time == null || arrival_time.isEmpty());
+					boolean isSameOrigin = (line_tmp == null || line_tmp.isEmpty()) ||
+							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||
+							(arrival_time_tmp == null || arrival_time_tmp.isEmpty());
 
 					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, isSameOrigin));
 
@@ -180,15 +191,21 @@ class RenfeSchedule {
 					for (int y = 0; y < cols.size(); y++) {
 						switch (y) {
 							case 0:
-								line = getTextInsideTd(cols.get(y));
+								line_tmp = getTextInsideTd(cols.get(y));
+								if(line_tmp != null && !line_tmp.isEmpty())
+									line = line_tmp;
 								break;
 							case 1:
 								break; // Accesible tren 1
 							case 2:
-								departure_time = getTextInsideTd(cols.get(y));
+								departure_time_tmp = getTextInsideTd(cols.get(y));
+								if(departure_time_tmp != null && !departure_time_tmp.isEmpty())
+									departure_time = departure_time_tmp;
 								break;
 							case 3:
-								arrival_time = getTextInsideTd(cols.get(y));
+								arrival_time_tmp = getTextInsideTd(cols.get(y));
+								if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
+									arrival_time = arrival_time_tmp;
 								break;
 							case 4:
 								departure_time_transfer_one = getTextInsideTd(cols.get(y));
@@ -214,7 +231,12 @@ class RenfeSchedule {
 								break;
 						}
 					}
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, transferStationTwo, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false));
+
+					boolean isSameOrigin = (line_tmp == null || line_tmp.isEmpty()) ||
+							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||
+							(arrival_time_tmp == null || arrival_time_tmp.isEmpty());
+
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, transferStationTwo, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, isSameOrigin));
 				}
 				break;
 			}
@@ -226,31 +248,41 @@ class RenfeSchedule {
 	private ArrayList<String> getRows(String html) {
 		ArrayList<String> rows = new ArrayList<>();
 		lastRowIndex = 0;
+		String transferKey = "colspan=2 align=center";
 
-		int transferIndex = -1;
+		int transferIndex;
 		if (transferStationOne == null && transferStationTwo == null) {
-			transferIndex = html.indexOf("align=center><b>");
+			transferIndex = html.indexOf(transferKey);
 			if (transferIndex != -1) {
-				int transferStrLength = "align=center><b>".length();
-				transferStationOne = html.substring(transferIndex + transferStrLength, html.indexOf("</b>", transferIndex)).trim();
+				int transferStrLength = transferKey.length();
+				transferStationOne = html.substring(transferIndex + transferStrLength, html.indexOf("</td>", transferIndex)).trim();
+				if (transferStationOne.contains("Transbordo")) {
+					transferIndex = html.indexOf(transferKey, transferIndex + transferStrLength);
 
-				transferIndex = html.indexOf("align=center><b>", transferIndex + transferStrLength);
-				if (transferIndex != -1) {
-					transferStationTwo = html.substring(transferIndex + transferStrLength, html.indexOf("</b>", transferIndex)).trim();
-				}
-			}
-		}
-
-		if (transferIndex == -1 && transferStationOne == null) {
-			transferIndex = html.indexOf("colspan=2 align=center>");
-			if (transferIndex != -1) {
-				int transferStrLength = "colspan=2 align=center>".length();
-
-				transferIndex = html.indexOf("colspan=2 align=center>", transferIndex + transferStrLength);
-				if (transferIndex != -1) {
 					transferStationOne = html.substring(transferIndex + transferStrLength, html.indexOf("</td>", transferIndex)).trim();
+				}
+				if (transferStationOne.contains("Transbordo")) {
+					transferIndex = html.indexOf(transferKey, transferIndex + transferStrLength);
 
-					transferStationOne = transferStationOne.replace((char) 65533, 'ó');
+					transferStationOne = html.substring(transferIndex + transferStrLength, html.indexOf("</td>", transferIndex)).trim();
+				}
+
+				transferIndex = html.indexOf(transferKey, transferIndex + transferStrLength);
+				if (transferIndex != -1) {
+					transferStationTwo = html.substring(transferIndex + transferStrLength, html.indexOf("</td>", transferIndex)).trim();
+				}
+
+				if(transferStationOne != null) {
+					transferStationOne = transferStationOne.replace("<b>", "");
+					transferStationOne = transferStationOne.replace("</b>", "");
+					transferStationOne = transferStationOne.replace(">", "");
+					transferStationOne = transferStationOne.trim();
+				}
+				if(transferStationTwo != null) {
+					transferStationTwo = transferStationTwo.replace("<b>", "");
+					transferStationTwo = transferStationTwo.replace("</b>", "");
+					transferStationTwo = transferStationTwo.replace(">", "");
+					transferStationTwo = transferStationTwo.trim();
 				}
 			}
 		}

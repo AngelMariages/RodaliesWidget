@@ -840,7 +840,18 @@ public final class StationUtils {
 		R16("#B30738", Color.WHITE),
 		RG1("#1A75CE", Color.WHITE),
 		RT1("#00C3B5", Color.WHITE),
-		RT2("#E56BC2", Color.WHITE);
+		RT2("#E56BC2", Color.WHITE),
+		C1("#57ABDF",Color.WHITE),
+		C1A("#FF171C",Color.WHITE),
+		C2("#007B35",Color.WHITE),
+		C3("#0055A0",Color.WHITE),
+		C4A("#2C3F99",Color.WHITE),
+		C5("#FCB529",Color.WHITE),
+		C7("#DD1E28",Color.WHITE),
+		C8B("#179447",Color.WHITE),
+		C8D("#5C5C5C",Color.WHITE),
+		C9("#F26226",Color.WHITE),
+		C10("#86C440",Color.WHITE);
 
 		private final String s;
 		private final int c;
