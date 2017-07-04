@@ -94,7 +94,6 @@ class RenfeSchedule {
 
 	ArrayList<TrainTime> getSchedule() {
 		String html = getPageFromInternet();
-		if (html.isEmpty()) return null;
 
 		ArrayList<String> rows = getRows(html);
 
@@ -247,6 +246,7 @@ class RenfeSchedule {
 
 	private ArrayList<String> getRows(String html) {
 		ArrayList<String> rows = new ArrayList<>();
+		if(html == null || html.isEmpty()) return rows;
 		lastRowIndex = 0;
 		String transferKey = "colspan=2 align=center";
 
@@ -312,18 +312,19 @@ class RenfeSchedule {
 	}
 
 	private ArrayList<String> getCols(String row) {
-		ArrayList<String> rows = new ArrayList<>();
+		ArrayList<String> cols = new ArrayList<>();
+		if(row == null) return cols;
 		int lastIndex[] = new int[1];
 		lastIndex[0] = 0;
 
-		rows.add(findNextCol(row, 0, lastIndex));
+		cols.add(findNextCol(row, 0, lastIndex));
 		while (lastIndex[0] != -1) {
 			String nextCol = findNextCol(row, lastIndex[0], lastIndex);
 			if (nextCol != null)
-				rows.add(nextCol);
+				cols.add(nextCol);
 		}
 
-		return rows;
+		return cols;
 	}
 
 	private String findNextCol(String row, int startFrom, int[] lastIndex) {
@@ -346,6 +347,7 @@ class RenfeSchedule {
 	}
 
 	private int numOfCols(String html) {
+		if(html == null) return 0;
 		int lastIndex = 0;
 		int count = 0;
 

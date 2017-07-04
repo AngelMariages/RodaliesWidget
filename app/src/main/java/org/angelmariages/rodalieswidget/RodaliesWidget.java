@@ -55,10 +55,10 @@ class RodaliesWidget extends RemoteViews {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
 							this.setTextViewText(R.id.lineTransferOneText, schedule.get(0).getLine_transfer_one());
 							try {
-								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one()).getBColor()));
-								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one()).getTColor());
+								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_one());
+								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_one() + core);
 							}
 						}
 						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
@@ -73,10 +73,10 @@ class RodaliesWidget extends RemoteViews {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
 							this.setTextViewText(R.id.lineTransferOneText, schedule.get(0).getLine_transfer_one());
 							try {
-								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one()).getBColor()));
-								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one()).getTColor());
+								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_one() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_one());
+								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_one() + core);
 							}
 						}
 						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
@@ -84,10 +84,10 @@ class RodaliesWidget extends RemoteViews {
 							this.setTextViewText(R.id.transferTwoTitleText, transferStationTwo);
 							this.setTextViewText(R.id.lineTransferTwoText, schedule.get(0).getLine_transfer_two());
 							try {
-								this.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_two()).getBColor()));
-								this.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_two()).getTColor());
+								this.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_two() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(schedule.get(0).getLine_transfer_two() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_two());
+								U.log("Unknown color for setTexts: " + schedule.get(0).getLine_transfer_two() + core);
 							}
 						}
 						else this.setViewVisibility(R.id.transferTwoTitleText, View.GONE);

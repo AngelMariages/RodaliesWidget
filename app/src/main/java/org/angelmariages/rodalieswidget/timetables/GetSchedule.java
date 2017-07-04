@@ -48,7 +48,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			}
 
 			ArrayList<TrainTime> hourSchedule = null;
-			if (schedule != null && schedule.size() > 0) {
+			if (schedule != null) {
 				hourSchedule = new ArrayList<>();
 				addHoursToShedule(schedule, hourSchedule);
 
@@ -130,7 +130,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 	}
 
 	private void saveJSONFile(String jsonFile) {
-		if (jsonFile.isEmpty()) return;
+		if (jsonFile == null || jsonFile.isEmpty()) return;
 
 		String fileName = "horaris_" + origin + "_" + destination + "_" + U.getTodayDateWithoutPath() + ".json";
 
@@ -191,6 +191,10 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 				} else {
 					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1], core);
 					get(stations[1], stations[0], core);
+
+					U.log("Train times: " + trainTimes);
+					if (trainTimes != null)
+						U.log("Train times size: " + trainTimes.size());
 
 					if (trainTimes != null) {
 						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
