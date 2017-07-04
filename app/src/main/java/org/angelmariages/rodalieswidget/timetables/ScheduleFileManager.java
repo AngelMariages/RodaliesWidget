@@ -31,7 +31,7 @@ final class ScheduleFileManager {
 	}
 
 	static String getJSONString(ArrayList<TrainTime> trainTimes) {
-		if (trainTimes.size() < 1) return null;
+		if (trainTimes == null || trainTimes.size() < 1) return null;
 		JSONObject scheduleObject = new JSONObject();
 
 		int transfers = trainTimes.get(0).getTransfer();
