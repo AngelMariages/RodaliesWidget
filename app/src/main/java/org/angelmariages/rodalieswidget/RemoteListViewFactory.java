@@ -19,6 +19,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final boolean group_transfer_exits, show_more_transfer_trains;
 	private final int currentHour, currentMinute;
 	private final int widgetID;
+	private final int core;
 	private String alarm_departure_time;
 	private int transfers = 0;
 	private Context context = null;
@@ -36,6 +37,8 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		currentHour = U.getCurrentHour();
 		currentMinute = U.getCurrentMinute();
+
+		core = U.getCore(context, widgetID);
 
 		U.log("RemoteListViewFactory()");
 		if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
@@ -242,10 +245,10 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		row.setTextViewText(R.id.departureTimeText, departure_time);
 		row.setTextViewText(R.id.arrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
-			row.setTextColor(R.id.lineText, StationUtils.ColorLines.valueOf(line).getTColor());
+			row.setInt(R.id.lineText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line + core).getBColor()));
+			row.setTextColor(R.id.lineText, StationUtils.ColorLines.valueOf(line + core).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for setTexts: " + line);
+			U.log("Unknown color for setTexts: " + line + core);
 		}
 	}
 
@@ -254,10 +257,10 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		row.setTextViewText(R.id.transferOneDepartureTimeText, departure_time);
 		row.setTextViewText(R.id.transferOneArrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
-			row.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(line).getTColor());
+			row.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line + core).getBColor()));
+			row.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(line + core).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for setTexts: " + line);
+			U.log("Unknown color for setTexts: " + line + core);
 		}
 	}
 
@@ -266,10 +269,10 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		row.setTextViewText(R.id.transferTwoDepartureTimeText, departure_time);
 		row.setTextViewText(R.id.transferTwoArrivalTimeText, arrival_time);
 		try {
-			row.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line).getBColor()));
-			row.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(line).getTColor());
+			row.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(line + core).getBColor()));
+			row.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(line + core).getTColor());
 		} catch (Exception e) {
-			U.log("Unknown color for setTexts: " + line);
+			U.log("Unknown color for setTexts: " + line + core);
 		}
 	}
 

@@ -826,32 +826,69 @@ public final class StationUtils {
 
 	@SuppressWarnings("unused")
 	public enum ColorLines {
-		R1("#79BDE8", Color.WHITE),
-		R2("#00A650", Color.WHITE),
-		R3("#EF3E33", Color.WHITE),
-		R4("#F9A13A", Color.WHITE),
-		R7("#B77CB6", Color.WHITE),
-		R8("#8B0066", Color.WHITE),
-		R11("#0069AA", Color.WHITE),
-		R12("#FFDD00", Color.BLACK),
-		R13("#EA4498", Color.WHITE),
-		R14("#6658A6", Color.WHITE),
-		R15("#948671", Color.WHITE),
-		R16("#B30738", Color.WHITE),
-		RG1("#1A75CE", Color.WHITE),
-		RT1("#00C3B5", Color.WHITE),
-		RT2("#E56BC2", Color.WHITE),
-		C1("#57ABDF",Color.WHITE),
-		C1A("#FF171C",Color.WHITE),
-		C2("#007B35",Color.WHITE),
-		C3("#0055A0",Color.WHITE),
-		C4A("#2C3F99",Color.WHITE),
-		C5("#FCB529",Color.WHITE),
-		C7("#DD1E28",Color.WHITE),
-		C8B("#179447",Color.WHITE),
-		C8D("#5C5C5C",Color.WHITE),
-		C9("#F26226",Color.WHITE),
-		C10("#86C440",Color.WHITE);
+		//Barcelona
+		R150("#79BDE8", Color.WHITE),
+		R250("#00A650", Color.WHITE),
+		R350("#EF3E33", Color.WHITE),
+		R450("#F9A13A", Color.WHITE),
+		R750("#B77CB6", Color.WHITE),
+		R850("#8B0066", Color.WHITE),
+		R1150("#0069AA", Color.WHITE),
+		R1250("#FFDD00", Color.BLACK),
+		R1350("#EA4498", Color.WHITE),
+		R1450("#6658A6", Color.WHITE),
+		R1550("#948671", Color.WHITE),
+		R1650("#B30738", Color.WHITE),
+		RG150("#1A75CE", Color.WHITE),
+		RT150("#00C3B5", Color.WHITE),
+		RT250("#E56BC2", Color.WHITE),
+		//Asturias
+		C120("#EB4A44", Color.WHITE),
+		C220("#02A760", Color.WHITE),
+		C320("#0763AC", Color.WHITE),
+		//Bilbao
+		C160("#EB4A44", Color.WHITE),
+		C260("#02A760", Color.WHITE),
+		C360("#0763AC", Color.WHITE),
+		//Cadiz
+		C131("#EB4A44", Color.WHITE),
+		C1A31("#EB4A44", Color.WHITE),
+		//Madrid
+		C110("#64ADDE", Color.WHITE),
+		C210("#088C29", Color.WHITE),
+		C310("#0055A0", Color.WHITE),
+		C410("#0F318C", Color.WHITE),
+		C510("#F9B410", Color.WHITE),
+		C710("#D70020", Color.WHITE),
+		C810("#088C29", Color.WHITE),
+		C910("#EE5513", Color.WHITE),
+		C1010("#93BC0E", Color.WHITE),
+		//Malaga
+		C132("#4588D0", Color.WHITE),
+		C232("#00712E", Color.WHITE),
+		//Murcia/Alicante
+		C141("#459FD4", Color.WHITE),
+		C241("#019959", Color.WHITE),
+		C341("#9F4797", Color.WHITE),
+		//Santander
+		C162("#EA4747", Color.WHITE),
+		//San sebastian
+		C161("#EA4747", Color.WHITE),
+		//Sevilla
+		C130("#4D8FC3", Color.WHITE),
+		C230("#007B35", Color.WHITE),
+		C330("#FF171B", Color.WHITE),
+		C430("#931A8B", Color.WHITE),
+		C530("#00328B", Color.WHITE),
+		//Valencia
+		C140("#4E8FC2", Color.WHITE),
+		C240("#FFB20F", Color.WHITE),
+		C340("#921A8A", Color.WHITE),
+		C440("#FF171C", Color.WHITE),
+		C540("#008B29", Color.WHITE),
+		C640("#00328B", Color.WHITE),
+		//Zaragoza
+		C170("#E4484B", Color.WHITE);
 
 		private final String s;
 		private final int c;
