@@ -192,10 +192,6 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 					ArrayList<TrainTime> trainTimes = get(stations[0], stations[1], core);
 					get(stations[1], stations[0], core);
 
-					U.log("Train times: " + trainTimes);
-					if (trainTimes != null)
-						U.log("Train times size: " + trainTimes.size());
-
 					if (trainTimes != null) {
 						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
 						sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);

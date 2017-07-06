@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Rodalies Widget</string>
-    <string name="title_activity_select_station">Select the station</string>
+    <string name="title_activity_select_station">Select the destination</string>
     <string name="no_origin_set">Touch to set the origin</string>
     <string name="no_destination_set">Touch to set the destination</string>
     <string name="no_internet">There\'s no internet available and we don\'t have any data saved</string>
@@ -12,6 +12,7 @@
     <string name="transfer_departure">Transfer</string>
     <string name="travel_time_toast">Alarm set: %s</string>
     <string name="dataInfoText">Schedules offered by Rodalies de Catalunya</string>
+    <string name="dataInfoTextRenf">Schedules offered by Renfe</string>
     <string name="transfer_station_one">Transfer:</string>
     <string name="transfer_stations_one">1st transfer:</string>
     <string name="transfer_stations_two">2nd transfer:</string>
