@@ -2,7 +2,7 @@
     <string name="no_destination_set">Toca per la destinació</string>
     <string name="no_internet">No es pot accedir a internet i tampoc tenim dades guardades d\'aquestes estacions</string>
     <string name="no_origin_set">Toca per l\'origen</string>
-    <string name="title_activity_select_station">Selecciona l\'estació</string>
+    <string name="title_activity_select_station">Selecciona la destinació</string>
     <string name="no_stations">L\'origen o la destinació no estan configurats</string>
     <string name="departure">Sortida</string>
     <string name="arrival">Arribada</string>
@@ -11,6 +11,7 @@
     <string name="transfer_departure">Transbord</string>
     <string name="travel_time_toast">Duracio del trajecte: %s</string>
     <string name="dataInfoText">Horaris oferts per Rodalies de Catalunya</string>
+    <string name="dataInfoTextRenf">Horaris oferts per Renfe</string>
     <string name="transfer_station_one">Transbord:</string>
     <string name="transfer_departure_two">2n transbord</string>
     <string name="transfer_stations_one">1r transbord:</string>

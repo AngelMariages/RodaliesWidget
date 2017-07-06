@@ -103,7 +103,10 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getViewAt(int position) {
 		if (position == schedule.size()) {//Data origin row
-			return new RemoteViews(context.getPackageName(), R.layout.data_info_line);
+			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.data_info_line);
+			if(core != 50)
+				remoteViews.setTextViewText(R.id.dataInfoText, context.getString(R.string.dataInfoTextRenf));
+			return remoteViews;
 		} else {
 			RemoteViews row = null;
 			TrainTime trainTime = schedule.get(position);
