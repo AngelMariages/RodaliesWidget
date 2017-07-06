@@ -74,6 +74,7 @@ class RenfeSchedule {
 	}
 
 	private int getTransfers(ArrayList<String> rows) {
+		if(rows == null || rows.size() == 0) return 0;
 		int numTds = numOfCols(rows.get(0));
 		int transfers = -1;
 
@@ -141,6 +142,8 @@ class RenfeSchedule {
 				}
 				break;
 				case 1: {
+					boolean isDirectTrain = false;
+
 					for (int y = 0; y < cols.size(); y++) {
 						switch (y) {
 							case 0:
@@ -157,22 +160,28 @@ class RenfeSchedule {
 								break;
 							case 3:
 								arrival_time_tmp = getTextInsideTd(cols.get(y));
-								if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
-									arrival_time = arrival_time_tmp;
+
+								if (arrival_time_tmp.contains("irecto")) isDirectTrain = true;
+								else {
+									if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
+										arrival_time = arrival_time_tmp;
+								}
 								break;
 							case 4:
-								departure_time_transfer_one = getTextInsideTd(cols.get(y));
+								if(!isDirectTrain) departure_time_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 5:
-								line_transfer_one = getTextInsideTd(cols.get(y));
+								if(!isDirectTrain) line_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 6:
+								if(isDirectTrain) arrival_time = getTextInsideTd(cols.get(y));
 								break; // Accesible tren 2
 							case 7:
-								arrival_time_transfer_one = getTextInsideTd(cols.get(y));
+								if(isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
+								else arrival_time_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 8:
-								journey_time = getTextInsideTd(cols.get(y));
+								if(!isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
 								break;
 						}
 					}
@@ -182,7 +191,7 @@ class RenfeSchedule {
 							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||
 							(arrival_time_tmp == null || arrival_time_tmp.isEmpty());
 
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, isSameOrigin));
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, isDirectTrain, isSameOrigin));
 
 				}
 				break;

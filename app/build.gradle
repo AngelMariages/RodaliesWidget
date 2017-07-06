@@ -8,8 +8,8 @@ android {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 25
-        versionName "1.7"
+        versionCode 27
+        versionName "1.7.2"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -19,7 +19,7 @@ android {
         }
 
         debug {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
