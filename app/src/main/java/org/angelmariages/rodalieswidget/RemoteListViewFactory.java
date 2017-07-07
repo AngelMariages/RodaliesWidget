@@ -9,7 +9,13 @@ import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
@@ -96,7 +102,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getCount() {
-		if (schedule != null) return schedule.size() + 1;
+		if (schedule != null) return schedule.size() + 2;
 		else return 0;
 	}
 
@@ -106,6 +112,15 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.data_info_line);
 			if(core != 50)
 				remoteViews.setTextViewText(R.id.dataInfoText, context.getString(R.string.dataInfoTextRenf));
+			return remoteViews;
+		}
+		else if(position == schedule.size() + 1) {
+			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.switch_day_line);
+			String dayOfWeek = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+			dayOfWeek = dayOfWeek.substring(0, 1).toUpperCase() + dayOfWeek.substring(1);
+			String dayOfMonth = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+			String month = Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+			remoteViews.setTextViewText(R.id.dateText, dayOfWeek + " " + dayOfMonth + " " + month);
 			return remoteViews;
 		} else {
 			RemoteViews row = null;
