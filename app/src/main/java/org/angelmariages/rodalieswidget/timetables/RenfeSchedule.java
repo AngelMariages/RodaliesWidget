@@ -74,7 +74,7 @@ class RenfeSchedule {
 	}
 
 	private int getTransfers(ArrayList<String> rows) {
-		if(rows == null || rows.size() == 0) return 0;
+		if (rows == null || rows.size() == 0) return 0;
 		int numTds = numOfCols(rows.get(0));
 		int transfers = -1;
 
@@ -82,6 +82,7 @@ class RenfeSchedule {
 			case 5:
 				transfers = 0;
 				break;
+			case 8:
 			case 9:
 				transfers = 1;
 				break;
@@ -148,14 +149,14 @@ class RenfeSchedule {
 						switch (y) {
 							case 0:
 								line_tmp = getTextInsideTd(cols.get(y));
-								if(line_tmp != null && !line_tmp.isEmpty())
+								if (line_tmp != null && !line_tmp.isEmpty())
 									line = line_tmp;
 								break;
 							case 1:
 								break; // Accesible tren 1
 							case 2:
 								departure_time_tmp = getTextInsideTd(cols.get(y));
-								if(departure_time_tmp != null && !departure_time_tmp.isEmpty())
+								if (departure_time_tmp != null && !departure_time_tmp.isEmpty())
 									departure_time = departure_time_tmp;
 								break;
 							case 3:
@@ -163,25 +164,27 @@ class RenfeSchedule {
 
 								if (arrival_time_tmp.contains("irecto")) isDirectTrain = true;
 								else {
-									if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
+									if (arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
 										arrival_time = arrival_time_tmp;
 								}
 								break;
 							case 4:
-								if(!isDirectTrain) departure_time_transfer_one = getTextInsideTd(cols.get(y));
+								if (!isDirectTrain)
+									departure_time_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 5:
-								if(!isDirectTrain) line_transfer_one = getTextInsideTd(cols.get(y));
+								if (!isDirectTrain)
+									line_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 6:
-								if(isDirectTrain) arrival_time = getTextInsideTd(cols.get(y));
+								if (isDirectTrain) arrival_time = getTextInsideTd(cols.get(y));
 								break; // Accesible tren 2
 							case 7:
-								if(isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
+								if (isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
 								else arrival_time_transfer_one = getTextInsideTd(cols.get(y));
 								break;
 							case 8:
-								if(!isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
+								if (!isDirectTrain) journey_time = getTextInsideTd(cols.get(y));
 								break;
 						}
 					}
@@ -190,6 +193,12 @@ class RenfeSchedule {
 					boolean isSameOrigin = (line_tmp == null || line_tmp.isEmpty()) ||
 							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||
 							(arrival_time_tmp == null || arrival_time_tmp.isEmpty());
+
+					if (isDirectTrain) {
+						departure_time_transfer_one = null;
+						departure_time_transfer_two = null;
+						line_transfer_one = null;
+					}
 
 					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, isDirectTrain, isSameOrigin));
 
@@ -200,19 +209,19 @@ class RenfeSchedule {
 						switch (y) {
 							case 0:
 								line_tmp = getTextInsideTd(cols.get(y));
-								if(line_tmp != null && !line_tmp.isEmpty())
+								if (line_tmp != null && !line_tmp.isEmpty())
 									line = line_tmp;
 								break;
 							case 1:
 								break; // Accesible tren 1
 							case 2:
 								departure_time_tmp = getTextInsideTd(cols.get(y));
-								if(departure_time_tmp != null && !departure_time_tmp.isEmpty())
+								if (departure_time_tmp != null && !departure_time_tmp.isEmpty())
 									departure_time = departure_time_tmp;
 								break;
 							case 3:
 								arrival_time_tmp = getTextInsideTd(cols.get(y));
-								if(arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
+								if (arrival_time_tmp != null && !arrival_time_tmp.isEmpty())
 									arrival_time = arrival_time_tmp;
 								break;
 							case 4:
@@ -255,7 +264,7 @@ class RenfeSchedule {
 
 	private ArrayList<String> getRows(String html) {
 		ArrayList<String> rows = new ArrayList<>();
-		if(html == null || html.isEmpty()) return rows;
+		if (html == null || html.isEmpty()) return rows;
 		lastRowIndex = 0;
 		String transferKey = "colspan=2 align=center";
 
@@ -281,13 +290,13 @@ class RenfeSchedule {
 					transferStationTwo = html.substring(transferIndex + transferStrLength, html.indexOf("</td>", transferIndex)).trim();
 				}
 
-				if(transferStationOne != null) {
+				if (transferStationOne != null) {
 					transferStationOne = transferStationOne.replace("<b>", "");
 					transferStationOne = transferStationOne.replace("</b>", "");
 					transferStationOne = transferStationOne.replace(">", "");
 					transferStationOne = transferStationOne.trim();
 				}
-				if(transferStationTwo != null) {
+				if (transferStationTwo != null) {
 					transferStationTwo = transferStationTwo.replace("<b>", "");
 					transferStationTwo = transferStationTwo.replace("</b>", "");
 					transferStationTwo = transferStationTwo.replace(">", "");
@@ -322,7 +331,7 @@ class RenfeSchedule {
 
 	private ArrayList<String> getCols(String row) {
 		ArrayList<String> cols = new ArrayList<>();
-		if(row == null) return cols;
+		if (row == null) return cols;
 		int lastIndex[] = new int[1];
 		lastIndex[0] = 0;
 
@@ -356,7 +365,7 @@ class RenfeSchedule {
 	}
 
 	private int numOfCols(String html) {
-		if(html == null) return 0;
+		if (html == null) return 0;
 		int lastIndex = 0;
 		int count = 0;
 

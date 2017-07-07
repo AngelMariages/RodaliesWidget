@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.angelmariages.rodalieswidget.timetables.GetSchedule;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 class RodaliesWidget extends RemoteViews {
 	private int state = U.WIDGET_STATE_SCHEDULE_LOADED;
@@ -26,6 +30,9 @@ class RodaliesWidget extends RemoteViews {
 		super(context.getPackageName(), layout);
 		this.context = context;
 		this.widgetID = widgetID;
+
+		Fabric.with(context, new Crashlytics());
+
 		setStationNames();
 		setPendingIntents();
 		//@TODO manage web service status !important
@@ -110,8 +117,13 @@ class RodaliesWidget extends RemoteViews {
 
 	private void setStationNames() {
 		String[] stations = U.getStations(context, widgetID);
-		if (stations.length > 0) {
+		if (stations.length == 2) {
 			int core = U.getCore(context, widgetID);
+
+			Crashlytics.setString("origin", stations[0]);
+			Crashlytics.setString("destination", stations[1]);
+			Crashlytics.setInt("core", core);
+
 			updateStationsText(StationUtils.getNameFromID(stations[0], core), StationUtils.getNameFromID(stations[1], core));
 		}
 	}

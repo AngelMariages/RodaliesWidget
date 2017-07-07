@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import io.fabric.sdk.android.Fabric;
+
 public class TrainTime implements Serializable {
 	private int transfer = 0;
 	private final String line;
