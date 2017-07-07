@@ -9,11 +9,15 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 public class WidgetManager extends AppWidgetProvider {
 
@@ -39,8 +43,6 @@ public class WidgetManager extends AppWidgetProvider {
 
 			appWidgetManager.updateAppWidget(widgetID, reloadWidget(context, widgetID));
 
-			U.logUpdates(context, widgetID);
-
 			U.log("Updating widget id:" + i + " widgetID? " + widgetID);
 		}
 	}
@@ -52,6 +54,8 @@ public class WidgetManager extends AppWidgetProvider {
 		String intentAction = intent.getAction();
 
 		U.log("onReceive(); intentAction: " + intentAction);
+
+		Fabric.with(context, new Crashlytics());
 
 		if (intentAction.isEmpty()) return;
 
@@ -86,7 +90,7 @@ public class WidgetManager extends AppWidgetProvider {
 			int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
 			if (widgetID != -1 && originOrDestination != -1) {
 				Intent dialogActivity = new Intent(context, SelectStation.class);
-				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				dialogActivity.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
 				dialogActivity.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 
@@ -110,10 +114,10 @@ public class WidgetManager extends AppWidgetProvider {
 
 			context.startActivity(new Intent(context, SelectAlarmActivity.class)
 					.setAction(departureTime)
-					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK)
+					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
 					.putExtra(U.EXTRA_WIDGET_ID, widgetID)
 			);
-		} else if(intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
+		} else if (intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
 			int widgetID = U.getIdFromIntent(intent);
 
 			notifyUpdate(context, widgetID);
@@ -161,20 +165,20 @@ public class WidgetManager extends AppWidgetProvider {
 		if (schedule != null && schedule.size() > 0) {
 			if (schedule.get(0).getTransfer() == 1)
 				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule);
-			else if(schedule.get(0).getTransfer() == 2)
+			else if (schedule.get(0).getTransfer() == 2)
 				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule);
 
 			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
 			boolean show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
 
-			if(!show_more_transfer_trains) {
+			if (!show_more_transfer_trains) {
 				ArrayList<TrainTime> scheduleTmp = new ArrayList<>(schedule);
 				for (TrainTime trainTime : scheduleTmp) {
-					if(trainTime.isSame_origin_train()) schedule.remove(trainTime);
+					if (trainTime.isSame_origin_train()) schedule.remove(trainTime);
 				}
 			}
 
-			if(scroll_to_time) {
+			if (scroll_to_time) {
 				final RodaliesWidget finalWidget = widget;
 				final HandlerThread scrollHandlerThread = new HandlerThread("ScrollHandlerThread");
 				scrollHandlerThread.start();
@@ -204,13 +208,13 @@ public class WidgetManager extends AppWidgetProvider {
 				hour = Integer.parseInt(split[0]);
 				minute = Integer.parseInt(split[1]);
 			}
-			if((hour == currentHour && minute > currentMinute) || hour > currentHour) return i;
+			if ((hour == currentHour && minute > currentMinute) || hour > currentHour) return i;
 		}
 		return 0;
 	}
 
 	private RodaliesWidget reloadWidget(Context context, int widgetID) {
-		if(widgetID != -1) {
+		if (widgetID != -1) {
 			RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null);
 			AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 			return widget;
