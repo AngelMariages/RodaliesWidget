@@ -8,8 +8,8 @@ android {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 27
-        versionName "1.7.2"
+        versionCode 28
+        versionName "1.7.3"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -25,6 +25,22 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.22.0'
+    }
+}
+
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -34,6 +50,10 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:25.3.1'
 
     compile 'net.grandcentrix.tray:tray:0.12.0'
+
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -66,7 +66,6 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			if (scheduleFromJSON.size() > 0) {
 				addHoursToShedule(scheduleFromJSON, hourSchedule);
 			}
-
 			return hourSchedule;
 		}
 	}
@@ -151,7 +150,8 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return !name.endsWith(endsWith) && !name.equals("instant-run");
+				// TODO: 6/7/17 Better filter, check for ".json" ending
+				return !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
 			}
 		};
 
@@ -169,7 +169,7 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return !name.endsWith(".json") && !name.endsWith(endsWith) && !name.equals("instant-run");
+				return !name.endsWith(".json") && !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
 			}
 		};
 
