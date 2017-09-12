@@ -150,7 +150,6 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				// TODO: 6/7/17 Better filter, check for ".json" ending
 				if (name.contains("_")) {
 					String[] split = name.split("_");
 					if (split.length == 4) {
