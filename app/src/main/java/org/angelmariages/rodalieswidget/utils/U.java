@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.format.DateUtils;
 import android.util.Log;
 
-import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,9 +24,13 @@ import org.angelmariages.rodalieswidget.AlarmReceiver;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class U {
 	//====================== [ CONSTANTS ] ======================
@@ -309,6 +313,17 @@ public final class U {
 		Calendar cal = Calendar.getInstance();
 		return String.format(Locale.getDefault(), "%02d%02d%d",
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
+	}
+
+	public static boolean isDateFuture(String dateWithoutPath) {
+		SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+		try {
+			Date date = new Date(format.parse(dateWithoutPath).getTime());
+			return DateUtils.isToday(date.getTime()) || date.after(Calendar.getInstance().getTime());
+		} catch (ParseException e) {
+			U.log("Can't parse date for isDateFuture " + dateWithoutPath);
+			return false;
+		}
 	}
 
 	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {

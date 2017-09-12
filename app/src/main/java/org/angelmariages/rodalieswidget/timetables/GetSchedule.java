@@ -151,30 +151,22 @@ public class GetSchedule extends AsyncTask<Integer, Void, Void> {
 			@Override
 			public boolean accept(File dir, String name) {
 				// TODO: 6/7/17 Better filter, check for ".json" ending
+				if (name.contains("_")) {
+					String[] split = name.split("_");
+					if (split.length == 4) {
+						int ind = split[3].indexOf(".json");
+						if (ind != -1) {
+							String fileDate = split[3].substring(0, ind);
+							return !U.isDateFuture(fileDate);
+						}
+					}
+				}
 				return !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
 			}
 		};
 
 		for (File file : filesDir.listFiles(filenameFilter)) {
 			U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
-		}
-		// TODO: 29/01/17 Clear this in the next release
-		removeOldXML();
-	}
-
-	private void removeOldXML() {
-		File filesDir = context.getFilesDir();
-		final String endsWith = "_" + U.getTodayDateWithoutPath() + ".xml";
-
-		FilenameFilter filenameFilter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return !name.endsWith(".json") && !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
-			}
-		};
-
-		for (File file : filesDir.listFiles(filenameFilter)) {
-			U.log("Deleting old file: " + file.getName() + ";RESULT: " + file.delete());
 		}
 	}
 
