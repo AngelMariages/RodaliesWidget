@@ -188,7 +188,6 @@ class RenfeSchedule {
 								break;
 						}
 					}
-					// TODO: 21/06/2017 Check direct train, maybe there aren't direct trains
 
 					boolean isSameOrigin = (line_tmp == null || line_tmp.isEmpty()) ||
 							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||

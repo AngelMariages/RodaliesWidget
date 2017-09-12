@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public final class U {
 	//====================== [ CONSTANTS ] ======================
@@ -324,6 +323,15 @@ public final class U {
 			U.log("Can't parse date for isDateFuture " + dateWithoutPath);
 			return false;
 		}
+	}
+
+	public static boolean isBeforeCurrentHour(int currentHour, int currentMinute, String time) {
+		if (time == null) return false;
+		String[] split = time.split(":");
+		int hour = Integer.parseInt(split[0]);
+		int minute = Integer.parseInt(split[1]);
+
+		return hour != 0 && (hour < currentHour || hour == currentHour && minute <= currentMinute);
 	}
 
 	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {

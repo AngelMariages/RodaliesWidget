@@ -9,12 +9,8 @@ import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -125,7 +121,7 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		} else {
 			RemoteViews row = null;
 			TrainTime trainTime = schedule.get(position);
-			boolean isBeforeCurrentHour = isBeforeCurrentHour(trainTime.getDeparture_time());
+			boolean isBeforeCurrentHour = U.isBeforeCurrentHour(currentHour, currentMinute, trainTime.getDeparture_time());
 			switch (transfers) {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
@@ -309,15 +305,6 @@ class RemoteListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		row.setTextColor(R.id.transferTwoArrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
 	}
 
-	//@TODO Move this to Utils
-	private boolean isBeforeCurrentHour(String time) {
-		if (time == null) return false;
-		String[] split = time.split(":");
-		int hour = Integer.parseInt(split[0]);
-		int minute = Integer.parseInt(split[1]);
-
-		return hour != 0 && (hour < currentHour || hour == currentHour && minute <= currentMinute);
-	}
 
 	@Override
 	public RemoteViews getLoadingView() {
