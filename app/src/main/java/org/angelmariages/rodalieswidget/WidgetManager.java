@@ -87,11 +87,11 @@ public class WidgetManager extends AppWidgetProvider {
 		} else if (intentAction.startsWith(U.ACTION_CLICK_STATIONS_TEXT)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			int originOrDestination = intent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
+			int originOrDestination = intent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
 			if (widgetID != -1 && originOrDestination != -1) {
 				Intent dialogActivity = new Intent(context, SelectStation.class);
 				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				dialogActivity.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
+				dialogActivity.putExtra(U.EXTRA_ORIGINorDESTINATION, originOrDestination);
 				dialogActivity.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 
 				context.startActivity(dialogActivity);

@@ -2,6 +2,8 @@ package org.angelmariages.rodalieswidget.utils;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,7 +48,7 @@ public final class U {
 	public static final String ACTION_SEND_SCHEDULE = "org.angelmariages.RodaliesWidget.ACTION_WIDGET_SEND_SCHEDULE_";
 	public static final String ACTION_NOTIFY_UPDATE = "org.angelmariages.RodaliesWidget.ACTION_NOTIFY_UPDATE_";
 
-	public static final String EXTRA_OREGNorDESTINATION = "org.angelmariages.RodaliesWidget.originOrDestination";
+	public static final String EXTRA_ORIGINorDESTINATION = "org.angelmariages.RodaliesWidget.originOrDestination";
 	public static final String EXTRA_ORIGIN = "org.angelmariages.RodaliesWidget.extraOrigin";
 	public static final String EXTRA_DESTINATION = "org.angelmariages.RodaliesWidget.extraDestination";
 	public static final String EXTRA_WIDGET_ID = "org.angelmariages.RodaliesWidget.extraWidgetId";
@@ -57,11 +59,13 @@ public final class U {
 	public static final String EXTRA_SCHEDULE_BUNDLE = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_BUNDLE";
 
 	private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
+	private static final String PREFERENCE_GLOBAL_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_GLOBAL_KEY";
 	private static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
 	private static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
 	private static final String PREFERENCE_STRING_ALARM_FOR_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_FOR_ID_";
 	public static final String PREFERENCE_STRING_ALARM_URI = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_URI";
 	private static final String PREFERENCE_STRING_CORE_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_CORE_ID_";
+	private static final String PREFERENCE_BOOLEAN_FIRST_TIME = "org.angelmariages.RodaliesWidget.PREFERENCE_BOOLEAN_FIRST_TIME";
 
 	public static final int WIDGET_STATE_SCHEDULE_LOADED = 0;
 	public static final int WIDGET_STATE_NO_INTERNET = 1;
@@ -78,6 +82,24 @@ public final class U {
 		if (LOGGING) {
 			Log.d("RodaliesLog", message);
 		}
+	}
+
+	public static int getFirstWidgetId(Context context) {
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+		int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
+		if (ids.length != 0) {
+			return ids[0];
+		}
+		return -1;
+	}
+
+	public static boolean isFirstTime(Context context) {
+		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_GLOBAL_KEY, Context.MODE_PRIVATE);
+		boolean isFirstTime = sharedPreferences.getBoolean(U.PREFERENCE_BOOLEAN_FIRST_TIME, true);
+		if(isFirstTime) {
+			sharedPreferences.edit().putBoolean(U.PREFERENCE_BOOLEAN_FIRST_TIME, false).apply();
+		}
+		return isFirstTime;
 	}
 
 	public static int getIdFromIntent(Intent intent) {
@@ -346,11 +368,13 @@ public final class U {
 			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
 			calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
 			calendar.set(Calendar.SECOND, 0);
-			alarmManager.cancel(pendingIntent);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-			} else {
-				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+			if(alarmManager != null) {
+				alarmManager.cancel(pendingIntent);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+					alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+				} else {
+					alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+				}
 			}
 
 			new AppPreferences(context).put(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, departureTime);
@@ -373,7 +397,7 @@ public final class U {
 				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
 				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		alarmManager.cancel(pendingIntent);
+		if(alarmManager != null) alarmManager.cancel(pendingIntent);
 
 		new AppPreferences(context).remove(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
 		sendNotifyUpdate(widgetID, context);
