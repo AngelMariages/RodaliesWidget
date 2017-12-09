@@ -58,7 +58,7 @@ class CoreSelectAdapter extends BaseAdapter {
 		return view;
 	}
 
-	public void setOnCoreSelectListener(OnCoreSelectListener onCoreSelectListener) {
+	void setOnCoreSelectListener(OnCoreSelectListener onCoreSelectListener) {
 		this.onCoreSelectListener = onCoreSelectListener;
 	}
 

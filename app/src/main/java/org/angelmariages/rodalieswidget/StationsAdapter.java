@@ -63,7 +63,7 @@ class StationsAdapter extends BaseAdapter {
 				updateStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
 				// TODO: 14-Jan-17 Could do this better
 				updateStationsIntent.putExtra(U.EXTRA_CONFIG_STATION, StationUtils.getIDFromName(stationList.get(position), U.getCore(mContext, widgetID)));
-				updateStationsIntent.putExtra(U.EXTRA_OREGNorDESTINATION, originOrDestination);
+				updateStationsIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, originOrDestination);
 				mContext.sendBroadcast(updateStationsIntent);
 				((Activity) mContext).finish();
 			}
