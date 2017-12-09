@@ -40,15 +40,24 @@
             android:excludeFromRecents="true"
             android:label="@string/title_activity_select_station"
             android:noHistory="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:host="rodalies.gencat.cat"/>
+                <data android:scheme="http"
+                    android:host="www.renfe.com"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".SelectAlarmActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_select_alarm"
             android:noHistory="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme_Dialog"/>
 
         <activity
@@ -67,7 +76,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

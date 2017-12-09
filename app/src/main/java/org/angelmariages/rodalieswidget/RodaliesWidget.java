@@ -169,7 +169,7 @@ class RodaliesWidget extends RemoteViews {
 		Intent originStationIntent = new Intent(context, WidgetManager.class);
 		originStationIntent.setAction(U.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_O");
 		originStationIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		originStationIntent.putExtra(U.EXTRA_OREGNorDESTINATION, U.ORIGIN);
+		originStationIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, U.ORIGIN);
 		PendingIntent showDialogPI1 = PendingIntent.getBroadcast(context, 0,
 				originStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.originLayout, showDialogPI1);
@@ -177,7 +177,7 @@ class RodaliesWidget extends RemoteViews {
 		Intent destinationStationIntent = new Intent(context, WidgetManager.class);
 		destinationStationIntent.setAction(U.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_D");
 		destinationStationIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		destinationStationIntent.putExtra(U.EXTRA_OREGNorDESTINATION, U.DESTINATION);
+		destinationStationIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, U.DESTINATION);
 		PendingIntent showDialogPI2 = PendingIntent.getBroadcast(context, 0,
 				destinationStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.destinationLayout, showDialogPI2);

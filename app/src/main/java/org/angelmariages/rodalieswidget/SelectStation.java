@@ -22,6 +22,7 @@ public class SelectStation extends AppCompatActivity {
 	private int widgetID;
 	private int originOrDestination;
 	private ListView coreListView;
+	private boolean isFromActionView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,15 @@ public class SelectStation extends AppCompatActivity {
 		Intent selectIntent = getIntent();
 
 		widgetID = selectIntent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
-		originOrDestination = selectIntent.getIntExtra(U.EXTRA_OREGNorDESTINATION, -1);
+		originOrDestination = selectIntent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
+
+		if(widgetID == -1) {
+			isFromActionView = true;
+			widgetID = U.getFirstWidgetId(this);
+			//TODO if no widget is found, show tutorial
+			originOrDestination = U.ORIGIN;
+			U.saveStations(this, widgetID, "-1", "-1");
+		}
 
 		//This should not had been created
 		if (originOrDestination == -1) finish();
@@ -39,6 +48,12 @@ public class SelectStation extends AppCompatActivity {
 		coreListView = (ListView) findViewById(R.id.coreListView);
 
 		setCoreListView();
+	}
+
+	@Override
+	protected void onDestroy() {
+		if(isFromActionView) startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
+		super.onDestroy();
 	}
 
 	private void setCoreListView() {
