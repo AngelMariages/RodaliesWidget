@@ -194,7 +194,7 @@ public class WidgetManager extends AppWidgetProvider {
 				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						int scrollPosition = getScrollPosition(schedule);
+						int scrollPosition = getScrollPosition(schedule) + 1;
 						//if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
 						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
 						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
