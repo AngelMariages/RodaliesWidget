@@ -7,10 +7,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.angelmariages.rodalieswidget.timetables.GetSchedule;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -18,6 +23,7 @@ import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -26,12 +32,29 @@ class RodaliesWidget extends RemoteViews {
 	private final Context context;
 	private final int widgetID;
 
-	RodaliesWidget(Context context, int widgetID, int state, int layout, ArrayList<TrainTime> schedule) {
+	RodaliesWidget(Context context, int widgetID, int state, int layout, ArrayList<TrainTime> schedule, int deltaDays) {
 		super(context.getPackageName(), layout);
 		this.context = context;
 		this.widgetID = widgetID;
 
 		Fabric.with(context, new Crashlytics());
+
+		final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+		FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+				.setDeveloperModeEnabled(BuildConfig.DEBUG)
+				.build();
+		firebaseRemoteConfig.setConfigSettings(configSettings);
+		firebaseRemoteConfig.setDefaults(new HashMap<String, Object>() {{
+			put("remote_view_in_memory", false);
+		}});
+		firebaseRemoteConfig.fetch(2).addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> task) {
+				if (task.isSuccessful()) {
+					firebaseRemoteConfig.activateFetched();
+				}
+			}
+		});
 
 		setStationNames();
 		setPendingIntents();
@@ -40,7 +63,7 @@ class RodaliesWidget extends RemoteViews {
 		this.state = state;
 
 		if (state == U.WIDGET_STATE_UPDATING_TABLES) {
-			new GetSchedule(context).execute(widgetID);
+			new GetSchedule().execute(context, widgetID, deltaDays);
 		} else if (state == U.WIDGET_STATE_SCHEDULE_LOADED) {
 			Intent adapterIntent = new Intent(context, WidgetService.class);
 			adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
@@ -50,7 +73,7 @@ class RodaliesWidget extends RemoteViews {
 			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
 			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
 
-			if(schedule != null && schedule.size() > 0) {
+			if (schedule != null && schedule.size() > 0) {
 				int core = U.getCore(context, widgetID);
 				TrainTime trainTime = schedule.get(0);
 				switch (trainTime.getTransfer()) {
@@ -58,8 +81,9 @@ class RodaliesWidget extends RemoteViews {
 						String transferStation = null;
 						try {
 							transferStation = StationUtils.getNameFromID(trainTime.getStation_transfer_one(), core);
-						} catch (NumberFormatException ignored) {}
-						if(transferStation != null) {
+						} catch (NumberFormatException ignored) {
+						}
+						if (transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
 							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_one());
 							try {
@@ -68,16 +92,17 @@ class RodaliesWidget extends RemoteViews {
 							} catch (Exception e) {
 								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one() + core);
 							}
-						}
-						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
-					} break;
+						} else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+					}
+					break;
 					case 2: {
 						String transferStation = null, transferStationTwo = null;
 						try {
 							transferStation = StationUtils.getNameFromID(trainTime.getStation_transfer_one(), core);
 							transferStationTwo = StationUtils.getNameFromID(trainTime.getStation_transfer_two(), core);
-						} catch (NumberFormatException ignored) { }
-						if(transferStation != null) {
+						} catch (NumberFormatException ignored) {
+						}
+						if (transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
 							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_one());
 							try {
@@ -86,9 +111,8 @@ class RodaliesWidget extends RemoteViews {
 							} catch (Exception e) {
 								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one() + core);
 							}
-						}
-						else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
-						if(transferStationTwo != null) {
+						} else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
+						if (transferStationTwo != null) {
 							this.setTextViewText(R.id.transferTwoTitleText, transferStationTwo);
 							this.setTextViewText(R.id.lineTransferTwoText, trainTime.getLine_transfer_two());
 							try {
@@ -97,9 +121,9 @@ class RodaliesWidget extends RemoteViews {
 							} catch (Exception e) {
 								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_two() + core);
 							}
-						}
-						else this.setViewVisibility(R.id.transferTwoTitleText, View.GONE);
-					} break;
+						} else this.setViewVisibility(R.id.transferTwoTitleText, View.GONE);
+					}
+					break;
 				}
 			}
 			this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);

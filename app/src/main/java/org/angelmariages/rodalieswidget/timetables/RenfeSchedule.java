@@ -1,5 +1,8 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -14,8 +17,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
-class RenfeSchedule {
-	private final Calendar cal = Calendar.getInstance();
+class RenfeSchedule implements ScheduleProvider {
 
 	private final String origin;
 	private final String destination;
@@ -31,18 +33,21 @@ class RenfeSchedule {
 		this.nucli = nucli;
 	}
 
-	private String getPageFromInternet() {
+	@NonNull
+	private String getPageFromInternet(int deltaDays) {
 		HttpURLConnection connection = null;
 		BufferedReader in = null;
 		StringBuilder html = new StringBuilder();
 		String query = "nucleo=" + nucli;
 		query += "&o=" + origin;
 		query += "&d=" + destination;
-		query += "&df=" + getTodayDate();
+		query += "&df=" + getTodayDate(deltaDays);
 		query += "&ho=00&i=s&cp=NO&TXTInfo=";
 
 		try {
 			String url = "http://horarios.renfe.com/cer/hjcer310.jsp?";
+			//TODO: REMOVE THIS LOG!
+			U.log("URL: " + url + query);
 			connection = (HttpURLConnection) new URL(url + query).openConnection();
 			connection.setConnectTimeout(2500);
 			connection.setReadTimeout(2500);
@@ -65,7 +70,7 @@ class RenfeSchedule {
 				try {
 					in.close();
 				} catch (IOException e) {
-					U.log("Errpr tancant l'stream: " + e.getMessage());
+					U.log("Error tancant l'stream: " + e.getMessage());
 				}
 			}
 		}
@@ -94,18 +99,22 @@ class RenfeSchedule {
 		return transfers;
 	}
 
-	ArrayList<TrainTime> getSchedule() {
-		String html = getPageFromInternet();
+	public ArrayList<TrainTime> getSchedule(int deltaDays) {
+		String html = getPageFromInternet(deltaDays);
 
 		ArrayList<String> rows = getRows(html);
 
 		transferStationOne = StationUtils.getIDFromName(transferStationOne, nucli);
 		transferStationTwo = StationUtils.getIDFromName(transferStationTwo, nucli);
 
-		return parseTimes(rows, getTransfers(rows));
+		return parseTimes(rows, getTransfers(rows), U.getCalendarForDelta(deltaDays));
 	}
 
-	private ArrayList<TrainTime> parseTimes(ArrayList<String> rows, int transfers) {
+	public ArrayList<TrainTime> getSchedule() {
+		return getSchedule(0);
+	}
+
+	private ArrayList<TrainTime> parseTimes(ArrayList<String> rows, int transfers, Calendar currentCalendar) {
 		ArrayList<TrainTime> times = new ArrayList<>();
 		//int startRow = transfers == 0 ? 2 : 4;
 
@@ -139,7 +148,7 @@ class RenfeSchedule {
 								break;
 						}
 					}
-					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination));
+					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
 				}
 				break;
 				case 1: {
@@ -199,7 +208,7 @@ class RenfeSchedule {
 						line_transfer_one = null;
 					}
 
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, isDirectTrain, isSameOrigin));
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, isDirectTrain, isSameOrigin, currentCalendar));
 
 				}
 				break;
@@ -252,7 +261,7 @@ class RenfeSchedule {
 							(departure_time_tmp == null || departure_time_tmp.isEmpty()) ||
 							(arrival_time_tmp == null || arrival_time_tmp.isEmpty());
 
-					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, transferStationTwo, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, isSameOrigin));
+					times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, transferStationOne, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, transferStationTwo, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, isSameOrigin, currentCalendar));
 				}
 				break;
 			}
@@ -314,6 +323,7 @@ class RenfeSchedule {
 		return rows;
 	}
 
+	@Nullable
 	private String findNextRow(String html, int startFrom) {
 		int start = html.indexOf("<tr ", startFrom);
 		int end = html.indexOf("<tr ", start + 1);
@@ -344,6 +354,7 @@ class RenfeSchedule {
 		return cols;
 	}
 
+	@Nullable
 	private String findNextCol(String row, int startFrom, int[] lastIndex) {
 		int start = row.indexOf("<td", startFrom);
 		int end = row.indexOf("<td", start + 1);
@@ -356,6 +367,7 @@ class RenfeSchedule {
 		return row.substring(start, end);
 	}
 
+	@Nullable
 	private String getTextInsideTd(String td) {
 		int start = td.indexOf(">");
 		int end = td.indexOf("</");
@@ -380,12 +392,10 @@ class RenfeSchedule {
 		return count;
 	}
 
-	private String getTodayDate() {
+	private String getTodayDate(int deltaDays) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, deltaDays);
 		return String.format(Locale.getDefault(), "%d%02d%02d",
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
 	}
-
-	/*private int getCurrentHour() {
-		return Integer.parseInt(String.format(Locale.getDefault(), "%02d",cal.get(Calendar.HOUR_OF_DAY)));
-	}*/
 }

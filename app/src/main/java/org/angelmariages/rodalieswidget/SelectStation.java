@@ -34,7 +34,7 @@ public class SelectStation extends AppCompatActivity {
 		widgetID = selectIntent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
 		originOrDestination = selectIntent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
 
-		if(widgetID == -1) {
+		if (widgetID == -1) {
 			isFromActionView = true;
 			widgetID = U.getFirstWidgetId(this);
 			//TODO if no widget is found, show tutorial
@@ -52,7 +52,8 @@ public class SelectStation extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		if(isFromActionView) startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
+		if (isFromActionView)
+			startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
 		super.onDestroy();
 	}
 
@@ -61,7 +62,7 @@ public class SelectStation extends AppCompatActivity {
 
 		int core = U.getCore(context, widgetID);
 
-		if(core != -1) {
+		if (core != -1) {
 			coreListView.setVisibility(View.GONE);
 
 			setStationListView(core);

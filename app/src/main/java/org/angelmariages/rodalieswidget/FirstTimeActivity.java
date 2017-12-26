@@ -36,8 +36,10 @@ public class FirstTimeActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();
+		boolean fromNotification = intent != null && intent.getAction() != null && intent.getAction().equals("notification");
 
-		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("tutorial_viewed", false)) {
+		if (!fromNotification && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("tutorial_viewed", false)) {
 			startSettings();
 		}
 
