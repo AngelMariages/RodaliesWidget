@@ -6,7 +6,7 @@
     <string name="no_stations">L\'origen o la destinació no estan configurats</string>
     <string name="departure">Sortida</string>
     <string name="arrival">Arribada</string>
-    <string name="no_times">No hi han horaris per aquesta combinació d\'estacions</string>
+    <string name="no_times">No hi han horaris per aquesta combinació d\'estacions o el dia seleccionat</string>
     <string name="search_text">Escriu el nom d\'una estacio</string>
     <string name="transfer_departure">Transbord</string>
     <string name="travel_time_toast">Duracio del trajecte: %s</string>

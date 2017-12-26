@@ -5,12 +5,12 @@ import org.angelmariages.rodalieswidget.utils.U;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import io.fabric.sdk.android.Fabric;
-
 public class TrainTime implements Serializable {
+	private final Calendar date;
 	private int transfer = 0;
 	private final String line;
 	private final String departure_time;
@@ -29,16 +29,17 @@ public class TrainTime implements Serializable {
 	private boolean direct_train = false;
 	private boolean same_origin_train = false;
 
-	TrainTime(String line, String departure_time, String arrival_time, String travel_time, String origin, String destination) {
+	TrainTime(String line, String departure_time, String arrival_time, String travel_time, String origin, String destination, Calendar from_date) {
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
 		this.arrival_time = formatHour(arrival_time);
 		this.travel_time = formatHour(travel_time);
 		this.origin = origin;
 		this.destination = destination;
+		this.date = from_date;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, String origin, String destination, boolean direct_train, boolean same_origin_train) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, String origin, String destination, boolean direct_train, boolean same_origin_train, Calendar from_date) {
 		this.transfer = 1;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
@@ -52,9 +53,10 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 		this.direct_train = direct_train;
 		this.same_origin_train = same_origin_train;
+		this.date = from_date;
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, String origin, String destination, boolean same_origin_train) {
+	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, String origin, String destination, boolean same_origin_train, Calendar from_date) {
 		this.transfer = 2;
 		this.line = line;
 		this.departure_time = formatHour(departure_time);
@@ -72,6 +74,7 @@ public class TrainTime implements Serializable {
 		this.origin = origin;
 		this.destination = destination;
 		this.same_origin_train = same_origin_train;
+		this.date = from_date;
 	}
 
 	@Override
@@ -191,5 +194,38 @@ public class TrainTime implements Serializable {
 
 	public String getDestination() {
 		return destination;
+	}
+
+	public Calendar getDate() {
+		return date;
+	}
+
+	public Calendar getDateWithTime() {
+		String time = null;
+		if(departure_time != null) {
+			time = departure_time;
+		} else if(departure_time_transfer_one != null) {
+			time = departure_time_transfer_one;
+		} else if(departure_time_transfer_two != null) {
+			time = departure_time_transfer_two;
+		}
+		if (time != null) {
+			String[] split = time.split(":");
+			if (split.length == 2) {
+				Calendar cal = (Calendar) getDate().clone();
+				int hour = Integer.parseInt(split[0]);
+
+				cal.set(Calendar.HOUR_OF_DAY, hour);
+				cal.set(Calendar.MINUTE, Integer.parseInt(split[1]));
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+
+				if(hour == 0) {
+					cal.add(Calendar.DAY_OF_YEAR, 1);
+				}
+				return cal;
+			}
+		}
+		return null;
 	}
 }

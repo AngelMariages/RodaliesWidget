@@ -858,6 +858,8 @@ public final class StationUtils {
 		C210("#088C29", Color.WHITE),
 		C310("#0055A0", Color.WHITE),
 		C410("#0F318C", Color.WHITE),
+		C4A("#0F318C", Color.WHITE),
+		C4B("#0F318C", Color.WHITE),
 		C510("#F9B410", Color.WHITE),
 		C710("#D70020", Color.WHITE),
 		C810("#088C29", Color.WHITE),

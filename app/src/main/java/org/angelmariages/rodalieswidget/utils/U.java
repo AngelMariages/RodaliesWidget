@@ -13,12 +13,16 @@ import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import net.grandcentrix.tray.AppPreferences;
 
@@ -30,7 +34,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public final class U {
@@ -57,6 +60,7 @@ public final class U {
 	public static final String EXTRA_WIDGET_STATE = "org.angelmariages.RodaliesWidget.extraWidgetState";
 	public static final String EXTRA_SCHEDULE_DATA = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_DATA";
 	public static final String EXTRA_SCHEDULE_BUNDLE = "org.angelmariages.RodaliesWidget.EXTRA_SCHEDULE_BUNDLE";
+	public static final String EXTRA_SWITCH_TO = "org.angelmariages.RodaliesWidget.EXTRA_SWITCH_TO";
 
 	private static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
 	private static final String PREFERENCE_GLOBAL_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_GLOBAL_KEY";
@@ -85,10 +89,14 @@ public final class U {
 	}
 
 	public static int getFirstWidgetId(Context context) {
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-		int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
-		if (ids.length != 0) {
-			return ids[0];
+		try {
+			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+			int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
+			if (ids.length != 0) {
+				return ids[0];
+			}
+		} catch (Exception e) {
+			return -1;
 		}
 		return -1;
 	}
@@ -96,7 +104,7 @@ public final class U {
 	public static boolean isFirstTime(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(U.PREFERENCE_GLOBAL_KEY, Context.MODE_PRIVATE);
 		boolean isFirstTime = sharedPreferences.getBoolean(U.PREFERENCE_BOOLEAN_FIRST_TIME, true);
-		if(isFirstTime) {
+		if (isFirstTime) {
 			sharedPreferences.edit().putBoolean(U.PREFERENCE_BOOLEAN_FIRST_TIME, false).apply();
 		}
 		return isFirstTime;
@@ -121,9 +129,9 @@ public final class U {
 
 		// TODO: 27/06/2017 Remove for next versions
 		String[] stations = U.getStations(context, widgetID);
-		if(core == -1 && stations.length == 2) {
+		if (core == -1 && stations.length == 2) {
 			if (StationUtils.nuclis.get(50).containsKey(stations[0]) && StationUtils.nuclis.get(50).containsKey(stations[1])) {
-			 	saveCore(context, widgetID, 50);
+				saveCore(context, widgetID, 50);
 				return 50;
 			}
 		}
@@ -158,33 +166,37 @@ public final class U {
 
 	private static void updateOldPreferences(SharedPreferences sharedPreferences) {
 		int origin, destination;
-		if(sharedPreferences != null) {
+		if (sharedPreferences != null) {
 			try {
 				if ((origin = sharedPreferences.getInt(U.PREFERENCE_STRING_ORIGIN, -1)) != -1) {
 					sharedPreferences.edit().remove(U.PREFERENCE_STRING_ORIGIN).apply();
 					sharedPreferences.edit().putString(U.PREFERENCE_STRING_ORIGIN, String.valueOf(origin)).apply();
 				}
-			} catch (RuntimeException ignored) {}
+			} catch (RuntimeException ignored) {
+			}
 
 			try {
 				if ((destination = sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1)) != -1) {
 					sharedPreferences.edit().remove(U.PREFERENCE_STRING_DESTINATION).apply();
 					sharedPreferences.edit().putString(U.PREFERENCE_STRING_DESTINATION, String.valueOf(destination)).apply();
 				}
-			} catch (RuntimeException ignored) {}
+			} catch (RuntimeException ignored) {
+			}
 		}
 	}
 
 	private static void removeOldPreferences(SharedPreferences sharedPreferences) {
-		if(sharedPreferences != null) {
+		if (sharedPreferences != null) {
 			try {
 				if (sharedPreferences.getInt(U.PREFERENCE_STRING_ORIGIN, -1) != -1)
 					sharedPreferences.edit().remove(U.PREFERENCE_STRING_ORIGIN).apply();
-			} catch (RuntimeException ignored) {}
+			} catch (RuntimeException ignored) {
+			}
 			try {
 				if (sharedPreferences.getInt(U.PREFERENCE_STRING_DESTINATION, -1) != -1)
 					sharedPreferences.edit().remove(U.PREFERENCE_STRING_DESTINATION).apply();
-			} catch (RuntimeException ignored) {}
+			} catch (RuntimeException ignored) {
+			}
 		}
 	}
 
@@ -201,52 +213,58 @@ public final class U {
 		final String[] stations = U.getStations(context, widgetID);
 
 		if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
-			DatabaseReference mRefJourneys = mFirebaseDatabase.getReference("statics/journeys");
-			DatabaseReference mRefStations = mFirebaseDatabase.getReference("statics/stations");
+			DatabaseReference journeyRef = mFirebaseDatabase.getReference("statics/journeys/" + stations[0] + "@@" + stations[1]);
+			DatabaseReference departuresRef = mFirebaseDatabase.getReference("statics/stations/" + stations[0] + "/departures");
+			DatabaseReference arrivalsRef = mFirebaseDatabase.getReference("statics/stations/" + stations[1] + "/arrivals");
 
-			mRefJourneys.addListenerForSingleValueEvent(new ValueEventListener() {
+			journeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot) {
-					DataSnapshot originDestination = dataSnapshot.child(stations[0] + "@@" + stations[1]);
-
-					if (originDestination.exists()) {
-						int value = Integer.parseInt(String.valueOf(originDestination.getValue()));
-						originDestination.getRef().setValue(value + 1);
+					if (dataSnapshot.exists()) {
+						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
+						dataSnapshot.getRef().setValue(value + 1);
 					} else {
-						originDestination.getRef().setValue(1);
+						dataSnapshot.getRef().setValue(1);
 					}
 				}
 
 				@Override
 				public void onCancelled(DatabaseError databaseError) {
-					U.log("FirebaseError (mRefJourneys): " + databaseError.getMessage());
+					U.log("FirebaseError (journeyRef): " + databaseError.getMessage());
 				}
 			});
 
-			mRefStations.addListenerForSingleValueEvent(new ValueEventListener() {
+			departuresRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot) {
-					DataSnapshot origin = dataSnapshot.child(String.valueOf(stations[0])).child("departures");
-					DataSnapshot destination = dataSnapshot.child(String.valueOf(stations[1])).child("arrivals");
-
-					if (origin.exists()) {
-						int value = Integer.parseInt(String.valueOf(origin.getValue()));
-						origin.getRef().setValue(value + 1);
+					if (dataSnapshot.exists()) {
+						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
+						dataSnapshot.getRef().setValue(value + 1);
 					} else {
-						origin.getRef().setValue(1);
-					}
-
-					if (destination.exists()) {
-						int value = Integer.parseInt(String.valueOf(destination.getValue()));
-						destination.getRef().setValue(value + 1);
-					} else {
-						destination.getRef().setValue(1);
+						dataSnapshot.getRef().setValue(1);
 					}
 				}
 
 				@Override
 				public void onCancelled(DatabaseError databaseError) {
-					U.log("FirebaseError (mRefStations): " + databaseError.getMessage());
+					U.log("FirebaseError (departuresRef): " + databaseError.getMessage());
+				}
+			});
+
+			arrivalsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot) {
+					if (dataSnapshot.exists()) {
+						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
+						dataSnapshot.getRef().setValue(value + 1);
+					} else {
+						dataSnapshot.getRef().setValue(1);
+					}
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError) {
+					U.log("FirebaseError (arrivalsRef): " + databaseError.getMessage());
 				}
 			});
 		}
@@ -256,17 +274,20 @@ public final class U {
 		Bundle bundle = null;
 		String origin = "-1", destination = "-1";
 
-		if(trainTimes.size() > 0) {
+		if (trainTimes.size() > 0) {
 			origin = trainTimes.get(0).getOrigin();
 			destination = trainTimes.get(0).getDestination();
 		}
 
-		if(!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
+		if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
 			bundle = new Bundle();
 			bundle.putString("origin_station", origin);
 			bundle.putString("destination_station", destination);
 		}
 		FirebaseAnalytics.getInstance(context).logEvent("update_schedules", bundle);
+		setUserProperty(context, "last_time_used", System.currentTimeMillis());
+		setUserProperty(context, "last_origin", origin);
+		setUserProperty(context, "last_destination", destination);
 	}
 
 	public static void logEventSwap(Context context) {
@@ -275,7 +296,7 @@ public final class U {
 
 	private static void logEventAlarmSet(Context context, String departure_time, String origin, String destination) {
 		Bundle bundle = null;
-		if(!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
+		if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
 			bundle = new Bundle();
 			bundle.putString("origin_station", origin);
 			bundle.putString("destination_station", destination);
@@ -287,6 +308,39 @@ public final class U {
 
 	public static void logEventAlarmFired(Context context) {
 		FirebaseAnalytics.getInstance(context).logEvent("alarm_fired", null);
+	}
+
+	public static void setUserProperty(Context context, final String key, final Object data) {
+		FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
+		FirebaseApp instance = FirebaseApp.getInstance();
+		if (instance != null) {
+			String uid = FirebaseInstanceId.getInstance(instance).getId();
+
+			if (uid != null) {
+				mFirebaseDatabase = U.getFirebaseDatabase();
+				final DatabaseReference userPropertiies = mFirebaseDatabase.getReference("userProperties/" + uid);
+				userPropertiies.addListenerForSingleValueEvent(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot) {
+						if (dataSnapshot.exists()) {
+							userPropertiies.child(key).setValue(data);
+						} else {
+							userPropertiies.setValue(key).addOnCompleteListener(new OnCompleteListener<Void>() {
+								@Override
+								public void onComplete(@NonNull Task<Void> task) {
+									userPropertiies.child(key).setValue(data);
+								}
+							});
+						}
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {
+
+					}
+				});
+			}
+		}
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {
@@ -331,44 +385,85 @@ public final class U {
 	}
 
 	public static String getTodayDateWithoutPath() {
+		return getTodayDateWithoutPath(0);
+	}
+
+	public static String getTodayDateWithoutPath(int deltaDays) {
 		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, deltaDays);
 		return String.format(Locale.getDefault(), "%02d%02d%d",
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}
 
-	public static boolean isDateFuture(String dateWithoutPath) {
+	//TODO: Could do better with LocalDate
+	public static boolean isFuture(String dateWithoutPath) {
 		SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
 		try {
-			Date date = new Date(format.parse(dateWithoutPath).getTime());
-			return DateUtils.isToday(date.getTime()) || date.after(Calendar.getInstance().getTime());
+			Calendar date = Calendar.getInstance();
+			date.setTime(format.parse(dateWithoutPath));
+			return DateUtils.isToday(date.getTime().getTime()) || date.after(Calendar.getInstance());
 		} catch (ParseException e) {
-			U.log("Can't parse date for isDateFuture " + dateWithoutPath);
+			U.log("Can't parse date for isFuture " + dateWithoutPath);
 			return false;
 		}
 	}
 
-	public static boolean isBeforeCurrentHour(int currentHour, int currentMinute, String time) {
-		if (time == null) return false;
-		String[] split = time.split(":");
-		int hour = Integer.parseInt(split[0]);
-		int minute = Integer.parseInt(split[1]);
+	public static boolean isYesterday(String dateWithoutPath) {
+		SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+		try {
+			Calendar date = Calendar.getInstance();
+			date.setTime(format.parse(dateWithoutPath));
 
-		return hour != 0 && (hour < currentHour || hour == currentHour && minute <= currentMinute);
+			Calendar yesterday = Calendar.getInstance();
+			yesterday.add(Calendar.DAY_OF_YEAR, -1);
+
+			return date.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR) && date.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR);
+		} catch (ParseException e) {
+			U.log("Can't parse date for isFuture " + dateWithoutPath);
+			return false;
+		}
 	}
 
-	public static boolean setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {
+	public static Calendar getCalendarForDelta(int deltaDays) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_YEAR, deltaDays);
+		return cal;
+	}
+
+	private static Calendar getCurrentCalendarNow() {
+		return Calendar.getInstance();
+	}
+
+	public static boolean isScheduleExpired(ArrayList<TrainTime> schedule) {
+		if (schedule != null && schedule.size() > 0) {
+			TrainTime trainTime = schedule.get(schedule.size() - 1);
+			return trainTime.getDate() != null && !isScheduledTrain(trainTime);
+		}
+		return true;
+	}
+
+	public static long getCurrentDateAsTimestamp() {
+		Calendar cal = getCalendarForDelta(0);
+		return cal.getTimeInMillis();
+	}
+
+	public static void setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Calendar calendar = Calendar.getInstance();
 		String[] hourMinutes = alarmTime.split(":");
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
 				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
-				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
+				PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA);
 
-		if(hourMinutes.length == 2) {
+		if (hourMinutes.length == 2) {
 			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
 			calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
 			calendar.set(Calendar.SECOND, 0);
-			if(alarmManager != null) {
+			if (alarmManager != null) {
 				alarmManager.cancel(pendingIntent);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 					alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -383,9 +478,7 @@ public final class U {
 
 			logEventAlarmSet(context, departureTime, origin, destination);
 
-			return true;
 		}
-		return false;
 	}
 
 	public static String getAlarm(Context context, int widgetID, String origin, String destination) {
@@ -395,11 +488,16 @@ public final class U {
 	public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
 				new Intent(context, AlarmReceiver.class).putExtra(EXTRA_WIDGET_ID, widgetID),
-				PendingIntent.FLAG_UPDATE_CURRENT|  Intent.FILL_IN_DATA);
+				PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if(alarmManager != null) alarmManager.cancel(pendingIntent);
+		if (alarmManager != null) alarmManager.cancel(pendingIntent);
 
 		new AppPreferences(context).remove(PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
 		sendNotifyUpdate(widgetID, context);
+	}
+
+	public static boolean isScheduledTrain(TrainTime trainTime) {
+		Calendar cal = getCurrentCalendarNow();
+		return trainTime.getDate() != null && cal.before(trainTime.getDateWithTime());
 	}
 }
