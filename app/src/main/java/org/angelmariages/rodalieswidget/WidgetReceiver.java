@@ -17,6 +17,8 @@ public class WidgetReceiver extends BroadcastReceiver {
 		U.log("onReceive() Receiver: " + intent.getAction());
 		String intentAction = intent.getAction();
 
+		if (intentAction == null) return;
+
 		int widgetID = U.getIdFromIntent(intent);
 
 		if (widgetID != -1) {

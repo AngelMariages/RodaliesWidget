@@ -41,10 +41,13 @@ public class WidgetManager extends AppWidgetProvider {
 		for (int i = 0; i < appWidgetIds.length; i++) {
 			int widgetID = appWidgetIds[i];
 
-			appWidgetManager.updateAppWidget(widgetID, reloadWidget(context, widgetID));
+			appWidgetManager.updateAppWidget(widgetID, reloadWidget(context, widgetID, 0));
 
 			U.log("Updating widget id:" + i + " widgetID? " + widgetID);
 		}
+		try {
+			U.setUserProperty(context, "num_of_widgets", appWidgetIds.length);
+		} catch (Exception ignored) {}
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class WidgetManager extends AppWidgetProvider {
 
 		Fabric.with(context, new Crashlytics());
 
-		if (intentAction.isEmpty()) return;
+		if (intentAction == null || intentAction.isEmpty()) return;
 
 		if (intentAction.startsWith(U.ACTION_SEND_SCHEDULE)) {
 			int widgetID = U.getIdFromIntent(intent);
@@ -74,7 +77,7 @@ public class WidgetManager extends AppWidgetProvider {
 		} else if (intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			reloadWidget(context, widgetID);
+			reloadWidget(context, widgetID, 0);
 
 			U.logUpdates(context, widgetID);
 		} else if (intentAction.startsWith(U.ACTION_CLICK_SWAP_BUTTON)) {
@@ -110,13 +113,19 @@ public class WidgetManager extends AppWidgetProvider {
 		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			String departureTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
+			int switchTo = intent.getIntExtra(U.EXTRA_SWITCH_TO, Integer.MAX_VALUE);
+			if (switchTo != Integer.MAX_VALUE) {
+				U.setUserProperty(context, "has_switched_days", true);
+				reloadWidget(context, widgetID, switchTo);
+			} else {
+				String departureTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
 
-			context.startActivity(new Intent(context, SelectAlarmActivity.class)
-					.setAction(departureTime)
-					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-					.putExtra(U.EXTRA_WIDGET_ID, widgetID)
-			);
+				context.startActivity(new Intent(context, SelectAlarmActivity.class)
+						.setAction(departureTime)
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+						.putExtra(U.EXTRA_WIDGET_ID, widgetID)
+				);
+			}
 		} else if (intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
 			int widgetID = U.getIdFromIntent(intent);
 
@@ -126,7 +135,7 @@ public class WidgetManager extends AppWidgetProvider {
 			int widgetState = U.getStateFromIntent(intent);
 
 			AppWidgetManager.getInstance(context).updateAppWidget(widgetID,
-					new RodaliesWidget(context, widgetID, widgetState, R.layout.widget_layout_no_data, null));
+					new RodaliesWidget(context, widgetID, widgetState, R.layout.widget_layout_no_data, null, 0));
 		}
 	}
 
@@ -146,7 +155,7 @@ public class WidgetManager extends AppWidgetProvider {
 		if (widgetID != -1) {
 			int core = U.getCore(context, widgetID);
 			U.saveStations(context, widgetID, StationUtils.getIDFromName(originText, core), StationUtils.getIDFromName(destinationText, core));
-			reloadWidget(context, widgetID);
+			reloadWidget(context, widgetID, 0);
 		} else {
 			U.log("ERROR: Widget id not found");
 		}
@@ -161,12 +170,12 @@ public class WidgetManager extends AppWidgetProvider {
 	}
 
 	private void loadSchedule(final Context context, final int widgetID, final ArrayList<TrainTime> schedule) {
-		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule);
+		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule, 0);
 		if (schedule != null && schedule.size() > 0) {
 			if (schedule.get(0).getTransfer() == 1)
-				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule);
+				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule, 0);
 			else if (schedule.get(0).getTransfer() == 2)
-				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule);
+				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule, 0);
 
 			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
 			boolean show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
@@ -198,24 +207,15 @@ public class WidgetManager extends AppWidgetProvider {
 	}
 
 	private int getScrollPosition(ArrayList<TrainTime> schedule) {
-		int currentHour = U.getCurrentHour();
-		int currentMinute = U.getCurrentMinute();
 		for (int i = 0; i < schedule.size(); i++) {
-			String departureTime = schedule.get(i).getDeparture_time();
-			int hour = -1, minute = -1;
-			if (departureTime != null) {
-				String[] split = departureTime.split(":");
-				hour = Integer.parseInt(split[0]);
-				minute = Integer.parseInt(split[1]);
-			}
-			if ((hour == currentHour && minute > currentMinute) || hour > currentHour) return i;
+			if (U.isScheduledTrain(schedule.get(i))) return i;
 		}
 		return 0;
 	}
 
-	private RodaliesWidget reloadWidget(Context context, int widgetID) {
+	private RodaliesWidget reloadWidget(Context context, int widgetID, int deltaDays) {
 		if (widgetID != -1) {
-			RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null);
+			RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null, deltaDays);
 			AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 			return widget;
 		}

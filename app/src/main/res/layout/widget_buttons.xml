@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:weightSum="1"
-              android:baselineAligned="false"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/originLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/textviewclick"
-            android:gravity="clip_vertical"
             android:clickable="true"
-            android:id="@+id/originLayout">
+            android:focusable="true"
+            android:gravity="clip_vertical"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/originTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/originTextView"
+                android:clickable="false"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="#263238"
                 android:textSize="18sp"
-                android:clickable="false"
-                android:maxLines="1"
                 tools:text="Premià de Mar" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/destinationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/textviewclick"
-            android:gravity="clip_vertical"
             android:clickable="true"
-            android:id="@+id/destinationLayout">
+            android:focusable="true"
+            android:gravity="clip_vertical"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/destinationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/destinationTextView"
-                android:textColor="#263238"
-                android:ellipsize="end"
-                android:textSize="18sp"
                 android:clickable="false"
+                android:ellipsize="end"
                 android:maxLines="1"
+                android:textColor="#263238"
+                android:textSize="18sp"
                 tools:text="Barcelona - Sants" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
             android:id="@+id/updateButton"
-            android:src="@drawable/ic_update"
-            android:scaleType="fitXY"
-            android:cropToPadding="false"
-            android:background="@drawable/button_background_padding"
-            />
-
-        <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/swapButton"
-            android:src="@drawable/ic_swap"
+            android:background="@drawable/button_background_padding"
+            android:cropToPadding="false"
             android:scaleType="fitXY"
-            android:background="@drawable/button_background_padding"/>
+            android:src="@drawable/ic_update" />
+
+        <ImageButton
+            android:id="@+id/swapButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_background_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_swap" />
     </LinearLayout>
 </LinearLayout>

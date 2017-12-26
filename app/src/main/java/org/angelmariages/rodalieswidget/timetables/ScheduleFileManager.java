@@ -7,9 +7,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 final class ScheduleFileManager {
 	private static final String KEY_TRANSFERS = "transfers";
+	private static final String KEY_DATE_TIMESTAMP = "date_timestamp";
 	private static final String KEY_LINE = "line";
 	private static final String KEY_DIRECT_TRAIN = "direct_train";
 	private static final String KEY_SAME_ORIGIN_TRAIN = "same_origin_train";
@@ -26,7 +28,6 @@ final class ScheduleFileManager {
 	private static final String KEY_STATION_TRANSFER_ONE = "station_transfer_one";
 	private static final String KEY_STATION_TRANSFER_TWO = "station_transfer_two";
 
-
 	private ScheduleFileManager() {
 	}
 
@@ -38,6 +39,8 @@ final class ScheduleFileManager {
 
 		try {
 			scheduleObject.put(KEY_TRANSFERS, transfers);
+			Calendar date = trainTimes.get(0).getDate();
+			scheduleObject.put(KEY_DATE_TIMESTAMP, date != null ? date.getTimeInMillis() : U.getCurrentDateAsTimestamp());
 			if (transfers > 0) {
 				scheduleObject.put(KEY_STATION_TRANSFER_ONE, trainTimes.get(0).getStation_transfer_one());
 				if (transfers > 1) {
@@ -78,7 +81,9 @@ final class ScheduleFileManager {
 
 		try {
 			JSONObject scheduleObject = new JSONObject(jsonString);
-			int transfers = (int) scheduleObject.get(KEY_TRANSFERS);
+			int transfers = scheduleObject.optInt(KEY_TRANSFERS, 0);
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(scheduleObject.optLong(KEY_DATE_TIMESTAMP, U.getCurrentDateAsTimestamp()));
 			String station_transfer_one = null, station_transfer_two = null;
 			if (transfers > 0) {
 				station_transfer_one = scheduleObject.optString(KEY_STATION_TRANSFER_ONE);
@@ -88,7 +93,7 @@ final class ScheduleFileManager {
 			}
 
 			JSONArray timesArray = (JSONArray) scheduleObject.get(KEY_TIMES);
-			U.log("TIMESARRAY LENGTH: " + timesArray.length());
+			U.log("timesArray LENGTH: " + timesArray.length());
 			switch (transfers) {
 				case 0: {
 					for (int i = 0; i < timesArray.length(); i++) {
@@ -97,7 +102,9 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE),
 								timeObject.optString(KEY_ARRIVAL),
 								timeObject.optString(KEY_TRAVEL_TIME),
-								origin, destination));
+								origin, destination,
+								cal
+						));
 					}
 				}
 				break;
@@ -114,7 +121,9 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_TRAVEL_TIME),
 								origin, destination,
 								timeObject.optBoolean(KEY_DIRECT_TRAIN),
-								timeObject.optBoolean(KEY_SAME_ORIGIN_TRAIN)));
+								timeObject.optBoolean(KEY_SAME_ORIGIN_TRAIN),
+								cal
+						));
 					}
 				}
 				break;
@@ -133,7 +142,9 @@ final class ScheduleFileManager {
 								timeObject.optString(KEY_DEPARTURE_TRANSFER_TWO),
 								timeObject.optString(KEY_ARRIVAL_TRANSFER_TWO),
 								origin, destination,
-								timeObject.optBoolean(KEY_SAME_ORIGIN_TRAIN)));
+								timeObject.optBoolean(KEY_SAME_ORIGIN_TRAIN),
+								cal
+						));
 					}
 				}
 				break;
