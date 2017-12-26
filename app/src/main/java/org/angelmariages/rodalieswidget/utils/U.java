@@ -318,17 +318,30 @@ public final class U {
 
 			if (uid != null) {
 				mFirebaseDatabase = U.getFirebaseDatabase();
-				final DatabaseReference userPropertiies = mFirebaseDatabase.getReference("userProperties/" + uid);
-				userPropertiies.addListenerForSingleValueEvent(new ValueEventListener() {
+				final DatabaseReference userProperties = mFirebaseDatabase.getReference("userProperties/" + uid);
+				userProperties.addListenerForSingleValueEvent(new ValueEventListener() {
 					@Override
 					public void onDataChange(DataSnapshot dataSnapshot) {
+						userProperties.child("device_model").addListenerForSingleValueEvent(new ValueEventListener() {
+							@Override
+							public void onDataChange(DataSnapshot dataSnapshot) {
+								if (!dataSnapshot.exists()) {
+									userProperties.child("device_model").setValue(Build.MODEL);
+								}
+							}
+
+							@Override
+							public void onCancelled(DatabaseError databaseError) {
+
+							}
+						});
 						if (dataSnapshot.exists()) {
-							userPropertiies.child(key).setValue(data);
+							userProperties.child(key).setValue(data);
 						} else {
-							userPropertiies.setValue(key).addOnCompleteListener(new OnCompleteListener<Void>() {
+							userProperties.setValue(key).addOnCompleteListener(new OnCompleteListener<Void>() {
 								@Override
 								public void onComplete(@NonNull Task<Void> task) {
-									userPropertiies.child(key).setValue(data);
+									userProperties.child(key).setValue(data);
 								}
 							});
 						}
