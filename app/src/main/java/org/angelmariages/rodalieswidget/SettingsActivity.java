@@ -2,6 +2,7 @@ package org.angelmariages.rodalieswidget;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
@@ -34,32 +35,52 @@ public class SettingsActivity extends AppCompatActivity {
 
 	@Override
 	protected void onUserLeaveHint() {
-		Context context = this.getApplicationContext();
-		boolean firstTime = U.isFirstTime(context);
-		U.log("First time -> " + firstTime);
-		if(!firstTime) {
-			U.log("First time yeees");
-			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+		super.onUserLeaveHint();
+		sendWidgetInstallNotification(getApplicationContext());
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		sendWidgetInstallNotification(getApplicationContext());
+	}
+
+	private void sendWidgetInstallNotification(Context context) {
+		String noWidgetChannel = "no_widget_channel";
+		boolean isFirstTime = U.isFirstTime(context);
+		int firstWidgetId = U.getFirstWidgetId(context);
+		U.log("First widget id? " + firstWidgetId);
+		if (!isFirstTime && firstWidgetId == -1) {
+			U.log("Doesn't have widget");
+
+			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, noWidgetChannel);
 			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				notificationBuilder.setSmallIcon(R.mipmap.ic_notification_white);
 			} else {
 				notificationBuilder.setSmallIcon(R.mipmap.ic_notification);
 			}
+			notificationBuilder.setAutoCancel(true);
+
+			Intent startFirstTimeIntent = new Intent(context, FirstTimeActivity.class);
+			startFirstTimeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startFirstTimeIntent.setAction("notification");
+			PendingIntent startFirstTimePI = PendingIntent.getActivity(context, 0, startFirstTimeIntent, 0);
+			notificationBuilder.setContentIntent(startFirstTimePI);
+
 			notificationBuilder.setContentTitle(context.getString(R.string.app_name));
 			notificationBuilder.setContentText(context.getString(R.string.notification_content_first_time));
-			notificationBuilder.setChannelId("Test_channel_id");
 
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-				int importance = NotificationManager.IMPORTANCE_HIGH;
-				NotificationChannel mChannel = new NotificationChannel("Test_channel_id", "Test_channel_name", importance);
-				notificationManager.createNotificationChannel(mChannel);
-			}
+			if (notificationManager != null) {
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+					NotificationChannel notificationChannel = new NotificationChannel(noWidgetChannel, "Widget help", NotificationManager.IMPORTANCE_LOW);
+					notificationManager.createNotificationChannel(notificationChannel);
+				}
 
-			notificationManager.notify(2, notificationBuilder.build());
+				notificationManager.notify(2, notificationBuilder.build());
+			}
 		}
-		super.onUserLeaveHint();
 	}
 
 	public static class PreferencesFragment extends PreferenceFragment {
@@ -140,9 +161,9 @@ public class SettingsActivity extends AppCompatActivity {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					String ringtoneUri = (String) newValue;
 
-					if(ringtoneUri == null) {
+					if (ringtoneUri == null) {
 						new AppPreferences(PreferencesFragment.this.getActivity()).remove(U.PREFERENCE_STRING_ALARM_URI);
-					} else if(ringtoneUri.isEmpty()) {
+					} else if (ringtoneUri.isEmpty()) {
 						new AppPreferences(PreferencesFragment.this.getActivity()).put(U.PREFERENCE_STRING_ALARM_URI, "--silent--");
 					} else {
 						Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
@@ -167,7 +188,8 @@ public class SettingsActivity extends AppCompatActivity {
 
 		private void onPreferenceChangeC(String key, final Object newValue) {
 			if (key.equalsIgnoreCase("show_more_transfer_trains")) key = "more_transfer_trains";
-			mFirebaseAnalytics.setUserProperty(key, newValue.toString());
+
+			U.setUserProperty(getActivity().getApplicationContext(), key, newValue);
 			Bundle bundle = new Bundle();
 			bundle.putString(key, newValue.toString());
 			mFirebaseAnalytics.logEvent("preference_changed", bundle);

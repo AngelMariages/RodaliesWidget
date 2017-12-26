@@ -1,5 +1,7 @@
 package org.angelmariages.rodalieswidget.timetables;
 
+import android.support.annotation.NonNull;
+
 import org.angelmariages.rodalieswidget.utils.U;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,6 +17,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,10 +30,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-class RodaliesSchedule {
+class RodaliesSchedule implements ScheduleProvider {
 	private final String origin;
 	private final String destination;
-	private final Calendar cal = Calendar.getInstance();
 	private String station_transfer_one;
 	private String station_transfer_two;
 
@@ -39,18 +41,21 @@ class RodaliesSchedule {
 		this.destination = destination;
 	}
 
-	private String getPageFromInternet() {
+	@NonNull
+	private String getPageFromInternet(int deltaDays) {
 		HttpURLConnection connection = null;
 		BufferedReader in = null;
 		StringBuilder html = new StringBuilder();
 		String query = "origen=" + origin +
 				"&desti=" + destination +
-				"&dataViatge=" + getTodayDate() +
+				"&dataViatge=" + getTodayDate(deltaDays) +
 				"&horaIni=0";
 
 		try {
 			String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
-			connection = (HttpURLConnection)new URL(url + query).openConnection();
+			//TODO: REMOVE THIS LOG!
+			U.log("URL: " + url + query);
+			connection = (HttpURLConnection) new URL(url + query).openConnection();
 			connection.setConnectTimeout(2500);
 			connection.setReadTimeout(2500);
 			connection.setRequestMethod("GET");
@@ -72,7 +77,7 @@ class RodaliesSchedule {
 				try {
 					in.close();
 				} catch (IOException e) {
-					U.log("Errpr tancant l'stream: " + e.getMessage());
+					U.log("Error tancant l'stream: " + e.getMessage());
 				}
 			}
 		}
@@ -80,17 +85,31 @@ class RodaliesSchedule {
 		return html.toString();
 	}
 
-	ArrayList<TrainTime> getSchedule() {
+	public ArrayList<TrainTime> getSchedule(int deltaDays) {
 		try {
-			return parseXMLFile(getPageFromInternet());
+			return parseXMLFile(getPageFromInternet(deltaDays), U.getCalendarForDelta(deltaDays));
 		} catch (Exception e) {
 			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
+			return getSchedule(deltaDays, 1);
 		}
-		return null;
 	}
 
-	private ArrayList<TrainTime> parseXMLFile(String xmlData) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
-		if(xmlData == null) return null;
+	private ArrayList<TrainTime> getSchedule(int deltaDays, int times) {
+		try {
+			return parseXMLFile(getPageFromInternet(deltaDays), U.getCalendarForDelta(deltaDays));
+		} catch (Exception e) {
+			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
+			if (times > 3) return null;
+			return getSchedule(deltaDays, times + 1);
+		}
+	}
+
+	public ArrayList<TrainTime> getSchedule() {
+		return getSchedule(0);
+	}
+
+	private ArrayList<TrainTime> parseXMLFile(String xmlData, Calendar currentCalendar) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+		if (xmlData == null) return null;
 		InputSource source = new InputSource(new StringReader(xmlData));
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -105,7 +124,7 @@ class RodaliesSchedule {
 
 		// TODO: 8/02/17 maybe do this accesign directly to the items??
 		NodeList nodeList = (NodeList) xPath.compile("/horaris/resultats/item").evaluate(document, XPathConstants.NODESET);
-		if(transfers == 0) {
+		if (transfers == 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node nodeItem = nodeList.item(i);
 				if (nodeItem.getNodeType() == Node.ELEMENT_NODE) {
@@ -117,14 +136,14 @@ class RodaliesSchedule {
 					arrival_time = element.getElementsByTagName("hora_arribada").item(0).getTextContent();
 					journey_time = element.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
-					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination));
+					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
 				}
 			}
-		} else if(transfers == 1) {
+		} else if (transfers == 1) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node nodeItem = nodeList.item(i);
 				if (nodeItem.getNodeType() == Node.ELEMENT_NODE) {
-					String line,  departure_time, arrival_time, journey_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one;
+					String line, departure_time, arrival_time, journey_time, line_transfer_one, departure_time_transfer_one, arrival_time_transfer_one;
 
 					Element parentElement = (Element) nodeItem;
 
@@ -134,7 +153,7 @@ class RodaliesSchedule {
 					line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 					departure_time = parentElement.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-					if(recorreguts > 0) {
+					if (recorreguts > 0) {
 						arrival_time_transfer_one = recorregutElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = recorregutElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
@@ -143,9 +162,9 @@ class RodaliesSchedule {
 						departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false, currentCalendar));
 
-						if(recorreguts >= 1) {
+						if (recorreguts >= 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
 
@@ -156,18 +175,18 @@ class RodaliesSchedule {
 								line_transfer_one = insideItem2.getAttribute("linea");
 								departure_time_transfer_one = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, true));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, true, currentCalendar));
 							}
 						}
 					} else {//Direct train
 						line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
-						times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, journey_time, origin, destination, true, false));
+						times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, journey_time, origin, destination, true, false, currentCalendar));
 					}
 				}
 			}
-		} else if(transfers == 2) {
+		} else if (transfers == 2) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node nodeItem = nodeList.item(i);
 				if (nodeItem.getNodeType() == Node.ELEMENT_NODE) {
@@ -185,7 +204,7 @@ class RodaliesSchedule {
 					arrival_time_transfer_two = recorregutElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 					//journey_time = recorregutElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
-					if(recorreguts > 0) {
+					if (recorreguts > 0) {
 						Element insideItem = (Element) recorregutElement.getElementsByTagName("item").item(0);
 						line_transfer_one = insideItem.getAttribute("linea");
 						departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
@@ -196,9 +215,9 @@ class RodaliesSchedule {
 						departure_time_transfer_two = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time_transfer_one = insideItem2.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false, currentCalendar));
 
-						if(recorreguts > 1) {
+						if (recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
 								arrival_time_transfer_two = recorregutElement2.getElementsByTagName("hora_arribada").item(0).getTextContent();
@@ -212,7 +231,7 @@ class RodaliesSchedule {
 								departure_time_transfer_two = insideItem4.getElementsByTagName("hora_sortida").item(0).getTextContent();
 								arrival_time_transfer_one = insideItem4.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, true));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, true, currentCalendar));
 							}
 						}
 					}
@@ -232,15 +251,19 @@ class RodaliesSchedule {
 			Node node = transfersNode.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
-				if(i == 0 && station_transfer_one == null) station_transfer_one = element.getAttribute("codi");
-				if(i == 1 && station_transfer_two == null) station_transfer_two = element.getAttribute("codi");
+				if (i == 0 && station_transfer_one == null)
+					station_transfer_one = element.getAttribute("codi");
+				if (i == 1 && station_transfer_two == null)
+					station_transfer_two = element.getAttribute("codi");
 			}
 		}
 
 		return transfersNode.getLength();
 	}
 
-	private String getTodayDate() {
+	private String getTodayDate(int deltaDays) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, deltaDays);
 		return String.format(Locale.getDefault(), "%02d/%02d/%d",
 				cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
 	}

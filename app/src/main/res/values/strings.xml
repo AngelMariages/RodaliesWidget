@@ -7,7 +7,7 @@
     <string name="no_stations">The origin or the destination are not set</string>
     <string name="departure">Departure</string>
     <string name="arrival">Arrival</string>
-    <string name="no_times">There are no current times for this pair of stations</string>
+    <string name="no_times">There are no current times for this pair of stations or the selected day</string>
     <string name="search_text">Type the name of a station</string>
     <string name="transfer_departure">Transfer</string>
     <string name="travel_time_toast">Alarm set: %s</string>
