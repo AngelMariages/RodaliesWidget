@@ -75,7 +75,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		if (schedule != null && schedule.size() > 0) {
 			remoteViews = new ArrayList<>();
 			for (int i = 0; i < getCount(); i++) {
-				remoteViews.add(i, getRow(i));
+				remoteViews.add(i, getViewAt(i));
 			}
 		}
 	}
@@ -93,7 +93,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		if (alarm_departure_time != null) {
 			for (int i = 1; i < schedule.size() + 1; i++) {
-				TrainTime trainTime = schedule.get(i);
+				TrainTime trainTime = schedule.get(i - 1);
 				if (trainTime.getTransfer() == 2 && trainTime.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits) {
 					if (trainTime.getDeparture_time_transfer_one().equalsIgnoreCase(alarm_departure_time)) {
 						this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
@@ -126,7 +126,22 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getViewAt(int position) {
 		long before = System.currentTimeMillis();
-		RemoteViews row = remote_view_in_memory ? remoteViews != null && remoteViews.size() > 0 ? remoteViews.get(position) : null : getRow(position);
+		RemoteViews row = null;
+		try {
+			if (remote_view_in_memory) {
+				if (remoteViews != null && remoteViews.size() > 0) {
+					row = remoteViews.get(position);
+				} else {
+					loadViewsToMemory();
+					row = remoteViews.get(position);
+				}
+			} else {
+				row = getRow(position);
+			}
+		} catch (IndexOutOfBoundsException ignored) {
+			U.setUserProperty(context, "index_out_of_bounds", "origin: " + schedule.get(0).getOrigin() +
+					" - destination: " + schedule.get(0).getDestination() + " - size:" + schedule.size() + " - position:" + position);
+		}
 		long elapsed = System.currentTimeMillis() - before;
 		if (elapsed > worstElapsed) worstElapsed = elapsed;
 		if (System.currentTimeMillis() - publishAnalyticsTime > 2000) {
@@ -136,7 +151,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		return row;
 	}
 
-	private RemoteViews getRow(int position) {
+	private RemoteViews getRow(int position) throws IndexOutOfBoundsException {
 		if (position == schedule.size() + 1) {//Data origin row
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.data_info_line);
 			if (core != 50)
