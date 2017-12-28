@@ -34,6 +34,8 @@ import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
