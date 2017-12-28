@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2017 Àngel Mariages
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.angelmariages.rodalieswidget.timetables;
 
 import org.angelmariages.rodalieswidget.utils.U;
@@ -10,7 +34,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class TrainTime implements Serializable {
-	private final Calendar date;
+	private final long date;
 	private int transfer = 0;
 	private final String line;
 	private final String departure_time;
@@ -36,7 +60,7 @@ public class TrainTime implements Serializable {
 		this.travel_time = formatHour(travel_time);
 		this.origin = origin;
 		this.destination = destination;
-		this.date = from_date;
+		this.date = from_date.getTimeInMillis();
 	}
 
 	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, String origin, String destination, boolean direct_train, boolean same_origin_train, Calendar from_date) {
@@ -53,7 +77,7 @@ public class TrainTime implements Serializable {
 		this.destination = destination;
 		this.direct_train = direct_train;
 		this.same_origin_train = same_origin_train;
-		this.date = from_date;
+		this.date = from_date.getTimeInMillis();
 	}
 
 	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, String origin, String destination, boolean same_origin_train, Calendar from_date) {
@@ -74,7 +98,7 @@ public class TrainTime implements Serializable {
 		this.origin = origin;
 		this.destination = destination;
 		this.same_origin_train = same_origin_train;
-		this.date = from_date;
+		this.date = from_date.getTimeInMillis();
 	}
 
 	@Override
@@ -144,7 +168,7 @@ public class TrainTime implements Serializable {
 		return arrival_time;
 	}
 
-	public String getTravel_time() {
+	String getTravel_time() {
 		return travel_time;
 	}
 
@@ -197,7 +221,9 @@ public class TrainTime implements Serializable {
 	}
 
 	public Calendar getDate() {
-		return date;
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date);
+		return cal;
 	}
 
 	public Calendar getDateWithTime() {

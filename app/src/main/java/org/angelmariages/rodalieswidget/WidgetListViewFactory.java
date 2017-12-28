@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2017 Àngel Mariages
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.angelmariages.rodalieswidget;
 
 import android.appwidget.AppWidgetManager;
@@ -91,26 +115,26 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		U.log("Alarm departure time: " + alarm_departure_time);
 
+		if (remote_view_in_memory) loadViewsToMemory();
+
 		if (alarm_departure_time != null) {
 			for (int i = 1; i < schedule.size() + 1; i++) {
 				TrainTime trainTime = schedule.get(i - 1);
 				if (trainTime.getTransfer() == 2 && trainTime.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits) {
 					if (trainTime.getDeparture_time_transfer_one().equalsIgnoreCase(alarm_departure_time)) {
-						this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+						getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
 					}
 				} else {
 					if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
-						this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
+						getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
 					}
 				}
 			}
 		} else {
 			for (int i = 1; i < schedule.size() + 1; i++) {
-				this.getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_no_alarm);
+				getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_no_alarm);
 			}
 		}
-
-		if (remote_view_in_memory) loadViewsToMemory();
 	}
 
 	@Override
@@ -132,8 +156,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				if (remoteViews != null && remoteViews.size() > 0) {
 					row = remoteViews.get(position);
 				} else {
-					loadViewsToMemory();
-					row = remoteViews.get(position);
+					row = getRow(position);
 				}
 			} else {
 				row = getRow(position);
