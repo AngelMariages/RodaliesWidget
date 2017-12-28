@@ -76,7 +76,6 @@ dependencies {
     compile 'com.google.firebase:firebase-config:11.8.0'
     compile 'com.android.support:support-v4:27.0.2'
     compile 'com.android.support:support-vector-drawable:27.0.2'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
 
     compile 'net.grandcentrix.tray:tray:0.12.0'
 
