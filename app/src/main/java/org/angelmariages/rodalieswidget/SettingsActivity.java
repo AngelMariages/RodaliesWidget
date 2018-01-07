@@ -48,6 +48,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.grandcentrix.tray.AppPreferences;
 
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -114,7 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
-			addPreferencesFromResource(R.xml.pref_widget);
+			addPreferencesFromResource(R.xml.widget_preferences);
 
 			SwitchPreference show_all_times = (SwitchPreference) findPreference("show_all_times");
 			SwitchPreference scroll_to_time = (SwitchPreference) findPreference("scroll_to_time");
@@ -186,13 +187,13 @@ public class SettingsActivity extends AppCompatActivity {
 					String ringtoneUri = (String) newValue;
 
 					if (ringtoneUri == null) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).remove(U.PREFERENCE_STRING_ALARM_URI);
+						new AppPreferences(PreferencesFragment.this.getActivity()).remove(Constants.PREFERENCE_STRING_ALARM_URI);
 					} else if (ringtoneUri.isEmpty()) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(U.PREFERENCE_STRING_ALARM_URI, "--silent--");
+						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
 					} else {
 						Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
 						Toast.makeText(PreferencesFragment.this.getActivity(), ringtone.getTitle(PreferencesFragment.this.getActivity()), Toast.LENGTH_SHORT).show();
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(U.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
+						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
 					}
 					return true;
 				}

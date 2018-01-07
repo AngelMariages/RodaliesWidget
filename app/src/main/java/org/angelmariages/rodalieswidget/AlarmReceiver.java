@@ -38,22 +38,24 @@ import android.support.v4.app.NotificationCompat;
 
 import net.grandcentrix.tray.AppPreferences;
 
+import org.angelmariages.rodalieswidget.utils.AlarmUtils;
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class AlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		int widgetID = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
+		int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
 		if (widgetID == -1) return;
 
 		U.log("Alarm received, removing it " + widgetID);
 		String[] stations = U.getStations(context, widgetID);
 		if (stations.length == 2) {
-			U.removeAlarm(context, widgetID, stations[0], stations[1]);
+			AlarmUtils.removeAlarm(context, widgetID, stations[0], stations[1]);
 		}
 
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-		String customUri = new AppPreferences(context).getString(U.PREFERENCE_STRING_ALARM_URI, null);
+		String customUri = new AppPreferences(context).getString(Constants.PREFERENCE_STRING_ALARM_URI, null);
 		if (customUri != null) {
 			if (customUri.equalsIgnoreCase("--silent--")) soundUri = null;
 			else soundUri = Uri.parse(customUri);
@@ -86,6 +88,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 			notificationManager.notify(1, notification);
 		}
 
-		U.logEventAlarmFired(context);
+		AlarmUtils.logEventAlarmFired(context);
 	}
 }

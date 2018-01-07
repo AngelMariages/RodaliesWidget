@@ -1,7 +1,7 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2017 Àngel Mariages
+  ~ Copyright (c) 2018 Àngel Mariages
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,20 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="padding">5dp</dimen>
-    <dimen name="padding_button_background">4dp</dimen>
-    <dimen name="padding_button">4dp</dimen>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/timesListLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/title_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/promotion_line_text"
+        android:textColor="#FFF"
+        android:textSize="18sp" />
 
-    <dimen name="dots_height">30dp</dimen>
-    <dimen name="dots_margin_bottom">4dp</dimen>
-    <dimen name="slide_title">32sp</dimen>
-    <dimen name="slide_desc">18sp</dimen>
-    <dimen name="slide_padding">40dp</dimen>
-
-    <dimen name="time_list_text_size">14sp</dimen>
-</resources>
+</LinearLayout>
