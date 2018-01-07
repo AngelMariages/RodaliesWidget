@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.angelmariages.rodalieswidget.utils.StationUtils;
+import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.io.BufferedReader;
@@ -131,7 +132,7 @@ class RenfeSchedule implements ScheduleProvider {
 		transferStationOne = StationUtils.getIDFromName(transferStationOne, nucli);
 		transferStationTwo = StationUtils.getIDFromName(transferStationTwo, nucli);
 
-		return parseTimes(rows, getTransfers(rows), U.getCalendarForDelta(deltaDays));
+		return parseTimes(rows, getTransfers(rows), TimeUtils.getCalendarForDelta(deltaDays));
 	}
 
 	public ArrayList<TrainTime> getSchedule() {

@@ -85,4 +85,8 @@
     <string name="pref_set_sound">So de l\'alarma</string>
     <string name="button">Change zone</string>
     <string name="notification_content_first_time">Saps com instal·lar un widget?</string>
+    <string name="promotion_line_text">T\'agrada?</string>
+    <string name="rate_app_question">T\'agrada l\'aplicació?</string>
+    <string name="rate_app_negative">No?\nExplica\'ns per què</string>
+    <string name="rate_app_positive_button">Sí?\nPuntuans a la botiga (PlayStore)!</string>
 </resources>

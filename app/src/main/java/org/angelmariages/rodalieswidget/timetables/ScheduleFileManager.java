@@ -24,6 +24,7 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,7 @@ final class ScheduleFileManager {
 		try {
 			scheduleObject.put(KEY_TRANSFERS, transfers);
 			Calendar date = trainTimes.get(0).getDate();
-			scheduleObject.put(KEY_DATE_TIMESTAMP, date != null ? date.getTimeInMillis() : U.getCurrentDateAsTimestamp());
+			scheduleObject.put(KEY_DATE_TIMESTAMP, date != null ? date.getTimeInMillis() : TimeUtils.getCurrentDateAsTimestamp());
 			if (transfers > 0) {
 				scheduleObject.put(KEY_STATION_TRANSFER_ONE, trainTimes.get(0).getStation_transfer_one());
 				if (transfers > 1) {
@@ -107,7 +108,7 @@ final class ScheduleFileManager {
 			JSONObject scheduleObject = new JSONObject(jsonString);
 			int transfers = scheduleObject.optInt(KEY_TRANSFERS, 0);
 			Calendar cal = Calendar.getInstance();
-			cal.setTimeInMillis(scheduleObject.optLong(KEY_DATE_TIMESTAMP, U.getCurrentDateAsTimestamp()));
+			cal.setTimeInMillis(scheduleObject.optLong(KEY_DATE_TIMESTAMP, TimeUtils.getCurrentDateAsTimestamp()));
 			String station_transfer_one = null, station_transfer_two = null;
 			if (transfers > 0) {
 				station_transfer_one = scheduleObject.optString(KEY_STATION_TRANSFER_ONE);

@@ -43,6 +43,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.angelmariages.rodalieswidget.timetables.GetSchedule;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -52,7 +53,7 @@ import java.util.HashMap;
 import io.fabric.sdk.android.Fabric;
 
 class RodaliesWidget extends RemoteViews {
-	private int state = U.WIDGET_STATE_SCHEDULE_LOADED;
+	private int state = Constants.WIDGET_STATE_SCHEDULE_LOADED;
 	private final Context context;
 	private final int widgetID;
 
@@ -86,16 +87,16 @@ class RodaliesWidget extends RemoteViews {
 
 		this.state = state;
 
-		if (state == U.WIDGET_STATE_UPDATING_TABLES) {
+		if (state == Constants.WIDGET_STATE_UPDATING_TABLES) {
 			new GetSchedule().execute(context, widgetID, deltaDays);
-		} else if (state == U.WIDGET_STATE_SCHEDULE_LOADED) {
+		} else if (state == Constants.WIDGET_STATE_SCHEDULE_LOADED) {
 			Intent adapterIntent = new Intent(context, WidgetService.class);
 			adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
 			adapterIntent.setData(Uri.fromParts("content", String.valueOf(widgetID) + Math.random(), null));
 
 			Bundle bundle = new Bundle();
-			bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, schedule);
-			adapterIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+			bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, schedule);
+			adapterIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
 
 			if (schedule != null && schedule.size() > 0) {
 				int core = U.getCore(context, widgetID);
@@ -151,16 +152,16 @@ class RodaliesWidget extends RemoteViews {
 				}
 			}
 			this.setRemoteAdapter(R.id.scheduleListView, adapterIntent);
-		} else if (state == U.WIDGET_STATE_NO_INTERNET) {
+		} else if (state == Constants.WIDGET_STATE_NO_INTERNET) {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_internet));
-		} else if (state == U.WIDGET_STATE_NO_STATIONS) {
+		} else if (state == Constants.WIDGET_STATE_NO_STATIONS) {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_stations));
-		} else if (state == U.WIDGET_STATE_NO_TIMES) {
+		} else if (state == Constants.WIDGET_STATE_NO_TIMES) {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_times));
 		}
 
 		setStationNames();
-		if (state != U.WIDGET_STATE_UPDATING_TABLES) setPendingIntents();
+		if (state != Constants.WIDGET_STATE_UPDATING_TABLES) setPendingIntents();
 	}
 
 	private void setStationNames() {
@@ -186,8 +187,8 @@ class RodaliesWidget extends RemoteViews {
 	private void setListViewClickIntent() {
 		//It this intent is not set the intent when on click on a row of the list view doesn't work
 		Intent listViewClickIntent = new Intent(context, WidgetManager.class);
-		listViewClickIntent.setAction(U.ACTION_CLICK_LIST_ITEM + getWidgetID());
-		listViewClickIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+		listViewClickIntent.setAction(Constants.ACTION_CLICK_LIST_ITEM + getWidgetID());
+		listViewClickIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
 		PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
 				listViewClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setPendingIntentTemplate(R.id.scheduleListView, clickPI);
@@ -195,9 +196,9 @@ class RodaliesWidget extends RemoteViews {
 
 	private void setUpdateButtonIntent() {
 		Intent updateButtonIntent = new Intent(context, WidgetManager.class);
-		updateButtonIntent.setAction(U.ACTION_CLICK_UPDATE_BUTTON + getWidgetID());
-		updateButtonIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		updateButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
+		updateButtonIntent.setAction(Constants.ACTION_CLICK_UPDATE_BUTTON + getWidgetID());
+		updateButtonIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		updateButtonIntent.putExtra(Constants.EXTRA_WIDGET_STATE, state);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
 				updateButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.updateButton, pendingIntent);
@@ -205,9 +206,9 @@ class RodaliesWidget extends RemoteViews {
 
 	private void setSwapButtonIntent() {
 		Intent swapButtonIntent = new Intent(context, WidgetManager.class);
-		swapButtonIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON + getWidgetID());
-		swapButtonIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		swapButtonIntent.putExtra(U.EXTRA_WIDGET_STATE, state);
+		swapButtonIntent.setAction(Constants.ACTION_CLICK_SWAP_BUTTON + getWidgetID());
+		swapButtonIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		swapButtonIntent.putExtra(Constants.EXTRA_WIDGET_STATE, state);
 		PendingIntent swapPI = PendingIntent.getBroadcast(context, 0,
 				swapButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.swapButton, swapPI);
@@ -215,17 +216,17 @@ class RodaliesWidget extends RemoteViews {
 
 	private void setConfigStationIntent() {
 		Intent originStationIntent = new Intent(context, WidgetManager.class);
-		originStationIntent.setAction(U.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_O");
-		originStationIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		originStationIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, U.ORIGIN);
+		originStationIntent.setAction(Constants.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_O");
+		originStationIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		originStationIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, Constants.ORIGIN);
 		PendingIntent showDialogPI1 = PendingIntent.getBroadcast(context, 0,
 				originStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.originLayout, showDialogPI1);
 
 		Intent destinationStationIntent = new Intent(context, WidgetManager.class);
-		destinationStationIntent.setAction(U.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_D");
-		destinationStationIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		destinationStationIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, U.DESTINATION);
+		destinationStationIntent.setAction(Constants.ACTION_CLICK_STATIONS_TEXT + getWidgetID() + "_D");
+		destinationStationIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		destinationStationIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, Constants.DESTINATION);
 		PendingIntent showDialogPI2 = PendingIntent.getBroadcast(context, 0,
 				destinationStationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		this.setOnClickPendingIntent(R.id.destinationLayout, showDialogPI2);

@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -83,11 +84,11 @@ class StationsAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
 				Intent updateStationsIntent = new Intent(mContext, WidgetReceiver.class);
-				updateStationsIntent.setAction(U.ACTION_SEND_NEW_STATIONS);
-				updateStationsIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+				updateStationsIntent.setAction(Constants.ACTION_SEND_NEW_STATIONS);
+				updateStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
 				// TODO: 14-Jan-17 Could do this better
-				updateStationsIntent.putExtra(U.EXTRA_CONFIG_STATION, StationUtils.getIDFromName(stationList.get(position), U.getCore(mContext, widgetID)));
-				updateStationsIntent.putExtra(U.EXTRA_ORIGINorDESTINATION, originOrDestination);
+				updateStationsIntent.putExtra(Constants.EXTRA_CONFIG_STATION, StationUtils.getIDFromName(stationList.get(position), U.getCore(mContext, widgetID)));
+				updateStationsIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, originOrDestination);
 				mContext.sendBroadcast(updateStationsIntent);
 				((Activity) mContext).finish();
 			}

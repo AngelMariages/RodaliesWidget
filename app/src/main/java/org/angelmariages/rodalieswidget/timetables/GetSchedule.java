@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
+import org.angelmariages.rodalieswidget.utils.Constants;
+import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class GetSchedule extends AsyncTask<Object, Void, Void> {
@@ -110,9 +112,9 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 			ArrayList<TrainTime> hourSchedule = null;
 			boolean switched = false;
 			if (schedule != null) {
-				if (U.getCurrentHour() == 0) {
+				if (TimeUtils.getCurrentHour() == 0) {
 					pastSchedule = getScheduleFromYesterday(context, origin, destination, scheduleProvider);
-					if (!U.isScheduleExpired(pastSchedule)) {
+					if (!TimeUtils.isScheduleExpired(pastSchedule)) {
 						schedule = pastSchedule;
 						switched = true;
 					}
@@ -135,9 +137,9 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 			ArrayList<TrainTime> pastSchedule;
 
 			if (scheduleFromJSON != null) {
-				if (U.getCurrentHour() == 0) {
+				if (TimeUtils.getCurrentHour() == 0) {
 					pastSchedule = getScheduleFromYesterday(context, origin, destination, scheduleProvider);
-					if (!U.isScheduleExpired(pastSchedule)) {
+					if (!TimeUtils.isScheduleExpired(pastSchedule)) {
 						scheduleFromJSON = pastSchedule;
 					}
 				}
@@ -167,7 +169,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 				hourSchedule.add(trainTime);
 			} else {
 				if (!show_all_times) {
-					if (U.isScheduledTrain(trainTime)) hourSchedule.add(trainTime);
+					if (TimeUtils.isScheduledTrain(trainTime)) hourSchedule.add(trainTime);
 				} else {
 					hourSchedule.add(trainTime);
 				}
@@ -176,7 +178,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 	}
 
 	private String readJSONFile(Context context, int deltaDays) {
-		String fileName = "horaris_" + origin + "_" + destination + "_" + U.getTodayDateWithoutPath(deltaDays) + ".json";
+		String fileName = "horaris_" + origin + "_" + destination + "_" + TimeUtils.getTodayDateWithoutPath(deltaDays) + ".json";
 
 		StringBuilder allLines = new StringBuilder();
 
@@ -198,7 +200,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 	private void saveJSONFile(Context context, String jsonFile) {
 		if (jsonFile == null || jsonFile.isEmpty()) return;
 
-		String fileName = "horaris_" + origin + "_" + destination + "_" + U.getTodayDateWithoutPath() + ".json";
+		String fileName = "horaris_" + origin + "_" + destination + "_" + TimeUtils.getTodayDateWithoutPath() + ".json";
 
 		OutputStreamWriter outputStreamWriter;
 		try {
@@ -212,7 +214,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 	private void removeOldJSON(Context context) {
 		File filesDir = context.getFilesDir();
-		final String endsWith = "_" + U.getTodayDateWithoutPath() + ".json";
+		final String endsWith = "_" + TimeUtils.getTodayDateWithoutPath() + ".json";
 
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
@@ -223,7 +225,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 						int ind = split[3].indexOf(".json");
 						if (ind != -1) {
 							String fileDate = split[3].substring(0, ind);
-							return !U.isFuture(fileDate) && !U.isYesterday(fileDate);
+							return !TimeUtils.isFuture(fileDate) && !TimeUtils.isYesterday(fileDate);
 						}
 					}
 				}
@@ -254,12 +256,12 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 					if (trainTimes != null) {
 						Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-						sendScheduleIntent.setAction(U.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
-						sendScheduleIntent.putExtra(U.EXTRA_WIDGET_ID, widgetId);
+						sendScheduleIntent.setAction(Constants.ACTION_SEND_SCHEDULE + widgetId + stations[0]);
+						sendScheduleIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
 						Bundle bundle = new Bundle();
 
-						bundle.putSerializable(U.EXTRA_SCHEDULE_DATA, trainTimes);
-						sendScheduleIntent.putExtra(U.EXTRA_SCHEDULE_BUNDLE, bundle);
+						bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, trainTimes);
+						sendScheduleIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
 						context.sendBroadcast(sendScheduleIntent);
 					} else {
 						U.sendNoInternetError(widgetId, context);
