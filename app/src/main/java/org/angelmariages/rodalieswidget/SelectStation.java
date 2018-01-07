@@ -39,6 +39,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -55,14 +56,14 @@ public class SelectStation extends AppCompatActivity {
 
 		Intent selectIntent = getIntent();
 
-		widgetID = selectIntent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
-		originOrDestination = selectIntent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
+		widgetID = selectIntent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
+		originOrDestination = selectIntent.getIntExtra(Constants.EXTRA_ORIGINorDESTINATION, -1);
 
 		if (widgetID == -1) {
 			isFromActionView = true;
 			widgetID = U.getFirstWidgetId(this);
 			//TODO if no widget is found, show tutorial
-			originOrDestination = U.ORIGIN;
+			originOrDestination = Constants.ORIGIN;
 			U.saveStations(this, widgetID, "-1", "-1");
 		}
 

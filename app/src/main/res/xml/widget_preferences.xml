@@ -36,12 +36,6 @@
             android:key="scroll_to_time"
             android:title="@string/pref_scroll_to_time"/>
 
-        <!-- <SwitchPreference
-            android:key="download_return_schedule"
-            android:title="@string/pref_download_return_schedule"
-            android:summaryOn="@string/pref_download_return_schedule_summary_on"
-            android:summaryOff="@string/pref_download_return_schedule_summary_off"/>-->
-
         <SwitchPreference
             android:key="show_more_transfer_trains"
             android:summaryOff="@string/pref_show_more_transfer_trains_summary_off"
@@ -66,6 +60,20 @@
             android:key="line_notifications"
             android:title="@string/pref_receive_notifications" />-->
     </PreferenceCategory>
+    <PreferenceCategory android:title="Colors">
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/widget_background"
+            android:key="@string/pref_about_title" />
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/widget_background"
+            android:key="@string/pref_about_title" />
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/widget_background"
+            android:key="@string/pref_about_title" />
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/widget_background"
+            android:key="@string/pref_about_title" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_about_title">
         <Preference
             android:key="pref_view_tutorial"
@@ -76,7 +84,7 @@
             android:title="@string/pref_donation">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=JAFCPFEAET4JL"/>
+                android:data="https://goo.gl/AT8chs"/>
         </Preference>
 
         <Preference android:title="@string/pref_version"/>

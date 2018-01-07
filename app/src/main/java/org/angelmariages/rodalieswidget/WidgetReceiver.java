@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
 
 public class WidgetReceiver extends BroadcastReceiver {
@@ -46,7 +47,7 @@ public class WidgetReceiver extends BroadcastReceiver {
 		int widgetID = U.getIdFromIntent(intent);
 
 		if (widgetID != -1) {
-			if (intentAction.equalsIgnoreCase(U.ACTION_CLICK_SWAP_BUTTON)) {
+			if (intentAction.equalsIgnoreCase(Constants.ACTION_CLICK_SWAP_BUTTON)) {
 				String[] oldStations = U.getStations(context, widgetID);
 				if (oldStations[0].equalsIgnoreCase("-1") || oldStations[1].equalsIgnoreCase("-1")) {
 					U.sendNoStationsSetError(widgetID, context);
@@ -59,15 +60,15 @@ public class WidgetReceiver extends BroadcastReceiver {
 					U.saveStations(context, widgetID, oldStations[0], oldStations[1]);
 					updateStationsTextViews(context, widgetID);
 				}
-			} else if (intentAction.equalsIgnoreCase(U.ACTION_SEND_NEW_STATIONS)) {
-				int originOrDestination = intent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
-				String newStation = intent.getStringExtra(U.EXTRA_CONFIG_STATION);
+			} else if (intentAction.equalsIgnoreCase(Constants.ACTION_SEND_NEW_STATIONS)) {
+				int originOrDestination = intent.getIntExtra(Constants.EXTRA_ORIGINorDESTINATION, -1);
+				String newStation = intent.getStringExtra(Constants.EXTRA_CONFIG_STATION);
 				U.log("OR= " + originOrDestination + " , " + newStation);
 
 				if (originOrDestination != -1 && newStation != null) {
 					String[] stations = U.getStations(context, widgetID);
 
-					if (originOrDestination == U.ORIGIN) stations[0] = newStation;
+					if (originOrDestination == Constants.ORIGIN) stations[0] = newStation;
 					else stations[1] = newStation;
 
 					U.saveStations(context, widgetID, stations[0], stations[1]);
@@ -80,10 +81,10 @@ public class WidgetReceiver extends BroadcastReceiver {
 	private void updateStationsTextViews(Context context, int widgetID) {
 		String[] stations = U.getStations(context, widgetID);
 		Intent updateStationsTextIntent = new Intent(context, WidgetManager.class);
-		updateStationsTextIntent.setAction(U.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
-		updateStationsTextIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		updateStationsTextIntent.putExtra(U.EXTRA_ORIGIN, stations[0]);
-		updateStationsTextIntent.putExtra(U.EXTRA_DESTINATION, stations[1]);
+		updateStationsTextIntent.setAction(Constants.ACTION_UPDATE_STATIONS + String.valueOf(widgetID));
+		updateStationsTextIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		updateStationsTextIntent.putExtra(Constants.EXTRA_ORIGIN, stations[0]);
+		updateStationsTextIntent.putExtra(Constants.EXTRA_DESTINATION, stations[1]);
 		context.sendBroadcast(updateStationsTextIntent);
 	}
 }

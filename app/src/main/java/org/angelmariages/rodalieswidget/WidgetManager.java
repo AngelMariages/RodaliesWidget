@@ -36,6 +36,7 @@ import android.preference.PreferenceManager;
 import com.crashlytics.android.Crashlytics;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
@@ -71,7 +72,8 @@ public class WidgetManager extends AppWidgetProvider {
 		}
 		try {
 			U.setUserProperty(context, "num_of_widgets", appWidgetIds.length);
-		} catch (Exception ignored) {}
+		} catch (Exception ignored) {
+		}
 	}
 
 	@Override
@@ -86,75 +88,82 @@ public class WidgetManager extends AppWidgetProvider {
 
 		if (intentAction == null || intentAction.isEmpty()) return;
 
-		if (intentAction.startsWith(U.ACTION_SEND_SCHEDULE)) {
+		if (intentAction.startsWith(Constants.ACTION_SEND_SCHEDULE)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
-				Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
-				ArrayList<TrainTime> schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
+			if (intent.hasExtra(Constants.EXTRA_SCHEDULE_BUNDLE)) {
+				Bundle bundle = intent.getBundleExtra(Constants.EXTRA_SCHEDULE_BUNDLE);
+				ArrayList<TrainTime> schedule = (ArrayList<TrainTime>) bundle.getSerializable(Constants.EXTRA_SCHEDULE_DATA);
 
 				loadSchedule(context, widgetID, schedule);
 
 				U.logEventUpdate(schedule, context);
 			}
 
-		} else if (intentAction.startsWith(U.ACTION_CLICK_UPDATE_BUTTON)) {
+		} else if (intentAction.startsWith(Constants.ACTION_CLICK_UPDATE_BUTTON)) {
 			int widgetID = U.getIdFromIntent(intent);
 
 			reloadWidget(context, widgetID, 0);
 
 			U.logUpdates(context, widgetID);
-		} else if (intentAction.startsWith(U.ACTION_CLICK_SWAP_BUTTON)) {
+		} else if (intentAction.startsWith(Constants.ACTION_CLICK_SWAP_BUTTON)) {
 			int widgetID = U.getIdFromIntent(intent);
 			int widgetState = U.getStateFromIntent(intent);
 
 			swapStations(context, widgetID, widgetState);
 
 			U.logEventSwap(context);
-		} else if (intentAction.startsWith(U.ACTION_CLICK_STATIONS_TEXT)) {
+		} else if (intentAction.startsWith(Constants.ACTION_CLICK_STATIONS_TEXT)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			int originOrDestination = intent.getIntExtra(U.EXTRA_ORIGINorDESTINATION, -1);
+			int originOrDestination = intent.getIntExtra(Constants.EXTRA_ORIGINorDESTINATION, -1);
 			if (widgetID != -1 && originOrDestination != -1) {
 				Intent dialogActivity = new Intent(context, SelectStation.class);
 				dialogActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				dialogActivity.putExtra(U.EXTRA_ORIGINorDESTINATION, originOrDestination);
-				dialogActivity.putExtra(U.EXTRA_WIDGET_ID, widgetID);
+				dialogActivity.putExtra(Constants.EXTRA_ORIGINorDESTINATION, originOrDestination);
+				dialogActivity.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
 
 				context.startActivity(dialogActivity);
 			}
-		} else if (intentAction.startsWith(U.ACTION_UPDATE_STATIONS)) {
+		} else if (intentAction.startsWith(Constants.ACTION_UPDATE_STATIONS)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			String newOrigin = intent.getStringExtra(U.EXTRA_ORIGIN);
-			String newDestination = intent.getStringExtra(U.EXTRA_DESTINATION);
+			String newOrigin = intent.getStringExtra(Constants.EXTRA_ORIGIN);
+			String newDestination = intent.getStringExtra(Constants.EXTRA_DESTINATION);
 
 			U.log("Got update to: " + widgetID);
 			U.log("UpdateContains: " + newOrigin + "," + newDestination);
 
 			updateStationTexts(StationUtils.getNameFromID(newOrigin, U.getCore(context, widgetID)), StationUtils.getNameFromID(newDestination, U.getCore(context, widgetID)),
 					context, widgetID);
-		} else if (intentAction.startsWith(U.ACTION_CLICK_LIST_ITEM)) {
+		} else if (intentAction.startsWith(Constants.ACTION_CLICK_LIST_ITEM)) {
 			int widgetID = U.getIdFromIntent(intent);
 
-			int switchTo = intent.getIntExtra(U.EXTRA_SWITCH_TO, Integer.MAX_VALUE);
-			if (switchTo != Integer.MAX_VALUE) {
-				U.setUserProperty(context, "has_switched_days", true);
-				reloadWidget(context, widgetID, switchTo);
-			} else {
-				String departureTime = intent.getStringExtra(U.EXTRA_ALARM_DEPARTURE_TIME);
-
-				context.startActivity(new Intent(context, SelectAlarmActivity.class)
-						.setAction(departureTime)
+			boolean promotion_line = intent.getBooleanExtra(Constants.EXTRA_PROMOTION_LINE, false);
+			if (promotion_line) {
+				context.startActivity(new Intent(context, RateAppActivity.class)
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-						.putExtra(U.EXTRA_WIDGET_ID, widgetID)
 				);
+			} else {
+				int switchTo = intent.getIntExtra(Constants.EXTRA_SWITCH_TO, Integer.MAX_VALUE);
+				if (switchTo != Integer.MAX_VALUE) {
+					U.setUserProperty(context, "has_switched_days", true);
+					reloadWidget(context, widgetID, switchTo);
+				} else {
+					String departureTime = intent.getStringExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME);
+
+					context.startActivity(new Intent(context, SelectAlarmActivity.class)
+							.setAction(departureTime)
+							.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+							.putExtra(Constants.EXTRA_WIDGET_ID, widgetID)
+					);
+				}
 			}
-		} else if (intentAction.startsWith(U.ACTION_NOTIFY_UPDATE)) {
+		} else if (intentAction.startsWith(Constants.ACTION_NOTIFY_UPDATE)) {
 			int widgetID = U.getIdFromIntent(intent);
 
 			notifyUpdate(context, widgetID);
-		} else if (intentAction.startsWith(U.ACTION_WIDGET_NO_DATA)) {
+		} else if (intentAction.startsWith(Constants.ACTION_WIDGET_NO_DATA)) {
 			int widgetID = U.getIdFromIntent(intent);
 			int widgetState = U.getStateFromIntent(intent);
 
@@ -187,19 +196,19 @@ public class WidgetManager extends AppWidgetProvider {
 
 	private void swapStations(Context context, int widgetID, int widgetState) {
 		Intent swapIntent = new Intent(context, WidgetReceiver.class);
-		swapIntent.setAction(U.ACTION_CLICK_SWAP_BUTTON);
-		swapIntent.putExtra(U.EXTRA_WIDGET_ID, widgetID);
-		swapIntent.putExtra(U.EXTRA_WIDGET_STATE, widgetState);
+		swapIntent.setAction(Constants.ACTION_CLICK_SWAP_BUTTON);
+		swapIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+		swapIntent.putExtra(Constants.EXTRA_WIDGET_STATE, widgetState);
 		context.sendBroadcast(swapIntent);
 	}
 
 	private void loadSchedule(final Context context, final int widgetID, final ArrayList<TrainTime> schedule) {
-		RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule, 0);
+		RodaliesWidget widget = new RodaliesWidget(context, widgetID, Constants.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout, schedule, 0);
 		if (schedule != null && schedule.size() > 0) {
 			if (schedule.get(0).getTransfer() == 1)
-				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule, 0);
+				widget = new RodaliesWidget(context, widgetID, Constants.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_one_transfer, schedule, 0);
 			else if (schedule.get(0).getTransfer() == 2)
-				widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule, 0);
+				widget = new RodaliesWidget(context, widgetID, Constants.WIDGET_STATE_SCHEDULE_LOADED, R.layout.widget_layout_two_transfer, schedule, 0);
 
 			boolean scroll_to_time = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("scroll_to_time", false);
 			boolean show_more_transfer_trains = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_more_transfer_trains", false);
@@ -218,9 +227,10 @@ public class WidgetManager extends AppWidgetProvider {
 				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						int scrollPosition = getScrollPosition(schedule) + 1;
+						int scrollPosition = U.getScrollPosition(schedule);
 						//if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
-						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
+						if (scrollPosition > 0)
+							finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
 						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
 						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
 					}
@@ -230,16 +240,9 @@ public class WidgetManager extends AppWidgetProvider {
 		AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 	}
 
-	private int getScrollPosition(ArrayList<TrainTime> schedule) {
-		for (int i = 0; i < schedule.size(); i++) {
-			if (U.isScheduledTrain(schedule.get(i))) return i;
-		}
-		return 0;
-	}
-
 	private RodaliesWidget reloadWidget(Context context, int widgetID, int deltaDays) {
 		if (widgetID != -1) {
-			RodaliesWidget widget = new RodaliesWidget(context, widgetID, U.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null, deltaDays);
+			RodaliesWidget widget = new RodaliesWidget(context, widgetID, Constants.WIDGET_STATE_UPDATING_TABLES, R.layout.widget_layout_updating, null, deltaDays);
 			AppWidgetManager.getInstance(context).updateAppWidget(widgetID, widget);
 			return widget;
 		}

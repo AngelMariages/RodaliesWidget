@@ -26,6 +26,7 @@ package org.angelmariages.rodalieswidget.timetables;
 
 import android.support.annotation.NonNull;
 
+import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -111,7 +112,7 @@ class RodaliesSchedule implements ScheduleProvider {
 
 	public ArrayList<TrainTime> getSchedule(int deltaDays) {
 		try {
-			return parseXMLFile(getPageFromInternet(deltaDays), U.getCalendarForDelta(deltaDays));
+			return parseXMLFile(getPageFromInternet(deltaDays), TimeUtils.getCalendarForDelta(deltaDays));
 		} catch (Exception e) {
 			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
 			return getSchedule(deltaDays, 1);
@@ -120,7 +121,7 @@ class RodaliesSchedule implements ScheduleProvider {
 
 	private ArrayList<TrainTime> getSchedule(int deltaDays, int times) {
 		try {
-			return parseXMLFile(getPageFromInternet(deltaDays), U.getCalendarForDelta(deltaDays));
+			return parseXMLFile(getPageFromInternet(deltaDays), TimeUtils.getCalendarForDelta(deltaDays));
 		} catch (Exception e) {
 			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
 			if (times > 3) return null;

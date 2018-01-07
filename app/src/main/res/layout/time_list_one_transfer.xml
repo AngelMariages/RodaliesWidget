@@ -51,7 +51,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:maxLines="1"
                 android:textColor="@color/data_text"
-                android:textSize="14sp"
+                android:textSize="@dimen/time_list_text_size"
                 tools:text="R1"/>
 
             <TextView
@@ -89,7 +89,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:maxLines="1"
                 android:textColor="@color/data_text"
-                android:textSize="14sp"
+                android:textSize="@dimen/time_list_text_size"
                 tools:text="R1"/>
 
             <TextView

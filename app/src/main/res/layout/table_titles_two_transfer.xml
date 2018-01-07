@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2017 Àngel Mariages
@@ -23,8 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,10 +39,12 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingEnd="3dp"
+            android:paddingLeft="0dp"
             android:paddingRight="3dp"
+            android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_one"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/lineTransferOneText"
@@ -54,8 +54,8 @@
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
             android:textColor="@color/data_text"
-            android:textSize="14sp"
-            tools:text="R1"/>
+            android:textSize="@dimen/time_list_text_size"
+            tools:text="R1" />
 
         <TextView
             android:id="@+id/transferOneTitleText"
@@ -63,11 +63,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:maxLines="1"
+            android:paddingEnd="0dp"
             android:paddingLeft="3dp"
+            android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
             android:textColor="#FFFFFF"
-            tools:text="Barcelona-Sants"/>
+            tools:text="Barcelona-Sants" />
     </LinearLayout>
 
     <LinearLayout
@@ -80,10 +82,12 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingEnd="3dp"
+            android:paddingLeft="0dp"
             android:paddingRight="3dp"
+            android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_two"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/lineTransferTwoText"
@@ -93,8 +97,8 @@
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
             android:textColor="@color/data_text"
-            android:textSize="14sp"
-            tools:text="R1"/>
+            android:textSize="@dimen/time_list_text_size"
+            tools:text="R1" />
 
         <TextView
             android:id="@+id/transferTwoTitleText"
@@ -102,11 +106,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:maxLines="1"
+            android:paddingEnd="0dp"
             android:paddingLeft="3dp"
+            android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
             android:textColor="#FFFFFF"
-            tools:text="Barcelona-Sants"/>
+            tools:text="Barcelona-Sants" />
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +123,7 @@
 
         <TextView
             android:layout_width="30dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="0dp"
@@ -128,7 +134,7 @@
             android:maxLines="1"
             android:text="@string/departure"
             android:textAllCaps="true"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:layout_width="0dp"
@@ -139,15 +145,17 @@
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:paddingEnd="10dp"
+            android:paddingLeft="0dp"
             android:paddingRight="10dp"
+            android:paddingStart="0dp"
             android:text="@string/arrival"
             android:textAllCaps="true"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"/>
+            android:layout_marginRight="4dp" />
     </LinearLayout>
 </LinearLayout>
