@@ -86,4 +86,8 @@
     <string name="pref_set_sound">Select alarm sound</string>
     <string name="button">Change zone</string>
     <string name="notification_content_first_time">Do you know how to install a widget?</string>
+    <string name="promotion_line_text">Do you like it?</string>
+    <string name="rate_app_question">Do you like the app?</string>
+    <string name="rate_app_negative">No?\nTell us why</string>
+    <string name="rate_app_positive_button">Yes?\nRate the app on the store!</string>
 </resources>

@@ -27,4 +27,9 @@
 -dontwarn org.shaded.apache.**
 -dontwarn org.ietf.jgss.**
 
--printmapping mapping.txt
+# Fabric
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**

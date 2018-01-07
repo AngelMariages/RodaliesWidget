@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class TrainTime implements Serializable {
+	private static final long serialVersionUID = 12345L;
+
 	private final long date;
 	private int transfer = 0;
 	private final String line;

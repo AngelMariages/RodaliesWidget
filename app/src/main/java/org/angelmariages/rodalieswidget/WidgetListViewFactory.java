@@ -40,7 +40,10 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
+import org.angelmariages.rodalieswidget.utils.AlarmUtils;
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
+import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -57,6 +60,8 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private boolean remote_view_in_memory;
 	private long publishAnalyticsTime;
 	private long worstElapsed;
+	private boolean show_promotion_line;
+	private int promotion_line_number;
 
 	@SuppressWarnings("unchecked")
 	WidgetListViewFactory(Context context, Intent intent) {
@@ -70,16 +75,16 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		core = U.getCore(context, widgetID);
 
 		U.log("WidgetListViewFactory()");
-		if (intent.hasExtra(U.EXTRA_SCHEDULE_BUNDLE)) {
-			Bundle bundle = intent.getBundleExtra(U.EXTRA_SCHEDULE_BUNDLE);
-			schedule = (ArrayList<TrainTime>) bundle.getSerializable(U.EXTRA_SCHEDULE_DATA);
+		if (intent.hasExtra(Constants.EXTRA_SCHEDULE_BUNDLE)) {
+			Bundle bundle = intent.getBundleExtra(Constants.EXTRA_SCHEDULE_BUNDLE);
+			schedule = (ArrayList<TrainTime>) bundle.getSerializable(Constants.EXTRA_SCHEDULE_DATA);
 			if (schedule == null) U.sendNoInternetError(widgetID, context);
 			else if (schedule.size() == 0) U.sendNoTimesError(widgetID, context);
 			else {
 				TrainTime trainTime = schedule.get(0);
 				transfers = trainTime.getTransfer();
 
-				alarm_departure_time = U.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
+				alarm_departure_time = AlarmUtils.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
 			}
 		}
 
@@ -88,9 +93,17 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onCreate() {
-		if (firebaseRemoteConfig != null && firebaseRemoteConfig.getBoolean("remote_view_in_memory")) {
-			remote_view_in_memory = true;
-			loadViewsToMemory();
+		if (firebaseRemoteConfig != null) {
+			if (firebaseRemoteConfig.getBoolean("show_promotion_line")) {
+				show_promotion_line = true;
+				int scrollPosition = U.getScrollPosition(schedule);
+				U.log("scroll: " + scrollPosition);
+				if (schedule.size() > 0) promotion_line_number = scrollPosition + 1;
+			}
+			if (firebaseRemoteConfig.getBoolean("remote_view_in_memory")) {
+				remote_view_in_memory = true;
+				loadViewsToMemory();
+			}
 		}
 		U.setUserProperty(context, "r_view_loading_strategy", remote_view_in_memory ? "mem" : "cpu");
 	}
@@ -110,7 +123,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		if (schedule.size() > 0) {
 			TrainTime trainTime = schedule.get(0);
-			alarm_departure_time = U.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
+			alarm_departure_time = AlarmUtils.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
 		}
 
 		U.log("Alarm departure time: " + alarm_departure_time);
@@ -118,8 +131,11 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		if (remote_view_in_memory) loadViewsToMemory();
 
 		if (alarm_departure_time != null) {
-			for (int i = 1; i < schedule.size() + 1; i++) {
-				TrainTime trainTime = schedule.get(i - 1);
+			for (int i = 1; i < (show_promotion_line ? schedule.size() + 2 : schedule.size() + 1); i++) {
+				int index = i - 1;
+				if (index == promotion_line_number) continue;
+				if (index > promotion_line_number) index--;
+				TrainTime trainTime = schedule.get(index);
 				if (trainTime.getTransfer() == 2 && trainTime.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits) {
 					if (trainTime.getDeparture_time_transfer_one().equalsIgnoreCase(alarm_departure_time)) {
 						getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
@@ -131,8 +147,10 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 			}
 		} else {
-			for (int i = 1; i < schedule.size() + 1; i++) {
-				getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_no_alarm);
+			for (int i = 1; i < (show_promotion_line ? schedule.size() + 2 : schedule.size() + 1); i++) {
+				RemoteViews viewAt = getViewAt(i);
+				if (viewAt != null)
+					viewAt.setImageViewResource(R.id.imageView, R.drawable.ic_no_alarm);
 			}
 		}
 	}
@@ -143,7 +161,8 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getCount() {
-		if (schedule != null && schedule.size() > 0) return schedule.size() + 3;
+		if (schedule != null && schedule.size() > 0)
+			return show_promotion_line ? schedule.size() + 3 + 1 : schedule.size() + 3;
 		else return 0;
 	}
 
@@ -175,12 +194,12 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	private RemoteViews getRow(int position) throws IndexOutOfBoundsException {
-		if (position == schedule.size() + 1) {//Data origin row
+		if (position == (show_promotion_line ? schedule.size() + 2 : schedule.size() + 1)) {//Data origin row
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.data_info_line);
 			if (core != 50)
 				remoteViews.setTextViewText(R.id.dataInfoText, context.getString(R.string.dataInfoTextRenf));
 			return remoteViews;
-		} else if (position == 0 || position == schedule.size() + 2) {
+		} else if (position == 0 || position == (show_promotion_line ? schedule.size() + 3 : schedule.size() + 2)) {
 			Calendar scheduleDate = schedule.get(0).getDate();
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.switch_day_line);
 			String dayOfWeek = scheduleDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
@@ -189,23 +208,37 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			String month = scheduleDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
 			remoteViews.setTextViewText(R.id.dateText, dayOfWeek + " " + dayOfMonth + " " + month);
 
-			long diff = scheduleDate.getTime().getTime() - U.getCalendarForDelta(0).getTime().getTime();
+			long diff = scheduleDate.getTime().getTime() - TimeUtils.getCalendarForDelta(0).getTime().getTime();
 			diff /= 1000 * 60 * 60 * 24;
 
 			Intent dayBackIntent = new Intent(context, WidgetManager.class);
-			dayBackIntent.putExtra(U.EXTRA_SWITCH_TO, ((int) diff) - 1);
+			dayBackIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) - 1);
 			remoteViews.setOnClickFillInIntent(R.id.dayBack, dayBackIntent);
 
 			Intent dayForwardIntent = new Intent(context, WidgetManager.class);
-			dayForwardIntent.putExtra(U.EXTRA_SWITCH_TO, ((int) diff) + 1);
+			dayForwardIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) + 1);
 			remoteViews.setOnClickFillInIntent(R.id.dayForward, dayForwardIntent);
 
 			return remoteViews;
 		} else {
-			position -= 1;
+			position--;
+
+			if(show_promotion_line) {
+				if (position == promotion_line_number) {
+					RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.list_promotion);
+					Intent intent = new Intent(context, WidgetManager.class);
+					intent.putExtra(Constants.EXTRA_PROMOTION_LINE, true);
+					row.setOnClickFillInIntent(R.id.timesListLayout, intent);
+					return row;
+				}
+				if (position > promotion_line_number) {
+					position--;
+				}
+			}
+
 			RemoteViews row = null;
 			TrainTime trainTime = schedule.get(position);
-			boolean isNotScheduledTrain = !U.isScheduledTrain(trainTime);
+			boolean isNotScheduledTrain = !TimeUtils.isScheduledTrain(trainTime);
 			switch (transfers) {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
@@ -329,9 +362,9 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				// TODO: 25/12/2017 ??
 				TrainTime trainT = schedule.get(0);
 				if (trainT.getTransfer() == 2 && trainT.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits)
-					intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, trainT.getDeparture_time_transfer_one());
+					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, trainT.getDeparture_time_transfer_one());
 				else
-					intent.putExtra(U.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
+					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
 				row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 			}
 

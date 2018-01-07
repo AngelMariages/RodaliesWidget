@@ -34,6 +34,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.angelmariages.rodalieswidget.utils.AlarmUtils;
+import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.text.ParseException;
@@ -52,7 +54,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		final int widgetID = intent.getIntExtra(U.EXTRA_WIDGET_ID, -1);
+		final int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
 		final String stations[] = U.getStations(this, widgetID);
 
 		if(widgetID == -1 && stations.length != 2) {
@@ -60,7 +62,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 			finish();
 		}
 
-		String savedDepartureTime = U.getAlarm(this, widgetID, stations[0], stations[1]);
+		String savedDepartureTime = AlarmUtils.getAlarm(this, widgetID, stations[0], stations[1]);
 		if (savedDepartureTime != null) {
 			setContentView(R.layout.activity_remove_alarm);
 
@@ -79,7 +81,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		okButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				U.removeAlarm(SelectAlarmActivity.this, widgetID, origin, destination);
+				AlarmUtils.removeAlarm(SelectAlarmActivity.this, widgetID, origin, destination);
 				Toast.makeText(SelectAlarmActivity.this, R.string.toast_alarm_removed, Toast.LENGTH_LONG).show();
 				U.log("Removing alarm");
 				U.sendNotifyUpdate(widgetID, SelectAlarmActivity.this);
@@ -152,7 +154,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				String alarmTime = getAlarmTime(departureTime, mAlarmTime + min);
 
-				U.setAlarm(SelectAlarmActivity.this, departureTime, alarmTime, widgetID, origin, destination);
+				AlarmUtils.setAlarm(SelectAlarmActivity.this, departureTime, alarmTime, widgetID, origin, destination);
 				Toast.makeText(SelectAlarmActivity.this, String.format(getString(R.string.alarm_set_alarm_toast), alarmTime),
 						Toast.LENGTH_LONG).show();
 				finish();
