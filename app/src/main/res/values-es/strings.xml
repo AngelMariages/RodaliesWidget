@@ -85,4 +85,8 @@
     <string name="pref_set_sound">Sonido de la alarma</string>
     <string name="button">Change zone</string>
     <string name="notification_content_first_time">¿Sabes cómo instalar un widget?</string>
+    <string name="promotion_line_text">¿Te gusta?</string>
+    <string name="rate_app_question">¿Te gusta la aplicación?</string>
+    <string name="rate_app_negative">No?\nExplícanos por qué</string>
+    <string name="rate_app_positive_button">Sí?\nPuntúala en la tienda (PlayStore)!</string>
 </resources>
