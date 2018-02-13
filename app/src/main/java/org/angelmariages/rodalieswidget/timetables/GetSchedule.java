@@ -175,6 +175,13 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 				}
 			}
 		}
+
+		//fallback
+		if(!forceAdd && !show_all_times && hourSchedule != null && hourSchedule.size() == 0) {
+			for (TrainTime trainTime : scheduleFromJSON) {
+				hourSchedule.add(trainTime);
+			}
+		}
 	}
 
 	private String readJSONFile(Context context, int deltaDays) {

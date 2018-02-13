@@ -60,7 +60,6 @@
             android:key="line_notifications"
             android:title="@string/pref_receive_notifications" />-->
     </PreferenceCategory>
-
     <PreferenceCategory android:title="Colors">
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/widget_background"
@@ -98,7 +97,6 @@
             android:title="Contrast text"
             app:colorShape="circle" />
     </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/pref_about_title">
         <Preference
             android:key="pref_view_tutorial"
