@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2017 Àngel Mariages
+  ~ Copyright (c) 2018 Àngel Mariages
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -16,7 +15,7 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
   ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -24,10 +23,12 @@
   -->
 
 <resources>
-    <color name="widget_background">#F57C00</color>
-    <color name="data_background">#EDEDED</color>
-    <color name="title_background">#FF5722</color>
-    <color name="data_text">#f0000000</color>
+    <color name="widget_background">#FFF57C00</color>
+    <color name="data_background">#FFEDEDED</color>
+    <color name="title_background">#FFFF5722</color>
+    <color name="active_text">#FF000000</color>
+    <color name="disabled_text">#FFCCCCCC</color>
+    <color name="contrast_text">#FFFFFFFF</color>
     <color name="data_separator">#212121</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>

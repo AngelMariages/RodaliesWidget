@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2017 Àngel Mariages
+ * Copyright (c) 2018 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -15,7 +15,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -409,18 +409,18 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	private void setDisabledTexts(RemoteViews row, boolean disabled) {
-		row.setTextColor(R.id.departureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
-		row.setTextColor(R.id.arrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.departureTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
+		row.setTextColor(R.id.arrivalTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
 	}
 
 	private void setDisabledTextsTransferOne(RemoteViews row, boolean disabled) {
-		row.setTextColor(R.id.transferOneDepartureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
-		row.setTextColor(R.id.transferOneArrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.transferOneDepartureTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
+		row.setTextColor(R.id.transferOneArrivalTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
 	}
 
 	private void setDisabledTextsTransferTwo(RemoteViews row, boolean disabled) {
-		row.setTextColor(R.id.transferTwoDepartureTimeText, disabled ? Color.LTGRAY : Color.BLACK);
-		row.setTextColor(R.id.transferTwoArrivalTimeText, disabled ? Color.LTGRAY : Color.BLACK);
+		row.setTextColor(R.id.transferTwoDepartureTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
+		row.setTextColor(R.id.transferTwoArrivalTimeText, disabled ? U.getColor(context, R.color.disabled_text) : U.getColor(context, R.color.active_text));
 	}
 
 
