@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2017 Àngel Mariages
+  ~ Copyright (c) 2018 Àngel Mariages
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -15,7 +15,7 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
   ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -44,7 +44,7 @@
             android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_one"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/contrast_text" />
 
         <TextView
             android:id="@+id/lineTransferOneText"
@@ -53,7 +53,7 @@
             android:enabled="true"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
-            android:textColor="@color/data_text"
+            android:textColor="@color/active_text"
             android:textSize="@dimen/time_list_text_size"
             tools:text="R1" />
 
@@ -68,7 +68,7 @@
             android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/contrast_text"
             tools:text="Barcelona-Sants" />
     </LinearLayout>
 
@@ -87,7 +87,7 @@
             android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_two"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/contrast_text" />
 
         <TextView
             android:id="@+id/lineTransferTwoText"
@@ -96,7 +96,7 @@
             android:enabled="true"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
-            android:textColor="@color/data_text"
+            android:textColor="@color/active_text"
             android:textSize="@dimen/time_list_text_size"
             tools:text="R1" />
 
@@ -111,7 +111,7 @@
             android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/contrast_text"
             tools:text="Barcelona-Sants" />
     </LinearLayout>
 
@@ -134,7 +134,7 @@
             android:maxLines="1"
             android:text="@string/departure"
             android:textAllCaps="true"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/contrast_text" />
 
         <TextView
             android:layout_width="0dp"
@@ -150,7 +150,7 @@
             android:paddingStart="0dp"
             android:text="@string/arrival"
             android:textAllCaps="true"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/contrast_text" />
 
         <TextView
             android:layout_width="20dp"
