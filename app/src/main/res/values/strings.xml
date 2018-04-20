@@ -43,13 +43,13 @@
     <string name="transfer_departure_two">2nd transfer</string>
     <string name="transfer_departure_one">1st transfer</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="pref_schedule_title" >Schedules</string>
-    <string name="pref_show_all_times" >All day</string>
-    <string name="pref_download_return_schedule" >Return schedule</string>
-    <string name="pref_receive_notifications" >Receive incident notifications</string>
-    <string name="pref_about_title" >About</string>
-    <string name="pref_show_licenses" >Licenses</string>
-    <string name="pref_version" >Version 1.7</string>
+    <string name="pref_schedule_title">Schedules</string>
+    <string name="pref_show_all_times">All day</string>
+    <string name="pref_download_return_schedule">Return schedule</string>
+    <string name="pref_receive_notifications">Receive incident notifications</string>
+    <string name="pref_about_title">About</string>
+    <string name="pref_show_licenses">Licenses</string>
+    <string name="pref_version">Version 1.7</string>
     <string name="pref_show_more_transfer_trains">More transfer trains</string>
     <string name="pref_show_more_transfer_trains_summary_on">Show more trains that you can go into in your transfer station going to the same destination</string>
     <string name="pref_group_transfer_exits">Group transfer trains</string>
@@ -90,4 +90,7 @@
     <string name="rate_app_question">Do you like the app?</string>
     <string name="rate_app_negative">No?\nTell us why</string>
     <string name="rate_app_positive_button">Yes?\nRate the app on the store!</string>
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="incidences_tab_text">Incidences</string>
+    <string name="preferences_tab_text">Preferences</string>
 </resources>

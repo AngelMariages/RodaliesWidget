@@ -151,7 +151,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 	}
 
 	private void startSettings() {
-		startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+		startActivity(new Intent(FirstTimeActivity.this, MainActivity.class));
 
 		PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("tutorial_viewed", true).apply();
 

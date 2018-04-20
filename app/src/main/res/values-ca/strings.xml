@@ -89,4 +89,6 @@
     <string name="rate_app_question">T\'agrada l\'aplicació?</string>
     <string name="rate_app_negative">No?\nExplica\'ns per què</string>
     <string name="rate_app_positive_button">Sí?\nPuntua\'ns a la botiga (PlayStore)!</string>
+    <string name="incidences_tab_text">Incidències</string>
+    <string name="preferences_tab_text">Configuració</string>
 </resources>

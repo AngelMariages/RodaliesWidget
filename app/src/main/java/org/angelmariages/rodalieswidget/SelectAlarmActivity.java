@@ -58,7 +58,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		final String stations[] = U.getStations(this, widgetID);
 
 		if(widgetID == -1 && stations.length != 2) {
-			U.log("Error getting the widget ID, finishing alarm activity");
+			U.log("Error getting the widget id, finishing alarm activity");
 			finish();
 		}
 

@@ -39,6 +39,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.angelmariages.rodalieswidget.BuildConfig;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
@@ -320,6 +322,17 @@ public final class U {
 				});
 			}
 		}
+	}
+
+	public static void noColourFound(Context context, String line, String origin, String destination, String nucli) {
+		mFirebaseDatabase = U.getFirebaseDatabase();
+		final DatabaseReference colorsNotFound = mFirebaseDatabase.getReference("colorsNotFound");
+
+		DatabaseReference n = colorsNotFound.child(nucli).getRef();
+		n.child("origin").setValue(origin);
+		n.child("destination").setValue(destination);
+		n.child("line").setValue(line);
+		n.child(String.valueOf(TimeUtils.getCurrentDateAsTimestamp())).setValue(BuildConfig.VERSION_CODE);
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {

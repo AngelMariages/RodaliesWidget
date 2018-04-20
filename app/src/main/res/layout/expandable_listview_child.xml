@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2018 Àngel Mariages
@@ -22,28 +22,16 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/PreferenceFixTheme.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="Theme_Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
-    </style>
-
-</resources>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text1"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingBottom="6dp"
+    android:paddingEnd="24dp"
+    android:paddingStart="24dp"
+    android:paddingTop="6dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:textStyle="bold"
+    tools:text="General">
+</TextView>

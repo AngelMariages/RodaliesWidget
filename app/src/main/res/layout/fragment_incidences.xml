@@ -22,28 +22,21 @@
   ~ SOFTWARE.
   -->
 
-<resources>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.angelmariages.rodalieswidget.IncidencesFragment">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/PreferenceFixTheme.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="Theme_Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
-    </style>
-
-</resources>
+        <ExpandableListView
+            android:id="@+id/incidencesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:groupIndicator="@drawable/custom_expandablelist_indicator" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>

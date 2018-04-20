@@ -119,6 +119,11 @@ class RenfeSchedule implements ScheduleProvider {
 			case 12:
 				transfers = 2;
 				break;
+			// Straaaaaaaaange http://horarios.renfe.com/cer/hjcer310.jsp?nucleo=40&o=67216&d=65006&df=20180313&ho=00&i=s&cp=NO&TXTInfo=
+			case 7:
+				transfers = 3;
+				break;
+			// End Straaaaaaaaange
 		}
 
 		return transfers;

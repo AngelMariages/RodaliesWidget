@@ -45,8 +45,8 @@ android {
 
         debug {
             debuggable true
-            minifyEnabled true
-            useProguard true
+            minifyEnabled false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -70,13 +70,19 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support:design:27.0.2'
-    implementation 'com.google.firebase:firebase-database:11.8.0'
-    implementation 'com.google.firebase:firebase-config:11.8.0'
-    implementation 'com.android.support:support-v4:27.0.2'
-    implementation 'com.android.support:support-vector-drawable:27.0.2'
-    implementation 'com.github.kizitonwose.colorpreference:core:1.0.5'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.takisoft.fix:preference-v7:27.1.0.0'
+    implementation 'com.takisoft.fix:preference-v7-ringtone:27.1.0.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.google.firebase:firebase-database:12.0.1'
+    implementation 'com.google.firebase:firebase-config:12.0.1'
+    implementation 'com.google.firebase:firebase-messaging:12.0.1'
+    implementation 'com.google.firebase:firebase-firestore:12.0.1'
+    implementation 'com.google.firebase:firebase-ads:12.0.1'
+    implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:support-vector-drawable:27.1.0'
+    implementation 'com.github.kizitonwose.colorpreference:support:1.0.6'
 
     implementation 'net.grandcentrix.tray:tray:0.12.0'
 

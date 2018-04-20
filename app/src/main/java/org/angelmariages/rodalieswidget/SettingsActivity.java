@@ -45,6 +45,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import net.grandcentrix.tray.AppPreferences;
 
@@ -55,6 +57,9 @@ public class SettingsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		FirebaseMessaging.getInstance().subscribeToTopic("notifications");
+
 		getFragmentManager().beginTransaction().replace(android.R.id.content, new PreferencesFragment()).commit();
 	}
 
