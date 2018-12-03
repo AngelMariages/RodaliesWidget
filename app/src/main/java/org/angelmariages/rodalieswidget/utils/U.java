@@ -29,17 +29,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.os.ConfigurationCompat;
+import androidx.annotation.NonNull;
+import androidx.core.os.ConfigurationCompat;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -377,7 +375,17 @@ public final class U {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			return context.getResources().getColor(resourceId, null);
 		} else {
+			//noinspection deprecation
 			return context.getResources().getColor(resourceId);
 		}
+	}
+
+	public static void logEventTimeout(String url, Context context) {
+		Bundle bundle;
+
+		bundle = new Bundle();
+		bundle.putString("url_timeout", url);
+
+		FirebaseAnalytics.getInstance(context).logEvent("update_timeout", bundle);
 	}
 }

@@ -27,10 +27,10 @@ package org.angelmariages.rodalieswidget;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.core.view.ViewCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +50,7 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 
 	private ExpandableListView expandableListView;
 	private HashMap<String, ArrayList<Incidence>> incidences = new HashMap<>();
-	private ArrayList<String> incidecesKeys = new ArrayList<>();
+	private ArrayList<String> incidencesKeys = new ArrayList<>();
 	private ParentList parentList;
 	private IncidencesManager incidencesManager = new IncidencesManager(this);
 	private SwipeRefreshLayout swipeLayout;
@@ -67,18 +67,20 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 		swipeLayout.setRefreshing(true);
 
 		DisplayMetrics metrics = new DisplayMetrics();
-		this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		int width = metrics.widthPixels;
+		if (this.getActivity() != null) {
+			this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			int width = metrics.widthPixels;
 
-		expandableListView = rootView.findViewById(R.id.incidencesList);
+			expandableListView = rootView.findViewById(R.id.incidencesList);
 
-		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			expandableListView.setIndicatorBounds(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
-		} else {
-			expandableListView.setIndicatorBoundsRelative(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+				expandableListView.setIndicatorBounds(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
+			} else {
+				expandableListView.setIndicatorBoundsRelative(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
+			}
 		}
 
-		parentList = new ParentList(incidences, incidecesKeys);
+		parentList = new ParentList(incidences, incidencesKeys);
 		expandableListView.setAdapter(parentList);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			expandableListView.setNestedScrollingEnabled(true);
@@ -90,8 +92,8 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 
 	@Override
 	public void onIncidencesGet(String key, ArrayList<Incidence> incidencesFromKey) {
-		incidecesKeys.add(key);
-		Collections.sort(incidecesKeys);
+		incidencesKeys.add(key);
+		Collections.sort(incidencesKeys);
 		incidences.put(key, incidencesFromKey);
 		parentList.notifyDataSetChanged();
 		swipeLayout.setRefreshing(false);
@@ -177,7 +179,7 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 
 		@Override
 		public void onGroupExpanded(int groupPosition) {
-			if(groupPosition != lastGroupExpanded) {
+			if (groupPosition != lastGroupExpanded) {
 				expandableListView.collapseGroup(lastGroupExpanded);
 			}
 
@@ -217,7 +219,7 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 			IncidencesFragment.this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 			int width = metrics.widthPixels;
 
-			if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
 				secondLevelELV.setIndicatorBounds(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
 			} else {
 				secondLevelELV.setIndicatorBoundsRelative(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
@@ -352,6 +354,7 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 	public class ChildViewHolder {
 		TextView text1;
 
-		public ChildViewHolder() {}
+		public ChildViewHolder() {
+		}
 	}
 }

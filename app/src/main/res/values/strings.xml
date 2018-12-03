@@ -93,4 +93,7 @@
     <string name="title_activity_main" translatable="false">MainActivity</string>
     <string name="incidences_tab_text">Incidences</string>
     <string name="preferences_tab_text">Preferences</string>
+    <string name="loading_text">Searching schedules</string>
+    <string name="image_tutorial_description">Image of widget configuration</string>
+    <string name="prompt_add_widget">Add widget</string>
 </resources>

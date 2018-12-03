@@ -91,4 +91,7 @@
     <string name="rate_app_positive_button">Sí?\nPuntúala en la tienda (PlayStore)!</string>
     <string name="incidences_tab_text">Incidencias</string>
     <string name="preferences_tab_text">Configuración</string>
+    <string name="loading_text">Buscando horarios</string>
+    <string name="image_tutorial_description">Image of widget configuration</string>
+    <string name="prompt_add_widget">Add widget</string>
 </resources>

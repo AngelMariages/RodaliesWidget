@@ -23,96 +23,111 @@
   -->
 
 <!--suppress AndroidElementNotAllowed -->
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_schedule_title">
-        <android.support.v7.preference.SwitchPreferenceCompat
+    <androidx.preference.PreferenceCategory android:title="@string/pref_schedule_title">
+        <androidx.preference.SwitchPreferenceCompat
             android:key="show_all_times"
             android:summaryOff="@string/pref_show_all_times_off"
             android:summaryOn="@string/pref_show_all_times_on"
-            android:title="@string/pref_show_all_times" />
+            android:title="@string/pref_show_all_times"
+            app:iconSpaceReserved="false" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:dependency="show_all_times"
             android:key="scroll_to_time"
-            android:title="@string/pref_scroll_to_time" />
+            android:title="@string/pref_scroll_to_time"
+            app:iconSpaceReserved="false" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:key="show_more_transfer_trains"
             android:summaryOff="@string/pref_show_more_transfer_trains_summary_off"
             android:summaryOn="@string/pref_show_more_transfer_trains_summary_on"
-            android:title="@string/pref_show_more_transfer_trains" />
+            android:title="@string/pref_show_more_transfer_trains"
+            app:iconSpaceReserved="false" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:dependency="show_more_transfer_trains"
             android:key="group_transfer_exits"
             android:summaryOff="@string/pref_group_transfer_exits_summary_off"
             android:summaryOn="@string/pref_group_transfer_exits_summary_on"
-            android:title="@string/pref_group_transfer_exits" />
+            android:title="@string/pref_group_transfer_exits"
+            app:iconSpaceReserved="false" />
 
         <RingtonePreference
             android:key="pref_set_sound"
             android:ringtoneType="notification|ringtone"
             android:showDefault="true"
             android:showSilent="true"
-            android:title="@string/pref_set_sound" />
+            android:title="@string/pref_set_sound"
+            app:iconSpaceReserved="false" />
 
         <!--<SwitchPreference
+            app:iconSpaceReserved="false"
             android:key="line_notifications"
             andrTitleitle="@string/pref_receive_notifications" />-->
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="Colors">
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="Colors">
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/widget_background"
             android:key="@string/pref_about_title"
             android:title="Main background"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/title_background"
             android:key="@string/pref_about_title"
             android:title="Title background"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/data_background"
             android:key="@string/pref_about_title"
             android:title="Data background"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/widget_background"
             android:key="@string/pref_about_title"
             android:title="Control buttons"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/active_text"
             android:key="@string/pref_about_title"
             android:title="Active text"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/disabled_text"
             android:key="@string/pref_about_title"
             android:title="Disabled text"
-            app:colorShape="circle" />
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/contrast_text"
             android:key="@string/pref_about_title"
             android:title="Contrast text"
-            app:colorShape="circle" />
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="@string/pref_about_title">
-        <android.support.v7.preference.Preference
+            app:colorShape="circle"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="@string/pref_about_title">
+        <androidx.preference.Preference
             android:key="pref_view_tutorial"
-            android:title="@string/pref_view_tutorial" />
+            android:title="@string/pref_view_tutorial"
+            app:iconSpaceReserved="false" />
 
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="pref_donation"
-            android:title="@string/pref_donation">
+            android:title="@string/pref_donation"
+            app:iconSpaceReserved="false">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://goo.gl/AT8chs" />
-        </android.support.v7.preference.Preference>
+        </androidx.preference.Preference>
 
-        <android.support.v7.preference.Preference android:title="@string/pref_version" />
-    </android.support.v7.preference.PreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+        <androidx.preference.Preference
+            android:title="@string/pref_version"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

@@ -39,16 +39,15 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
-import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -91,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
 			}
 			notificationBuilder.setAutoCancel(true);
 
-			Intent startFirstTimeIntent = new Intent(context, FirstTimeActivity.class);
+			Intent startFirstTimeIntent = new Intent(context, TutorialActivity.class);
 			startFirstTimeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startFirstTimeIntent.setAction("notification");
 			PendingIntent startFirstTimePI = PendingIntent.getActivity(context, 0, startFirstTimeIntent, 0);
@@ -183,15 +182,16 @@ public class SettingsActivity extends AppCompatActivity {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					String ringtoneUri = (String) newValue;
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "alarms");
 
 					if (ringtoneUri == null) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).remove(Constants.PREFERENCE_STRING_ALARM_URI);
+						preferences.remove(Constants.PREFERENCE_STRING_ALARM_URI);
 					} else if (ringtoneUri.isEmpty()) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
+						preferences.put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
 					} else {
 						Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
 						Toast.makeText(PreferencesFragment.this.getActivity(), ringtone.getTitle(PreferencesFragment.this.getActivity()), Toast.LENGTH_SHORT).show();
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
+						preferences.put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
 					}
 					return true;
 				}
@@ -202,7 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
 				public boolean onPreferenceClick(Preference preference) {
 					PreferenceManager.getDefaultSharedPreferences(PreferencesFragment.this.getActivity()).edit().putBoolean("tutorial_viewed", false).apply();
 
-					startActivity(new Intent(PreferencesFragment.this.getActivity(), FirstTimeActivity.class));
+					startActivity(new Intent(PreferencesFragment.this.getActivity(), TutorialActivity.class));
 
 					return false;
 				}

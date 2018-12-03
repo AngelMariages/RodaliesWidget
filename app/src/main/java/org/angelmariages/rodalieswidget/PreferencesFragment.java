@@ -24,31 +24,22 @@
 
 package org.angelmariages.rodalieswidget;
 
-import android.content.Intent;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.support.annotation.Nullable;
-import android.support.v14.preference.SwitchPreference;
-import android.support.v7.preference.Preference;
+
+import androidx.annotation.Nullable;
+import androidx.preference.SwitchPreference;
+import androidx.preference.Preference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompatDividers;
+import com.takisoft.preferencex.PreferenceFragmentCompat;
 
-import net.grandcentrix.tray.AppPreferences;
-
-import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
 
 
-public class PreferencesFragment extends PreferenceFragmentCompatDividers {
+public class PreferencesFragment extends PreferenceFragmentCompat {
 	private FirebaseAnalytics mFirebaseAnalytics;
 
 	//@Override
@@ -137,22 +128,12 @@ public class PreferencesFragment extends PreferenceFragmentCompatDividers {
 			public boolean onPreferenceClick(Preference preference) {
 				PreferenceManager.getDefaultSharedPreferences(SettingsActivity.PreferencesFragment.this.getActivity()).edit().putBoolean("tutorial_viewed", false).apply();
 
-				startActivity(new Intent(SettingsActivity.PreferencesFragment.this.getActivity(), FirstTimeActivity.class));
+				startActivity(new Intent(SettingsActivity.PreferencesFragment.this.getActivity(), TutorialActivity.class));
 
 				return false;
 			}
 		});*/
 	//}
-
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		try {
-			return super.onCreateView(inflater, container, savedInstanceState);
-		} finally {
-			setDividerPreferences(DIVIDER_OFFICIAL);
-		}
-	}
 
 	@Override
 	public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {

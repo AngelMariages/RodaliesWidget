@@ -31,7 +31,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -53,7 +53,7 @@ import java.util.HashMap;
 import io.fabric.sdk.android.Fabric;
 
 class RodaliesWidget extends RemoteViews {
-	private int state = Constants.WIDGET_STATE_SCHEDULE_LOADED;
+	private int state;
 	private final Context context;
 	private final int widgetID;
 

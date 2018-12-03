@@ -24,83 +24,48 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
-class RenfeSchedule implements ScheduleProvider {
+class RenfeSchedule extends ScheduleProvider {
 
 	private final String origin;
 	private final String destination;
 	private final int nucli;
 	private String transferStationOne;
 	private String transferStationTwo;
+	private Context context;
 
 	private int lastRowIndex;
 
-	RenfeSchedule(String origin, String destination, int nucli) {
+	RenfeSchedule(String origin, String destination, int nucli, Context context) {
 		this.origin = origin;
 		this.destination = destination;
 		this.nucli = nucli;
+		this.context = context;
 	}
 
 	@NonNull
 	private String getPageFromInternet(int deltaDays) {
-		HttpURLConnection connection = null;
-		BufferedReader in = null;
-		StringBuilder html = new StringBuilder();
-		String query = "nucleo=" + nucli;
-		query += "&o=" + origin;
-		query += "&d=" + destination;
-		query += "&df=" + getTodayDate(deltaDays);
-		query += "&ho=00&i=s&cp=NO&TXTInfo=";
+		String url = "http://horarios.renfe.com/cer/hjcer310.jsp?";
+		String query = "nucleo=" + nucli
+				+ "&o=" + origin
+				+ "&d=" + destination
+				+ "&df=" + getTodayDate(deltaDays)
+				+ "&ho=00&i=s&cp=NO&TXTInfo=";
 
-		try {
-			String url = "http://horarios.renfe.com/cer/hjcer310.jsp?";
-			//TODO: REMOVE THIS LOG!
-			U.log("URL: " + url + query);
-			connection = (HttpURLConnection) new URL(url + query).openConnection();
-			connection.setConnectTimeout(2500);
-			connection.setReadTimeout(2500);
-			connection.setRequestMethod("GET");
-
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String line;
-			while ((line = in.readLine()) != null) {
-				html.append(line);
-			}
-		} catch (MalformedURLException e) {
-			U.log("ERROR: URL malformada.");
-		} catch (IOException e) {
-			U.log("No es pot obrir el stream.");
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					U.log("Error tancant l'stream: " + e.getMessage());
-				}
-			}
-		}
-
-		return html.toString();
+		return super.doServiceRequest(url + query, context);
 	}
 
 	private int getTransfers(ArrayList<String> rows) {
@@ -130,14 +95,25 @@ class RenfeSchedule implements ScheduleProvider {
 	}
 
 	public ArrayList<TrainTime> getSchedule(int deltaDays) {
-		String html = getPageFromInternet(deltaDays);
+		return getSchedule(deltaDays, 0);
+	}
 
-		ArrayList<String> rows = getRows(html);
+	private ArrayList<TrainTime> getSchedule(int deltaDays, int times) {
+		try {
+			super.resetTimeoutIntents();
+			String html = getPageFromInternet(deltaDays);
 
-		transferStationOne = StationUtils.getIDFromName(transferStationOne, nucli);
-		transferStationTwo = StationUtils.getIDFromName(transferStationTwo, nucli);
+			ArrayList<String> rows = getRows(html);
 
-		return parseTimes(rows, getTransfers(rows), TimeUtils.getCalendarForDelta(deltaDays));
+			transferStationOne = StationUtils.getIDFromName(transferStationOne, nucli);
+			transferStationTwo = StationUtils.getIDFromName(transferStationTwo, nucli);
+
+			return parseTimes(rows, getTransfers(rows), TimeUtils.getCalendarForDelta(deltaDays));
+		} catch (Exception e) {
+			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
+			if (times > 3) return null;
+			return getSchedule(deltaDays, times + 1);
+		}
 	}
 
 	public ArrayList<TrainTime> getSchedule() {

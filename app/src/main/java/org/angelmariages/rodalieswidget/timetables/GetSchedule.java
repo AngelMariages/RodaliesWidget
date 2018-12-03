@@ -61,9 +61,9 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 		ScheduleProvider scheduleProvider;
 		if (core == 50) {
-			scheduleProvider = new RodaliesSchedule(origin, destination);
+			scheduleProvider = new RodaliesSchedule(origin, destination, context);
 		} else {
-			scheduleProvider = new RenfeSchedule(origin, destination, core);
+			scheduleProvider = new RenfeSchedule(origin, destination, core, context);
 		}
 
 		if (jsonLines.isEmpty()) {
@@ -97,9 +97,9 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 		ScheduleProvider scheduleProvider;
 		if (core == 50) {
-			scheduleProvider = new RodaliesSchedule(origin, destination);
+			scheduleProvider = new RodaliesSchedule(origin, destination, context);
 		} else {
-			scheduleProvider = new RenfeSchedule(origin, destination, core);
+			scheduleProvider = new RenfeSchedule(origin, destination, core, context);
 		}
 
 		if (jsonLines.isEmpty()) {
@@ -178,9 +178,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 		//fallback
 		if(!forceAdd && !show_all_times && hourSchedule != null && hourSchedule.size() == 0) {
-			for (TrainTime trainTime : scheduleFromJSON) {
-				hourSchedule.add(trainTime);
-			}
+			hourSchedule.addAll(scheduleFromJSON);
 		}
 	}
 
@@ -189,16 +187,32 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 		StringBuilder allLines = new StringBuilder();
 
-		InputStreamReader inputStreamReader;
+		InputStreamReader inputStreamReader = null;
+		BufferedReader bufferedReader = null;
 		try {
 			inputStreamReader = new InputStreamReader(context.openFileInput(fileName));
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			bufferedReader = new BufferedReader(inputStreamReader);
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
 				allLines.append(line);
 			}
 		} catch (IOException e) {
 			U.log("File " + fileName + " not found, getting from internet");
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					U.log("Error tancant l'stream: " + e.getMessage());
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				} catch (IOException e) {
+					U.log("Error tancant l'stream: " + e.getMessage());
+				}
+			}
 		}
 
 		return allLines.toString();
@@ -232,11 +246,11 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 						int ind = split[3].indexOf(".json");
 						if (ind != -1) {
 							String fileDate = split[3].substring(0, ind);
-							return !TimeUtils.isFuture(fileDate) && !TimeUtils.isYesterday(fileDate);
+							return !name.endsWith(endsWith) && !TimeUtils.isFuture(fileDate) && !TimeUtils.isYesterday(fileDate);
 						}
 					}
 				}
-				return !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
+				return !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
 			}
 		};
 

@@ -33,13 +33,29 @@
 
     <include layout="@layout/widget_buttons" />
 
-    <ProgressBar
-        android:id="@+id/progressCircle"
-        style="?android:attr/progressBarStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/data_background"
-        android:indeterminate="true"
-        android:padding="16dp"
-        android:visibility="visible" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:capitalize="words"
+            android:gravity="center_horizontal"
+            android:text="@string/loading_text"
+            android:textSize="24sp" />
+
+        <ProgressBar
+            android:id="@+id/progressCircle"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:padding="16dp"
+            android:visibility="visible" />
+    </LinearLayout>
+
 </LinearLayout>

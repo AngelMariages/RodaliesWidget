@@ -27,7 +27,7 @@ package org.angelmariages.rodalieswidget;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -70,7 +70,7 @@ public class SelectStation extends AppCompatActivity {
 		//This should not had been created
 		if (originOrDestination == -1) finish();
 
-		coreListView = (ListView) findViewById(R.id.coreListView);
+		coreListView = findViewById(R.id.coreListView);
 
 		setCoreListView();
 	}
@@ -95,8 +95,7 @@ public class SelectStation extends AppCompatActivity {
 
 
 		if (coreListView != null) {
-			final ArrayList<String> coreList = new ArrayList<>();
-			coreList.addAll(StationUtils.nucliIDs.values());
+			final ArrayList<String> coreList = new ArrayList<>(StationUtils.nucliIDs.values());
 
 			final CoreSelectAdapter coreSelectAdapter = new CoreSelectAdapter(this, coreList, widgetID);
 			coreSelectAdapter.setOnCoreSelectListener(new CoreSelectAdapter.OnCoreSelectListener() {
@@ -132,10 +131,9 @@ public class SelectStation extends AppCompatActivity {
 				InputMethodManager.SHOW_IMPLICIT, 0);
 
 		if (stationListView != null) {
-			final ArrayList<String> stationList = new ArrayList<>();
 			Collection<String> values = StationUtils.nuclis.get(idFromNucli).values();
 
-			stationList.addAll(values);
+			final ArrayList<String> stationList = new ArrayList<>(values);
 
 			final StationsAdapter stationsAdapter = new StationsAdapter(this, stationList, widgetID, originOrDestination);
 			stationListView.setAdapter(stationsAdapter);

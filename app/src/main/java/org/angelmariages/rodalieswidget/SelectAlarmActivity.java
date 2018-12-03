@@ -27,7 +27,7 @@ package org.angelmariages.rodalieswidget;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -75,7 +75,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 	}
 
 	private void setResourcesForRemovingAlarm(final int widgetID, final String origin, final String destination) {
-		final Button cancelButton = (Button) findViewById(R.id.cancelButton);
+		final Button cancelButton = findViewById(R.id.cancelButton);
 		final Button okButton = (Button) findViewById(R.id.okButton);
 
 		okButton.setOnClickListener(new View.OnClickListener() {
