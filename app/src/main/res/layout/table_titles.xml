@@ -25,6 +25,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/title_background"
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/departureTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -47,6 +49,7 @@
         android:textColor="@color/contrast_text"/>
 
     <TextView
+        android:id="@+id/arrivalTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -60,6 +63,5 @@
     <TextView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"/>
+        android:layout_marginEnd="4dp"/>
 </LinearLayout>

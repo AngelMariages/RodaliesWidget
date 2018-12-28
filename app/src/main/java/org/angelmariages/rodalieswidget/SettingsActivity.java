@@ -39,15 +39,17 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.Toast;
 
 import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
-
+import com.kizitonwose.colorpreference.ColorPreference;
 
 import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -83,11 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
 			U.log("Doesn't have widget");
 
 			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, noWidgetChannel);
-			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				notificationBuilder.setSmallIcon(R.mipmap.ic_notification_white);
-			} else {
-				notificationBuilder.setSmallIcon(R.mipmap.ic_notification);
-			}
+			notificationBuilder.setSmallIcon(R.mipmap.ic_notification_white);
 			notificationBuilder.setAutoCancel(true);
 
 			Intent startFirstTimeIntent = new Intent(context, TutorialActivity.class);
@@ -129,6 +127,85 @@ public class SettingsActivity extends AppCompatActivity {
 			Preference pref_view_tutorial = findPreference("pref_view_tutorial");
 			RingtonePreference pref_set_sound = (RingtonePreference) findPreference("pref_set_sound");
 
+			ColorPreference pref_color_widget_background = (ColorPreference) findPreference("pref_color_widget_background");
+			ColorPreference pref_color_title_background = (ColorPreference) findPreference("pref_color_title_background");
+			ColorPreference pref_color_data_background = (ColorPreference) findPreference("pref_color_data_background");
+			ColorPreference pref_color_control_buttons = (ColorPreference) findPreference("pref_color_control_buttons");
+			ColorPreference pref_color_active_text = (ColorPreference) findPreference("pref_color_active_text");
+			ColorPreference pref_color_disabled_text = (ColorPreference) findPreference("pref_color_disabled_text");
+			ColorPreference pref_color_contrast_text = (ColorPreference) findPreference("pref_color_contrast_text");
+
+			pref_color_widget_background.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_widget_background", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+preferences.put("onPreferenceChangeC", (int) newValue);
+					return true;
+				}
+			});
+
+			pref_color_title_background.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_title_background", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_title_background", (int) newValue);
+
+					return true;
+				}
+			});
+			pref_color_data_background.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_data_background", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_data_background", (int) newValue);
+
+					return true;
+				}
+			});
+			pref_color_control_buttons.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_control_buttons", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_control_buttons", (int) newValue);
+
+					return true;
+				}
+			});
+			pref_color_active_text.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_active_text", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_active_text", (int) newValue);
+
+					return true;
+				}
+			});
+			pref_color_disabled_text.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_disabled_text", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_disabled_text", (int) newValue);
+
+					return true;
+				}
+			});
+			pref_color_contrast_text.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					onPreferenceChangeC("pref_color_contrast_text", newValue);
+					PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+					preferences.put("pref_color_contrast_text", (int) newValue);
+
+					return true;
+				}
+			});
+
 			show_all_times.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -144,8 +221,6 @@ public class SettingsActivity extends AppCompatActivity {
 					return true;
 				}
 			});
-
-
 
 			show_more_transfer_trains.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
@@ -211,6 +286,8 @@ public class SettingsActivity extends AppCompatActivity {
 
 		private void onPreferenceChangeC(String key, final Object newValue) {
 			if (key.equalsIgnoreCase("show_more_transfer_trains")) key = "more_transfer_trains";
+
+			U.log("aaaah " + key + " -> " + newValue);
 
 			U.setUserProperty(getActivity().getApplicationContext(), key, newValue);
 			Bundle bundle = new Bundle();

@@ -22,40 +22,50 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/padding"
-    android:paddingLeft="@dimen/padding"
-    android:paddingRight="@dimen/padding">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/widget_buttons" />
+    <ImageView
+        android:id="@+id/widgetBg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY" />
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/data_background"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding"
+        android:paddingRight="@dimen/padding"
+        android:paddingBottom="@dimen/padding">
 
-        <TextView
-            android:id="@+id/loading_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:capitalize="words"
-            android:gravity="center_horizontal"
-            android:text="@string/loading_text"
-            android:textSize="24sp" />
+        <include layout="@layout/widget_buttons" />
 
-        <ProgressBar
-            android:id="@+id/progressCircle"
-            style="?android:attr/progressBarStyle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:indeterminate="true"
-            android:padding="16dp"
-            android:visibility="visible" />
-    </LinearLayout>
+            android:background="@color/data_background"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:capitalize="words"
+                android:gravity="center_horizontal"
+                android:text="@string/loading_text"
+                android:textSize="24sp" />
+
+            <ProgressBar
+                android:id="@+id/progressCircle"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true"
+                android:padding="16dp"
+                android:visibility="visible" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

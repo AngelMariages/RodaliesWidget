@@ -22,6 +22,7 @@
   ~ SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.angelmariages.rodalieswidget">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -39,12 +40,13 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9f26f6fd6934f264846218ad232e03e60e691952" />
 
-        <receiver android:name=".WidgetManager"
+        <receiver
+            android:name=".WidgetManager"
             android:exported="false">
             <intent-filter>
                 <action android:name="org.angelmariages.RodaliesWidget.ACTION_CLICK_UPDATE_BUTTON" />
@@ -117,7 +119,8 @@
             android:name=".AlarmReceiver"
             android:process=":alarm" />
 
-        <service android:name=".FCMService"
+        <service
+            android:name=".FCMService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -128,6 +131,12 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            tools:replace="android:exported"
+            android:name="com.ddmeng.preferencesprovider.provider.PreferencesProvider"
+            android:authorities="@string/preferences_provider_authority"
+            android:exported="true"/>
     </application>
 
 </manifest>

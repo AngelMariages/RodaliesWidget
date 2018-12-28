@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-package org.angelmariages.rodalieswidget;
+package org.angelmariages.rodalieswidget.fragments;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.core.view.ViewCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -39,6 +38,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import org.angelmariages.rodalieswidget.Incidence;
+import org.angelmariages.rodalieswidget.IncidencesGetListener;
+import org.angelmariages.rodalieswidget.IncidencesManager;
+import org.angelmariages.rodalieswidget.R;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
@@ -73,20 +76,12 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 
 			expandableListView = rootView.findViewById(R.id.incidencesList);
 
-			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-				expandableListView.setIndicatorBounds(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
-			} else {
-				expandableListView.setIndicatorBoundsRelative(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
-			}
+			expandableListView.setIndicatorBoundsRelative(width - getPixelsFromDps(50), width - getPixelsFromDps(10));
 		}
 
 		parentList = new ParentList(incidences, incidencesKeys);
 		expandableListView.setAdapter(parentList);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			expandableListView.setNestedScrollingEnabled(true);
-		} else {
-			ViewCompat.setNestedScrollingEnabled(expandableListView, true);
-		}
+		expandableListView.setNestedScrollingEnabled(true);
 		return rootView;
 	}
 
@@ -105,7 +100,7 @@ public class IncidencesFragment extends Fragment implements IncidencesGetListene
 		incidencesManager.getIncidenceKeys();
 	}
 
-	public int getPixelsFromDps(float dps) {
+	private int getPixelsFromDps(float dps) {
 		// Get the screen's density scale
 		final float scale = getResources().getDisplayMetrics().density;
 		// Convert the dps to pixels, based on density scale

@@ -70,43 +70,43 @@
     <androidx.preference.PreferenceCategory android:title="Colors">
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/widget_background"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_widget_background"
             android:title="Main background"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/title_background"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_title_background"
             android:title="Title background"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/data_background"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_data_background"
             android:title="Data background"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/widget_background"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_control_buttons"
             android:title="Control buttons"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/active_text"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_active_text"
             android:title="Active text"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/disabled_text"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_disabled_text"
             android:title="Disabled text"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />
         <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
             android:defaultValue="@color/contrast_text"
-            android:key="@string/pref_about_title"
+            android:key="pref_color_contrast_text"
             android:title="Contrast text"
             app:colorShape="circle"
             app:iconSpaceReserved="false" />

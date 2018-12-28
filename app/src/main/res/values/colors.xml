@@ -38,9 +38,24 @@
     <color name="colorSelected">#966</color>
     <color name="colorChecked">#321</color>
 
-    <!-- dots inactive colors -->
     <color name="dot_inactive">#cfd8dc</color>
-
-    <!-- dots active colors -->
     <color name="dot_active">#9e9e9e</color>
+
+    <string-array name="default_color_choice_values" translatable="false">
+        <item>#ff33b5e5</item>
+        <item>#ffaa66cc</item>
+        <item>#ff99cc00</item>
+        <item>#ffffbb33</item>
+        <item>#ffff4444</item>
+        <item>#ff0099cc</item>
+        <item>#ff9933cc</item>
+        <item>#ff669900</item>
+        <item>#ffff8800</item>
+        <item>#ffcc0000</item>
+        <item>#ffffffff</item>
+        <item>#ffeeeeee</item>
+        <item>#ffcccccc</item>
+        <item>#ff888888</item>
+        <item>#00ffffff</item>
+    </string-array>
 </resources>

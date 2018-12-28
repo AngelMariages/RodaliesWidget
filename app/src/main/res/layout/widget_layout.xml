@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2018 Àngel Mariages
@@ -23,26 +22,35 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/padding"
-    android:paddingLeft="@dimen/padding"
-    android:paddingRight="@dimen/padding">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/widget_buttons"/>
-
-    <include layout="@layout/table_titles"/>
-
-    <ListView
-        android:id="@+id/scheduleListView"
-        android:divider="@color/data_separator"
-        android:dividerHeight="1dp"
+    <ImageView
+        android:id="@+id/widgetBg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/data_background"
-        android:textAlignment="center"/>
-</LinearLayout>
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:paddingLeft="@dimen/padding"
+        android:paddingRight="@dimen/padding"
+        android:paddingBottom="@dimen/padding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/widget_buttons" />
+
+        <include layout="@layout/table_titles" />
+
+        <ListView
+            android:id="@+id/scheduleListView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/data_background"
+            android:divider="@color/data_separator"
+            android:dividerHeight="1dp"
+            android:textAlignment="center" />
+    </LinearLayout>
+</FrameLayout>

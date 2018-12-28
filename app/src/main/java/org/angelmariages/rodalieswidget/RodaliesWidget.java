@@ -28,14 +28,22 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.crashlytics.android.Crashlytics;
+import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -50,12 +58,22 @@ import org.angelmariages.rodalieswidget.utils.U;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import androidx.core.content.ContextCompat;
 import io.fabric.sdk.android.Fabric;
+
 
 class RodaliesWidget extends RemoteViews {
 	private int state;
 	private final Context context;
 	private final int widgetID;
+	private final String[] COLOR_PREFERENCE_KEYS = new String[]{
+			"pref_color_widget_background",
+			"pref_color_title_background",
+			"pref_color_data_background",
+			"pref_color_control_buttons",
+			"pref_color_active_text",
+			"pref_color_disabled_text",
+			"pref_color_contrast_text"};
 
 	RodaliesWidget(Context context, int widgetID, int state, int layout, ArrayList<TrainTime> schedule, int deltaDays) {
 		super(context.getPackageName(), layout);
@@ -160,8 +178,112 @@ class RodaliesWidget extends RemoteViews {
 			this.setTextViewText(R.id.reasonTextView, context.getResources().getString(R.string.no_times));
 		}
 
+		setWidgetColors();
 		setStationNames();
+
 		if (state != Constants.WIDGET_STATE_UPDATING_TABLES) setPendingIntents();
+	}
+
+	private void setWidgetColors() {
+		for (String key : COLOR_PREFERENCE_KEYS) {
+			switch (key) {
+				case "pref_color_widget_background": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.widget_background));
+
+					if (color == 0x00FFFFFF) {
+						this.setImageViewBitmap(R.id.widgetBg, null);
+					} else {
+						this.setImageViewBitmap(R.id.widgetBg, getBackground(color, context));
+					}
+				} break;
+				case "pref_color_title_background": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.title_background));
+
+					this.setInt(R.id.tableTitle, "setBackgroundColor", color);
+				} break;
+				case "pref_color_data_background": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.data_background));
+
+					this.setInt(R.id.scheduleListView, "setBackgroundColor", color);
+				} break;
+				case "pref_color_control_buttons": {
+					/*int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.data_background));
+
+					if (color == 0x00FFFFFF) {
+						this.setImageViewBitmap(R.id.widgetBg, null);
+					} else {
+						this.setImageViewBitmap(R.id.widgetBg, getInsetBackground(color, context));
+					}*/
+				} break;
+				case "pref_color_active_text": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.active_text));
+
+					this.setTextColor(R.id.lineText, color);
+					this.setTextColor(R.id.lineTransferOneText, color);
+					this.setTextColor(R.id.lineTransferTwoText, color);
+					this.setTextColor(R.id.departureTimeText, color);
+					this.setTextColor(R.id.transferOneDepartureTimeText, color);
+					this.setTextColor(R.id.transferTwoDepartureTimeText, color);
+					this.setTextColor(R.id.arrivalTimeText, color);
+					this.setTextColor(R.id.transferOneArrivalTimeText, color);
+					this.setTextColor(R.id.transferTwoArrivalTimeText, color);
+					this.setTextColor(R.id.originTextView, color);
+					this.setTextColor(R.id.destinationTextView, color);
+					this.setTextColor(R.id.reasonTextView, color);
+				} break;
+				case "pref_color_disabled_text": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.disabled_text));
+
+					this.setTextColor(R.id.dataInfoText, color);
+				} break;
+				case "pref_color_contrast_text": {
+					int color = new PreferencesStorageModule(context, "colors")
+							.getInt(key, ContextCompat.getColor(context, R.color.contrast_text));
+
+					this.setTextColor(R.id.transferOneTitleText, color);
+					this.setTextColor(R.id.transferTwoTitleText, color);
+					this.setTextColor(R.id.departureTitleText, color);
+					this.setTextColor(R.id.arrivalTitleText, color);
+					this.setTextColor(R.id.transferTitleText, color);
+					this.setTextColor(R.id.transfer2TitleText, color);
+				} break;
+			}
+		}
+	}
+
+	private Bitmap getBackground(int bgColor, Context context) {
+		PorterDuff.Mode mMode = PorterDuff.Mode.SRC_ATOP;
+		Drawable drawable = ContextCompat.getDrawable(context, R.drawable.widget_background);
+		drawable.setColorFilter(bgColor, mMode);
+
+		float dp = context.getResources().getDisplayMetrics().density;
+
+		Bitmap bitmap = Bitmap.createBitmap(Math.round(300 * dp), Math.round(300 * dp), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawable.draw(canvas);
+		return bitmap;
+	}
+
+	private Bitmap getInsetBackground(int bgColor, Context context) {
+		PorterDuff.Mode mMode = PorterDuff.Mode.SRC_ATOP;
+		Drawable drawable = ContextCompat.getDrawable(context, R.drawable.widget_background);
+		InsetDrawable d = new InsetDrawable(drawable, 4);
+		drawable.setColorFilter(bgColor, mMode);
+
+		float dp = context.getResources().getDisplayMetrics().density;
+
+		Bitmap bitmap = Bitmap.createBitmap(Math.round(300 * dp), Math.round(300 * dp), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		d.draw(canvas);
+		return bitmap;
 	}
 
 	private void setStationNames() {

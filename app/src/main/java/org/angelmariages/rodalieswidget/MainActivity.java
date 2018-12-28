@@ -40,6 +40,10 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import org.angelmariages.rodalieswidget.fragments.IncidencesFragment;
+import org.angelmariages.rodalieswidget.fragments.PreferencesFragment;
+import org.angelmariages.rodalieswidget.utils.U;
+
 public class MainActivity extends AppCompatActivity {
 
 	/**
@@ -90,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
 			params.bottomMargin = heightOfAppBarCompat;
 			mSwipeLayout.setLayoutParams(params);
 		}*/
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
 	}
 
 	/**
