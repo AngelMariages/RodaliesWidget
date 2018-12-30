@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2018 Àngel Mariages
@@ -83,26 +82,52 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/updateButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/button_background_padding"
-            android:cropToPadding="false"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_update" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/swapButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/button_background_padding"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_swap" />
+            <ImageView
+                android:id="@+id/updateBtnBg"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/button_background_padding" />
+
+            <ImageButton
+                android:id="@+id/updateButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:cropToPadding="false"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_update" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/swapButtonBg"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/button_background_padding" />
+
+            <ImageButton
+                android:id="@+id/swapButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:cropToPadding="false"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_swap" />
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

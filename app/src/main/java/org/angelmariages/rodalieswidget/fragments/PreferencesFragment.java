@@ -24,24 +24,27 @@
 
 package org.angelmariages.rodalieswidget.fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import android.widget.Toast;
 
 import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat;
 import com.takisoft.preferencex.PreferenceFragmentCompat;
 import com.takisoft.preferencex.RingtonePreference;
 
@@ -59,8 +62,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		final Context mContext = this.getContext();
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
-		addPreferencesFromResource(R.xml.widget_preferences);
 
 		SwitchPreferenceCompat show_all_times = (SwitchPreferenceCompat) findPreference("show_all_times");
 		SwitchPreferenceCompat scroll_to_time = (SwitchPreferenceCompat) findPreference("scroll_to_time");
@@ -78,7 +81,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 		Preference pref_color_disabled_text = findPreference("pref_color_disabled_text");
 		Preference pref_color_contrast_text = findPreference("pref_color_contrast_text");
 
-		pref_color_widget_background.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		/*pref_color_widget_background.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				onPreferenceChangeC("pref_color_widget_background", newValue);
@@ -87,65 +90,194 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 				return true;
 			}
-		});
-
-		pref_color_title_background.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		});*/
+		pref_color_widget_background.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_title_background", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_title_background", (int) newValue);
-
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_widget_background", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_widget_background", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});
-		pref_color_data_background.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_data_background", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_data_background", (int) newValue);
 
+		pref_color_title_background.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_title_background", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_title_background", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});
-		pref_color_control_buttons.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		pref_color_data_background.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_control_buttons", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_control_buttons", (int) newValue);
-
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_data_background", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_data_background", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});
-		pref_color_active_text.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		pref_color_control_buttons.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_active_text", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_active_text", (int) newValue);
-
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_control_buttons", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_control_buttons", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});
-		pref_color_disabled_text.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		pref_color_active_text.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_disabled_text", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_disabled_text", (int) newValue);
-
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_active_text", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_active_text", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});
-		pref_color_contrast_text.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		pref_color_disabled_text.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				onPreferenceChangeC("pref_color_contrast_text", newValue);
-				PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
-				preferences.put("pref_color_contrast_text", (int) newValue);
-
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_disabled_text", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_disabled_text", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
+				return true;
+			}
+		});
+		pref_color_contrast_text.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(final Preference preference) {
+				ColorPickerDialogBuilder
+						.with(mContext)
+						.setTitle("Choose color")
+						.wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+						.density(12)
+						.setPositiveButton("Seleccionar", new ColorPickerClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+								onPreferenceChangeC("pref_color_contrast_text", selectedColor);
+								PreferencesStorageModule preferences = new PreferencesStorageModule(PreferencesFragment.this.getActivity(), "colors");
+								preferences.put("pref_color_contrast_text", selectedColor);
+								((ColorPreferenceCompat) preference).setValue(selectedColor);
+							}
+						})
+						.setNegativeButton("Cancel·lar", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.build()
+						.show();
 				return true;
 			}
 		});

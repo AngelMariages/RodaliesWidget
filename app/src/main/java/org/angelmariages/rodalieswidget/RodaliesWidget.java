@@ -210,14 +210,16 @@ class RodaliesWidget extends RemoteViews {
 					this.setInt(R.id.scheduleListView, "setBackgroundColor", color);
 				} break;
 				case "pref_color_control_buttons": {
-					/*int color = new PreferencesStorageModule(context, "colors")
+					int color = new PreferencesStorageModule(context, "colors")
 							.getInt(key, ContextCompat.getColor(context, R.color.data_background));
 
 					if (color == 0x00FFFFFF) {
-						this.setImageViewBitmap(R.id.widgetBg, null);
+						this.setImageViewBitmap(R.id.updateBtnBg, null);
+						this.setImageViewBitmap(R.id.swapButtonBg, null);
 					} else {
-						this.setImageViewBitmap(R.id.widgetBg, getInsetBackground(color, context));
-					}*/
+						this.setImageViewBitmap(R.id.updateBtnBg, getBtnBackground(color, context));
+						this.setImageViewBitmap(R.id.swapButtonBg, getBtnBackground(color, context));
+					}
 				} break;
 				case "pref_color_active_text": {
 					int color = new PreferencesStorageModule(context, "colors")
@@ -271,18 +273,18 @@ class RodaliesWidget extends RemoteViews {
 		return bitmap;
 	}
 
-	private Bitmap getInsetBackground(int bgColor, Context context) {
-		PorterDuff.Mode mMode = PorterDuff.Mode.SRC_ATOP;
-		Drawable drawable = ContextCompat.getDrawable(context, R.drawable.widget_background);
-		InsetDrawable d = new InsetDrawable(drawable, 4);
+	private Bitmap getBtnBackground(int bgColor, Context context) {
+		PorterDuff.Mode mMode = PorterDuff.Mode.SRC_ATOP;//Multiply?
+		Drawable drawable = ContextCompat.getDrawable(context, R.drawable.button_background);
 		drawable.setColorFilter(bgColor, mMode);
 
 		float dp = context.getResources().getDisplayMetrics().density;
+		InsetDrawable insetDrawable1 = new InsetDrawable(drawable, (int) Math.floor(4 * dp));
 
-		Bitmap bitmap = Bitmap.createBitmap(Math.round(300 * dp), Math.round(300 * dp), Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(Math.round(48 * dp), Math.round(48 * dp), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
-		d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-		d.draw(canvas);
+		insetDrawable1.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		insetDrawable1.draw(canvas);
 		return bitmap;
 	}
 
