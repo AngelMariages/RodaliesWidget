@@ -67,7 +67,7 @@ class CoreSelectAdapter extends BaseAdapter {
 			LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = layoutInflater.inflate(R.layout.station_select_text_view, viewGroup, false);
 		}
-		TextView textView = (TextView) view.findViewById(R.id.station_list_text);
+		TextView textView = view.findViewById(R.id.station_list_text);
 		textView.setText(coreList.get(position));
 
 		view.setOnClickListener(new View.OnClickListener() {

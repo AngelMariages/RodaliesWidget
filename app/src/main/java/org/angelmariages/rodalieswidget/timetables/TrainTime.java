@@ -130,11 +130,19 @@ public class TrainTime implements Serializable {
 		if (hour == null) return null;
 		String[] splitDot = hour.split("\\.");
 		String[] splitTwoDots = hour.split(":");
-		if (splitDot.length == 2)
-			return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
-		else if (splitTwoDots.length == 2)
-			return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
-		else return null;
+		try {
+			if (splitDot.length == 2) {
+				return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
+			} else if (splitTwoDots.length == 2) {
+				return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
+			} else return null;
+		} catch (NumberFormatException ignored) {
+			if (splitDot.length == 2) {
+				return String.format("%02d:%02d", Integer.parseInt(splitDot[0].split("-")[0]), Integer.parseInt(splitDot[1].split("-")[0]));
+			} else {
+				return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0].split("-")[0]), Integer.parseInt(splitTwoDots[1].split("-")[0]));
+			}
+		}
 	}
 
 	private String getTravelTime(String departure_time, String arrival_time) {
@@ -230,11 +238,11 @@ public class TrainTime implements Serializable {
 
 	public Calendar getDateWithTime() {
 		String time = null;
-		if(departure_time != null) {
+		if (departure_time != null) {
 			time = departure_time;
-		} else if(departure_time_transfer_one != null) {
+		} else if (departure_time_transfer_one != null) {
 			time = departure_time_transfer_one;
-		} else if(departure_time_transfer_two != null) {
+		} else if (departure_time_transfer_two != null) {
 			time = departure_time_transfer_two;
 		}
 		if (time != null) {
@@ -248,7 +256,7 @@ public class TrainTime implements Serializable {
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
 
-				if(hour == 0) {
+				if (hour == 0) {
 					cal.add(Calendar.DAY_OF_YEAR, 1);
 				}
 				return cal;

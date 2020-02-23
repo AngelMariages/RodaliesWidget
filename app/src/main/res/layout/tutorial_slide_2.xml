@@ -23,7 +23,7 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/holo_orange_dark"
     android:gravity="center"
     android:layout_height="match_parent"
@@ -42,11 +42,14 @@
         android:textStyle="bold"/>
 
     <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
+        android:fadeScrollbars="true"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbars="vertical"
         android:text="@string/tutorial_2_desc"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/slide_desc"/>
+        android:textSize="@dimen/slide_desc" />
 
 </LinearLayout>

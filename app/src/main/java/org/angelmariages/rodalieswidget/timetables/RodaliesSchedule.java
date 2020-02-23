@@ -24,7 +24,8 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import androidx.annotation.NonNull;
 
 import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -43,84 +44,44 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-class RodaliesSchedule implements ScheduleProvider {
+class RodaliesSchedule extends ScheduleProvider {
 	private final String origin;
 	private final String destination;
+	private final Context context;
 	private String station_transfer_one;
 	private String station_transfer_two;
 
-	RodaliesSchedule(String origin, String destination) {
+	RodaliesSchedule(String origin, String destination, Context context) {
 		this.origin = origin;
 		this.destination = destination;
+		this.context = context;
 	}
 
 	@NonNull
 	private String getPageFromInternet(int deltaDays) {
-		HttpURLConnection connection = null;
-		BufferedReader in = null;
-		StringBuilder html = new StringBuilder();
+		String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
 		String query = "origen=" + origin +
 				"&desti=" + destination +
 				"&dataViatge=" + getTodayDate(deltaDays) +
 				"&horaIni=0";
 
-		try {
-			String url = "http://serveis.rodalies.gencat.cat/gencat_rodalies_serveis/AppJava/restServices/getHoraris?";
-			//TODO: REMOVE THIS LOG!
-			U.log("URL: " + url + query);
-			connection = (HttpURLConnection) new URL(url + query).openConnection();
-			connection.setConnectTimeout(2500);
-			connection.setReadTimeout(2500);
-			connection.setRequestMethod("GET");
-
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String line;
-			while ((line = in.readLine()) != null) {
-				html.append(line);
-			}
-		} catch (MalformedURLException e) {
-			U.log("ERROR: URL malformada.");
-		} catch (IOException e) {
-			U.log("No es pot obrir el stream.");
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					U.log("Error tancant l'stream: " + e.getMessage());
-				}
-			}
-		}
-
-		return html.toString();
+		return super.doServiceRequest(url + query, context);
 	}
 
 	public ArrayList<TrainTime> getSchedule(int deltaDays) {
-		try {
-			return parseXMLFile(getPageFromInternet(deltaDays), TimeUtils.getCalendarForDelta(deltaDays));
-		} catch (Exception e) {
-			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
-			return getSchedule(deltaDays, 1);
-		}
+		return getSchedule(deltaDays, 0);
 	}
 
 	private ArrayList<TrainTime> getSchedule(int deltaDays, int times) {
 		try {
+			super.resetTimeoutIntents();
 			return parseXMLFile(getPageFromInternet(deltaDays), TimeUtils.getCalendarForDelta(deltaDays));
 		} catch (Exception e) {
 			U.log("Error on getSchedule: " + Arrays.toString(e.getStackTrace()));
@@ -135,7 +96,8 @@ class RodaliesSchedule implements ScheduleProvider {
 
 	private ArrayList<TrainTime> parseXMLFile(String xmlData, Calendar currentCalendar) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
 		if (xmlData == null) return null;
-		InputSource source = new InputSource(new StringReader(xmlData));
+		StringReader stringReader = new StringReader(xmlData);
+		InputSource source = new InputSource(stringReader);
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -189,7 +151,7 @@ class RodaliesSchedule implements ScheduleProvider {
 
 						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false, currentCalendar));
 
-						if (recorreguts >= 1) {
+						if (recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
 
@@ -263,6 +225,9 @@ class RodaliesSchedule implements ScheduleProvider {
 				}
 			}
 		}
+
+		stringReader.close();
+
 
 		return times;
 	}

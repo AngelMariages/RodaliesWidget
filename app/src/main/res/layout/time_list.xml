@@ -70,7 +70,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
         android:adjustViewBounds="true"
         android:src="@drawable/ic_no_alarm"
         app:srcCompat="@drawable/ic_no_alarm"/>

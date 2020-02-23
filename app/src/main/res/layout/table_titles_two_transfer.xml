@@ -24,6 +24,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tableTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/title_background"
@@ -35,12 +36,11 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/transferTitleText"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingEnd="3dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="3dp"
             android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_one"
@@ -64,8 +64,6 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:paddingEnd="0dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
             android:textColor="@color/contrast_text"
@@ -78,12 +76,11 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/transfer2TitleText"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingEnd="3dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="3dp"
             android:paddingStart="0dp"
             android:scrollHorizontally="true"
             android:text="@string/transfer_departure_two"
@@ -107,8 +104,6 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:paddingEnd="0dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="0dp"
             android:paddingStart="3dp"
             android:scrollHorizontally="true"
             android:textColor="@color/contrast_text"
@@ -126,6 +121,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:id="@+id/departureTitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -137,6 +133,7 @@
             android:textColor="@color/contrast_text" />
 
         <TextView
+            android:id="@+id/arrivalTitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -145,8 +142,6 @@
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:paddingEnd="10dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="10dp"
             android:paddingStart="0dp"
             android:text="@string/arrival"
             android:textAllCaps="true"
@@ -155,7 +150,6 @@
         <TextView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp" />
+            android:layout_marginEnd="4dp" />
     </LinearLayout>
 </LinearLayout>

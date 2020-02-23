@@ -24,9 +24,74 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
+
+import android.content.Context;
+
+import org.angelmariages.rodalieswidget.utils.U;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.ArrayList;
 
-interface ScheduleProvider {
-    ArrayList<TrainTime> getSchedule();
-    ArrayList<TrainTime> getSchedule(int deltaDays);
+abstract class ScheduleProvider {
+	private static final int MAX_TIMEOUT_INTENTS = 5;
+	private int timeoutIntents = 0;
+
+	abstract ArrayList<TrainTime> getSchedule();
+
+	abstract ArrayList<TrainTime> getSchedule(int deltaDays);
+
+	String doServiceRequest(String url, Context context) {
+		HttpURLConnection connection = null;
+		BufferedReader in = null;
+		StringBuilder html = new StringBuilder();
+
+		try {
+			//TODO: REMOVE THIS LOG!
+			U.log("URL: " + url);
+			connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
+			connection.setRequestMethod("GET");
+
+			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null) {
+				html.append(line);
+			}
+		} catch (SocketTimeoutException e) {
+			U.log("TIMEOUT doServiceRequest " + e.getMessage());
+			if (timeoutIntents < MAX_TIMEOUT_INTENTS) {
+				timeoutIntents++;
+				return doServiceRequest(url, context);
+			}
+			U.logEventTimeout(url, context);
+		} catch (MalformedURLException e) {
+			U.log("ERROR: URL malformada.");
+		} catch (IOException e) {
+			U.log("No es pot obrir el stream.");
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					U.log("Error tancant l'stream: " + e.getMessage());
+				}
+			}
+		}
+
+		return html.toString();
+	}
+
+	void resetTimeoutIntents() {
+		timeoutIntents = 0;
+	}
 }

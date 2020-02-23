@@ -64,7 +64,7 @@ public class TimeUtils {
 			date.setTime(format.parse(dateWithoutPath));
 			return DateUtils.isToday(date.getTime().getTime()) || date.after(Calendar.getInstance());
 		} catch (ParseException e) {
-			U.log("Can't parse date for isFuture " + dateWithoutPath);
+			U.log("Can't parse Date for isFuture " + dateWithoutPath);
 			return false;
 		}
 	}
@@ -80,7 +80,7 @@ public class TimeUtils {
 
 			return date.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR) && date.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR);
 		} catch (ParseException e) {
-			U.log("Can't parse date for isFuture " + dateWithoutPath);
+			U.log("Can't parse Date for isFuture " + dateWithoutPath);
 			return false;
 		}
 	}

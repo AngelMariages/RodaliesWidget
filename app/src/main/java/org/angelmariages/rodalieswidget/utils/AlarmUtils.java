@@ -30,11 +30,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.AlarmReceiver;
 
@@ -78,7 +77,7 @@ public class AlarmUtils {
 				}
 			}
 
-			new AppPreferences(context).put(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, departureTime);
+			new PreferencesStorageModule(context, "alarms").put(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, departureTime);
 
 			U.sendNotifyUpdate(widgetID, context);
 
@@ -88,7 +87,7 @@ public class AlarmUtils {
 	}
 
 	public static String getAlarm(Context context, int widgetID, String origin, String destination) {
-		return new AppPreferences(context).getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
+		return new PreferencesStorageModule(context, "alarms").getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
 	}
 
 	public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
@@ -98,7 +97,7 @@ public class AlarmUtils {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		if (alarmManager != null) alarmManager.cancel(pendingIntent);
 
-		new AppPreferences(context).remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
+		new PreferencesStorageModule(context, "alarms").remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
 		U.sendNotifyUpdate(widgetID, context);
 	}
 }

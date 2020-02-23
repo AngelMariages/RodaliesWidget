@@ -77,7 +77,7 @@ class StationsAdapter extends BaseAdapter {
 			LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = layoutInflater.inflate(R.layout.station_select_text_view, viewGroup, false);
 		}
-		TextView textView = (TextView) view.findViewById(R.id.station_list_text);
+		TextView textView = view.findViewById(R.id.station_list_text);
 		textView.setText(stationList.get(position));
 
 		view.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +99,7 @@ class StationsAdapter extends BaseAdapter {
 
 	void filterStations(String input) {
 		stationList.clear();
-		if (!input.isEmpty() && input.length() != 0) {
+		if (!input.isEmpty()) {
 			input = input.toLowerCase();
 			input = Normalizer.normalize(input, Normalizer.Form.NFD)
 					.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");

@@ -216,7 +216,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			remoteViews.setOnClickFillInIntent(R.id.dayBack, dayBackIntent);
 
 			Intent dayForwardIntent = new Intent(context, WidgetManager.class);
-			dayForwardIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) + 1);
+			dayForwardIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) == 0 ? 0 : ((int) diff) + 1);
 			remoteViews.setOnClickFillInIntent(R.id.dayForward, dayForwardIntent);
 
 			return remoteViews;

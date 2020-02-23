@@ -29,11 +29,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.os.ConfigurationCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.os.ConfigurationCompat;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.angelmariages.rodalieswidget.BuildConfig;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
@@ -322,6 +323,17 @@ public final class U {
 		}
 	}
 
+	public static void noColourFound(Context context, String line, String origin, String destination, String nucli) {
+		mFirebaseDatabase = U.getFirebaseDatabase();
+		final DatabaseReference colorsNotFound = mFirebaseDatabase.getReference("colorsNotFound");
+
+		DatabaseReference n = colorsNotFound.child(nucli).getRef();
+		n.child("origin").setValue(origin);
+		n.child("destination").setValue(destination);
+		n.child("line").setValue(line);
+		n.child(String.valueOf(TimeUtils.getCurrentDateAsTimestamp())).setValue(BuildConfig.VERSION_CODE);
+	}
+
 	public static void sendNoInternetError(int widgetId, Context context) {
 		Intent noDataIntent = new Intent(context, WidgetManager.class);
 		noDataIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
@@ -364,7 +376,17 @@ public final class U {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			return context.getResources().getColor(resourceId, null);
 		} else {
+			//noinspection deprecation
 			return context.getResources().getColor(resourceId);
 		}
+	}
+
+	public static void logEventTimeout(String url, Context context) {
+		Bundle bundle;
+
+		bundle = new Bundle();
+		bundle.putString("url_timeout", url);
+
+		FirebaseAnalytics.getInstance(context).logEvent("update_timeout", bundle);
 	}
 }

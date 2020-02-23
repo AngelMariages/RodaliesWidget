@@ -34,9 +34,9 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
-import net.grandcentrix.tray.AppPreferences;
+import com.ddmeng.preferencesprovider.provider.PreferencesStorageModule;
 
 import org.angelmariages.rodalieswidget.utils.AlarmUtils;
 import org.angelmariages.rodalieswidget.utils.Constants;
@@ -55,7 +55,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 		}
 
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-		String customUri = new AppPreferences(context).getString(Constants.PREFERENCE_STRING_ALARM_URI, null);
+		String customUri = new PreferencesStorageModule(context, "alarms").getString(Constants.PREFERENCE_STRING_ALARM_URI, null);
+
+
 		if (customUri != null) {
 			if (customUri.equalsIgnoreCase("--silent--")) soundUri = null;
 			else soundUri = Uri.parse(customUri);
