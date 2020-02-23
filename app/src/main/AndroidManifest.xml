@@ -38,9 +38,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="9f26f6fd6934f264846218ad232e03e60e691952" />
 
         <provider
             android:name="net.grandcentrix.tray.provider.TrayContentProvider"

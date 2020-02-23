@@ -33,16 +33,12 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 
-import com.crashlytics.android.Crashlytics;
-
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
-
-import io.fabric.sdk.android.Fabric;
 
 public class WidgetManager extends AppWidgetProvider {
 
@@ -83,8 +79,6 @@ public class WidgetManager extends AppWidgetProvider {
 		String intentAction = intent.getAction();
 
 		U.log("onReceive(); intentAction: " + intentAction);
-
-		Fabric.with(context, new Crashlytics());
 
 		if (intentAction == null || intentAction.isEmpty()) return;
 

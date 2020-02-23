@@ -31,11 +31,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -50,8 +49,6 @@ import org.angelmariages.rodalieswidget.utils.U;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.fabric.sdk.android.Fabric;
-
 class RodaliesWidget extends RemoteViews {
 	private int state = Constants.WIDGET_STATE_SCHEDULE_LOADED;
 	private final Context context;
@@ -61,8 +58,6 @@ class RodaliesWidget extends RemoteViews {
 		super(context.getPackageName(), layout);
 		this.context = context;
 		this.widgetID = widgetID;
-
-		Fabric.with(context, new Crashlytics());
 
 		final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 		FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -169,9 +164,9 @@ class RodaliesWidget extends RemoteViews {
 		if (stations.length == 2) {
 			int core = U.getCore(context, widgetID);
 
-			Crashlytics.setString("origin", stations[0]);
+			/*Crashlytics.setString("origin", stations[0]);
 			Crashlytics.setString("destination", stations[1]);
-			Crashlytics.setInt("core", core);
+			Crashlytics.setInt("core", core);*/
 
 			updateStationsText(StationUtils.getNameFromID(stations[0], core), StationUtils.getNameFromID(stations[1], core));
 		}
