@@ -24,8 +24,8 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.TimeUtils;

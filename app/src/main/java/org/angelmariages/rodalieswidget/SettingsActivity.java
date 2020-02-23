@@ -39,9 +39,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
