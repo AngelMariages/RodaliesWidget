@@ -149,7 +149,7 @@ public class TutorialActivity extends AppCompatActivity {
 	}
 
 	private void startSettings() {
-		startActivity(new Intent(TutorialActivity.this, MainActivity.class));
+		startActivity(new Intent(TutorialActivity.this, SettingsActivity.class));
 
 		PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("tutorial_viewed", true).apply();
 

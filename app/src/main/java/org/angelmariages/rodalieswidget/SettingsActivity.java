@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		FirebaseMessaging.getInstance().subscribeToTopic("notifications");
+		//FirebaseMessaging.getInstance().subscribeToTopic("notifications");
 
 		getFragmentManager().beginTransaction().replace(android.R.id.content, new PreferencesFragment()).commit();
 	}
@@ -116,7 +116,7 @@ public class SettingsActivity extends AppCompatActivity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
+			/*mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
 			addPreferencesFromResource(R.xml.widget_preferences);
 
 			SwitchPreference show_all_times = (SwitchPreference) findPreference("show_all_times");
@@ -281,7 +281,7 @@ preferences.put("onPreferenceChangeC", (int) newValue);
 
 					return false;
 				}
-			});
+			});*/
 		}
 
 		private void onPreferenceChangeC(String key, final Object newValue) {
