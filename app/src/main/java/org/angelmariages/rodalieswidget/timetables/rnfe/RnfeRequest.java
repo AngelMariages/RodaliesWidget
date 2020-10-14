@@ -88,7 +88,7 @@ public class RnfeRequest implements ScheduleProvider {
 		query += "&ho=00&i=s&cp=NO&TXTInfo=";
 
 		try {
-			HashMap<String, String> requestParams = new HashMap<String, String>();
+			HashMap<String, String> requestParams = new HashMap<>();
 
 			requestParams.put("nucleo", String.valueOf(nucli));
 			requestParams.put("origen", origin);

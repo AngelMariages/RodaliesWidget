@@ -218,16 +218,13 @@ public class WidgetManager extends AppWidgetProvider {
 				final RodaliesWidget finalWidget = widget;
 				final HandlerThread scrollHandlerThread = new HandlerThread("ScrollHandlerThread");
 				scrollHandlerThread.start();
-				new Handler(scrollHandlerThread.getLooper()).postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						int scrollPosition = U.getScrollPosition(schedule);
-						//if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
-						if (scrollPosition > 0)
-							finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
-						//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
-						AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
-					}
+				new Handler(scrollHandlerThread.getLooper()).postDelayed(() -> {
+					int scrollPosition = U.getScrollPosition(schedule);
+					//if(scrollPosition != 0 && schedule.get(0).getTransfer() == 0) scrollPosition--;
+					if (scrollPosition > 0)
+						finalWidget.setRelativeScrollPosition(R.id.scheduleListView, scrollPosition);
+					//finalWidget.setScrollPosition(R.id.scheduleListView, getScrollPosition(schedule));
+					AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetID, finalWidget);
 				}, 500);
 			}
 		}

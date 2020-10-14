@@ -26,6 +26,8 @@ package org.angelmariages.rodalieswidget.timetables;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 import org.w3c.dom.Document;
@@ -81,8 +83,9 @@ class RodaliesSchedule implements ScheduleProvider {
 			//TODO: REMOVE THIS LOG!
 			U.log("URL: " + url + query);
 			connection = (HttpURLConnection) new URL(url + query).openConnection();
-			connection.setConnectTimeout(2500);
-			connection.setReadTimeout(2500);
+			int TIMEOUT = 5000;
+			connection.setConnectTimeout(TIMEOUT);
+			connection.setReadTimeout(TIMEOUT);
 			connection.setRequestMethod("GET");
 
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -94,6 +97,7 @@ class RodaliesSchedule implements ScheduleProvider {
 			U.log("ERROR: URL malformada.");
 		} catch (IOException e) {
 			U.log("No es pot obrir el stream.");
+			FirebaseCrashlytics.getInstance().recordException(e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();

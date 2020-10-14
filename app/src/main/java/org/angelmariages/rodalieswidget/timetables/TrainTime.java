@@ -24,6 +24,8 @@
 
 package org.angelmariages.rodalieswidget.timetables;
 
+import androidx.annotation.NonNull;
+
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.io.Serializable;
@@ -103,6 +105,7 @@ public class TrainTime implements Serializable {
 		this.date = from_date.getTimeInMillis();
 	}
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "TrainTime{" +
