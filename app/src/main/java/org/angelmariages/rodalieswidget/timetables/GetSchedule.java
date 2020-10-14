@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.utils.Constants;
@@ -85,7 +86,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 			ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonLines, origin, destination);
 
 			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
-			if (scheduleFromJSON != null && scheduleFromJSON.size() > 0) {
+			if (scheduleFromJSON.size() > 0) {
 				addHoursToSchedule(context, scheduleFromJSON, hourSchedule, true);
 			}
 			return hourSchedule;
@@ -136,17 +137,15 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 			ArrayList<TrainTime> scheduleFromJSON = ScheduleFileManager.getScheduleFromJSON(jsonLines, origin, destination);
 			ArrayList<TrainTime> pastSchedule;
 
-			if (scheduleFromJSON != null) {
-				if (TimeUtils.getCurrentHour() == 0) {
-					pastSchedule = getScheduleFromYesterday(context, origin, destination, scheduleProvider);
-					if (!TimeUtils.isScheduleExpired(pastSchedule)) {
-						scheduleFromJSON = pastSchedule;
-					}
+			if (TimeUtils.getCurrentHour() == 0) {
+				pastSchedule = getScheduleFromYesterday(context, origin, destination, scheduleProvider);
+				if (!TimeUtils.isScheduleExpired(pastSchedule)) {
+					scheduleFromJSON = pastSchedule;
 				}
 			}
 
 			ArrayList<TrainTime> hourSchedule = new ArrayList<>();
-			if (scheduleFromJSON != null && scheduleFromJSON.size() > 0) {
+			if (scheduleFromJSON.size() > 0) {
 				addHoursToSchedule(context, scheduleFromJSON, hourSchedule, false);
 			}
 			return hourSchedule;
@@ -178,9 +177,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 		//fallback
 		if(!forceAdd && !show_all_times && hourSchedule != null && hourSchedule.size() == 0) {
-			for (TrainTime trainTime : scheduleFromJSON) {
-				hourSchedule.add(trainTime);
-			}
+			hourSchedule.addAll(scheduleFromJSON);
 		}
 	}
 
@@ -223,24 +220,26 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 		File filesDir = context.getFilesDir();
 		final String endsWith = "_" + TimeUtils.getTodayDateWithoutPath() + ".json";
 
-		FilenameFilter filenameFilter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains("_")) {
-					String[] split = name.split("_");
-					if (split.length == 4) {
-						int ind = split[3].indexOf(".json");
-						if (ind != -1) {
-							String fileDate = split[3].substring(0, ind);
-							return !TimeUtils.isFuture(fileDate) && !TimeUtils.isYesterday(fileDate);
-						}
+		FilenameFilter filenameFilter = (dir, name) -> {
+			if (!name.contains("horaris_")) {
+				return false;
+			}
+
+			if (name.contains("_")) {
+				String[] split = name.split("_");
+				if (split.length == 4) {
+					int ind = split[3].indexOf(".json");
+					if (ind != -1) {
+						String fileDate = split[3].substring(0, ind);
+						return !TimeUtils.isFuture(fileDate) && !TimeUtils.isYesterday(fileDate);
 					}
 				}
-				return !name.endsWith(endsWith) && !name.equals("instant-run") && !name.equalsIgnoreCase(".Fabric");
 			}
+
+			return !name.endsWith(endsWith);
 		};
 
-		for (File file : filesDir.listFiles(filenameFilter)) {
+		for (File file : Objects.requireNonNull(filesDir.listFiles(filenameFilter))) {
 			U.log("Deleting file: " + file.getName() + ";RESULT: " + file.delete());
 		}
 	}

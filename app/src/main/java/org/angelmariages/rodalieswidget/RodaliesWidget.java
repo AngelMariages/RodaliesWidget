@@ -31,12 +31,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -47,10 +44,13 @@ import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import static java.util.Collections.singletonMap;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 class RodaliesWidget extends RemoteViews {
-	private int state = Constants.WIDGET_STATE_SCHEDULE_LOADED;
+	private final int state;
 	private final Context context;
 	private final int widgetID;
 
@@ -61,18 +61,14 @@ class RodaliesWidget extends RemoteViews {
 
 		final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 		FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-				.setDeveloperModeEnabled(BuildConfig.DEBUG)
+				.setMinimumFetchIntervalInSeconds(HOURS.toSeconds(1))
 				.build();
-		firebaseRemoteConfig.setConfigSettings(configSettings);
-		firebaseRemoteConfig.setDefaults(new HashMap<String, Object>() {{
-			put("remote_view_in_memory", false);
-		}});
-		firebaseRemoteConfig.fetch(2).addOnCompleteListener(new OnCompleteListener<Void>() {
-			@Override
-			public void onComplete(@NonNull Task<Void> task) {
-				if (task.isSuccessful()) {
-					firebaseRemoteConfig.activateFetched();
-				}
+		firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+		firebaseRemoteConfig.setDefaultsAsync(singletonMap("remote_view_in_memory", false));
+		firebaseRemoteConfig.fetch(MINUTES.toSeconds(30)).addOnCompleteListener(task -> {
+			if (task.isSuccessful()) {
+				firebaseRemoteConfig.activate();
 			}
 		});
 

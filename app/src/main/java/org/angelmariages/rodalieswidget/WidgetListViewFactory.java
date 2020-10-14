@@ -53,7 +53,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final FirebaseRemoteConfig firebaseRemoteConfig;
 	private String alarm_departure_time;
 	private int transfers = 0;
-	private Context context = null;
+	private Context context;
 
 	private ArrayList<TrainTime> schedule;
 	private ArrayList<RemoteViews> remoteViews;

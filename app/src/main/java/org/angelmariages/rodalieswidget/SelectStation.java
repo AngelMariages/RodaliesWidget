@@ -38,6 +38,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.StationUtils;
@@ -95,20 +96,16 @@ public class SelectStation extends AppCompatActivity {
 
 
 		if (coreListView != null) {
-			final ArrayList<String> coreList = new ArrayList<>();
-			coreList.addAll(StationUtils.nucliIDs.values());
+			final ArrayList<String> coreList = new ArrayList<>(StationUtils.nucliIDs.values());
 
-			final CoreSelectAdapter coreSelectAdapter = new CoreSelectAdapter(this, coreList, widgetID);
-			coreSelectAdapter.setOnCoreSelectListener(new CoreSelectAdapter.OnCoreSelectListener() {
-				@Override
-				public void onCoreSelect(String coreName) {
-					coreListView.setVisibility(View.GONE);
+			final CoreSelectAdapter coreSelectAdapter = new CoreSelectAdapter(this, coreList);
+			coreSelectAdapter.setOnCoreSelectListener(coreName -> {
+				coreListView.setVisibility(View.GONE);
 
-					int idFromNucli = StationUtils.getIDFromNucli(coreName);
-					U.saveCore(context, widgetID, idFromNucli);
+				int idFromNucli = StationUtils.getIDFromNucli(coreName);
+				U.saveCore(context, widgetID, idFromNucli);
 
-					setStationListView(idFromNucli);
-				}
+				setStationListView(idFromNucli);
 			});
 
 			coreListView.setAdapter(coreSelectAdapter);
@@ -120,22 +117,16 @@ public class SelectStation extends AppCompatActivity {
 		ListView stationListView = (ListView) findViewById(R.id.stationListView);
 		ImageButton changeCoreButton = (ImageButton) findViewById(R.id.changeZoneButton);
 
-		changeCoreButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				coreListView.setVisibility(View.VISIBLE);
-			}
-		});
+		changeCoreButton.setOnClickListener(view -> coreListView.setVisibility(View.VISIBLE));
 
 		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		inputMethodManager.toggleSoftInputFromWindow(searchEditView.getApplicationWindowToken(),
 				InputMethodManager.SHOW_IMPLICIT, 0);
 
 		if (stationListView != null) {
-			final ArrayList<String> stationList = new ArrayList<>();
-			Collection<String> values = StationUtils.nuclis.get(idFromNucli).values();
+			Collection<String> values = Objects.requireNonNull(StationUtils.nuclis.get(idFromNucli)).values();
 
-			stationList.addAll(values);
+			final ArrayList<String> stationList = new ArrayList<>(values);
 
 			final StationsAdapter stationsAdapter = new StationsAdapter(this, stationList, widgetID, originOrDestination);
 			stationListView.setAdapter(stationsAdapter);

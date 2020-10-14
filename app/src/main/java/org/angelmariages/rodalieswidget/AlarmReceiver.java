@@ -36,6 +36,8 @@ import android.net.Uri;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.FirebaseApp;
+
 import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.utils.AlarmUtils;
@@ -47,6 +49,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
 		if (widgetID == -1) return;
+
+		FirebaseApp.initializeApp(context);
 
 		U.log("Alarm received, removing it " + widgetID);
 		String[] stations = U.getStations(context, widgetID);

@@ -15,6 +15,11 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
 -keep class net.grandcentrix.tray.** { *; }
@@ -26,10 +31,3 @@
 -dontwarn org.joda.time.**
 -dontwarn org.shaded.apache.**
 -dontwarn org.ietf.jgss.**
-
-# Fabric
--keepattributes *Annotation*
--keepattributes SourceFile,LineNumberTable
-
--keep class com.crashlytics.** { *; }
--dontwarn com.crashlytics.**
