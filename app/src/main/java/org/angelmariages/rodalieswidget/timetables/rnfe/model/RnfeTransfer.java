@@ -1,5 +1,7 @@
 package org.angelmariages.rodalieswidget.timetables.rnfe.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class RnfeTransfer {
@@ -62,6 +64,7 @@ public class RnfeTransfer {
 		this.line = line;
 	}
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "RnfeTransfer{" +

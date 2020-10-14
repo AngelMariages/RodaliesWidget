@@ -55,7 +55,7 @@ public class SelectAlarmActivity extends AppCompatActivity {
 
 		Intent intent = getIntent();
 		final int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
-		final String stations[] = U.getStations(this, widgetID);
+		final String[] stations = U.getStations(this, widgetID);
 
 		if(widgetID == -1 && stations.length != 2) {
 			U.log("Error getting the widget ID, finishing alarm activity");
@@ -78,23 +78,15 @@ public class SelectAlarmActivity extends AppCompatActivity {
 		final Button cancelButton = (Button) findViewById(R.id.cancelButton);
 		final Button okButton = (Button) findViewById(R.id.okButton);
 
-		okButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AlarmUtils.removeAlarm(SelectAlarmActivity.this, widgetID, origin, destination);
-				Toast.makeText(SelectAlarmActivity.this, R.string.toast_alarm_removed, Toast.LENGTH_LONG).show();
-				U.log("Removing alarm");
-				U.sendNotifyUpdate(widgetID, SelectAlarmActivity.this);
-				finish();
-			}
+		okButton.setOnClickListener(v -> {
+			AlarmUtils.removeAlarm(SelectAlarmActivity.this, widgetID, origin, destination);
+			Toast.makeText(SelectAlarmActivity.this, R.string.toast_alarm_removed, Toast.LENGTH_LONG).show();
+			U.log("Removing alarm");
+			U.sendNotifyUpdate(widgetID, SelectAlarmActivity.this);
+			finish();
 		});
 
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		cancelButton.setOnClickListener(v -> finish());
 	}
 
 	private void setResourcesForAddingAlarm(final int widgetID, final String origin, final String destination) {
@@ -149,24 +141,16 @@ public class SelectAlarmActivity extends AppCompatActivity {
 			}
 		});
 
-		okButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String alarmTime = getAlarmTime(departureTime, mAlarmTime + min);
+		okButton.setOnClickListener(v -> {
+			String alarmTime = getAlarmTime(departureTime, mAlarmTime + min);
 
-				AlarmUtils.setAlarm(SelectAlarmActivity.this, departureTime, alarmTime, widgetID, origin, destination);
-				Toast.makeText(SelectAlarmActivity.this, String.format(getString(R.string.alarm_set_alarm_toast), alarmTime),
-						Toast.LENGTH_LONG).show();
-				finish();
-			}
+			AlarmUtils.setAlarm(SelectAlarmActivity.this, departureTime, alarmTime, widgetID, origin, destination);
+			Toast.makeText(SelectAlarmActivity.this, String.format(getString(R.string.alarm_set_alarm_toast), alarmTime),
+					Toast.LENGTH_LONG).show();
+			finish();
 		});
 
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		cancelButton.setOnClickListener(v -> finish());
 	}
 
 	private String getAlarmTime(String departureTime, int alarmTime) {
