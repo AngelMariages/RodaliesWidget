@@ -1,11 +1,14 @@
 package org.angelmariages.rodalieswidget.timetables.rnfe.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class RnfeSchedule implements Comparable {
 	@SerializedName("horaLlegada")
@@ -118,8 +121,8 @@ public class RnfeSchedule implements Comparable {
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 
 			try {
-				Date departureDate = new Date(format.parse(getDepartureTime()).getTime());
-				Date departureDateCompared = new Date(format.parse(compared.getDepartureTime()).getTime());
+				Date departureDate = new Date(Objects.requireNonNull(format.parse(getDepartureTime())).getTime());
+				Date departureDateCompared = new Date(Objects.requireNonNull(format.parse(compared.getDepartureTime())).getTime());
 
 				return departureDate.compareTo(departureDateCompared);
 			} catch (ParseException e) {
@@ -129,6 +132,7 @@ public class RnfeSchedule implements Comparable {
 		return 0;
 	}
 
+	@NonNull
 	@Override
 	public String toString() {
 		return "\nRnfeSchedule{" +

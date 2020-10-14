@@ -125,82 +125,56 @@ public class SettingsActivity extends AppCompatActivity {
 			Preference pref_view_tutorial = findPreference("pref_view_tutorial");
 			RingtonePreference pref_set_sound = (RingtonePreference) findPreference("pref_set_sound");
 
-			show_all_times.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					onPreferenceChangeC("show_all_times", newValue);
-					return true;
-				}
+			show_all_times.setOnPreferenceChangeListener((preference, newValue) -> {
+				onPreferenceChangeC("show_all_times", newValue);
+				return true;
 			});
 
-			scroll_to_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					onPreferenceChangeC("scroll_to_time", newValue);
-					return true;
-				}
+			scroll_to_time.setOnPreferenceChangeListener((preference, newValue) -> {
+				onPreferenceChangeC("scroll_to_time", newValue);
+				return true;
 			});
 
 
 
-			show_more_transfer_trains.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					onPreferenceChangeC("show_more_transfer_trains", newValue);
-					return true;
-				}
+			show_more_transfer_trains.setOnPreferenceChangeListener((preference, newValue) -> {
+				onPreferenceChangeC("show_more_transfer_trains", newValue);
+				return true;
 			});
 
-			group_transfer_exits.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					onPreferenceChangeC("group_transfer_exits", newValue);
-					return true;
-				}
+			group_transfer_exits.setOnPreferenceChangeListener((preference, newValue) -> {
+				onPreferenceChangeC("group_transfer_exits", newValue);
+				return true;
 			});
 
-			pref_donation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					onPreferenceChangeC("pref_donation", true);
-					return false;
-				}
+			pref_donation.setOnPreferenceClickListener(preference -> {
+				onPreferenceChangeC("pref_donation", true);
+				return false;
 			});
 
-			pref_set_sound.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					return false;
+			pref_set_sound.setOnPreferenceChangeListener((preference, newValue) -> false);
+
+			pref_set_sound.setOnPreferenceChangeListener((preference, newValue) -> {
+				String ringtoneUri = (String) newValue;
+
+				if (ringtoneUri == null) {
+					new AppPreferences(PreferencesFragment.this.getActivity()).remove(Constants.PREFERENCE_STRING_ALARM_URI);
+				} else if (ringtoneUri.isEmpty()) {
+					new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
+				} else {
+					Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
+					Toast.makeText(PreferencesFragment.this.getActivity(), ringtone.getTitle(PreferencesFragment.this.getActivity()), Toast.LENGTH_SHORT).show();
+					new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
 				}
+				return true;
 			});
 
-			pref_set_sound.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					String ringtoneUri = (String) newValue;
+			pref_view_tutorial.setOnPreferenceClickListener(preference -> {
+				PreferenceManager.getDefaultSharedPreferences(PreferencesFragment.this.getActivity()).edit().putBoolean("tutorial_viewed", false).apply();
 
-					if (ringtoneUri == null) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).remove(Constants.PREFERENCE_STRING_ALARM_URI);
-					} else if (ringtoneUri.isEmpty()) {
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
-					} else {
-						Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
-						Toast.makeText(PreferencesFragment.this.getActivity(), ringtone.getTitle(PreferencesFragment.this.getActivity()), Toast.LENGTH_SHORT).show();
-						new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
-					}
-					return true;
-				}
-			});
+				startActivity(new Intent(PreferencesFragment.this.getActivity(), FirstTimeActivity.class));
 
-			pref_view_tutorial.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					PreferenceManager.getDefaultSharedPreferences(PreferencesFragment.this.getActivity()).edit().putBoolean("tutorial_viewed", false).apply();
-
-					startActivity(new Intent(PreferencesFragment.this.getActivity(), FirstTimeActivity.class));
-
-					return false;
-				}
+				return false;
 			});
 		}
 

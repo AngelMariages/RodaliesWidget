@@ -27,6 +27,8 @@ package org.angelmariages.rodalieswidget.timetables;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import org.angelmariages.rodalieswidget.utils.StationUtils;
 import org.angelmariages.rodalieswidget.utils.TimeUtils;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -87,6 +89,7 @@ class RenfeSchedule implements ScheduleProvider {
 			U.log("ERROR: URL malformada.");
 		} catch (IOException e) {
 			U.log("No es pot obrir el stream.");
+			FirebaseCrashlytics.getInstance().recordException(e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
@@ -366,8 +369,7 @@ class RenfeSchedule implements ScheduleProvider {
 	private ArrayList<String> getCols(String row) {
 		ArrayList<String> cols = new ArrayList<>();
 		if (row == null) return cols;
-		int lastIndex[] = new int[1];
-		lastIndex[0] = 0;
+		int[] lastIndex = new int[1];
 
 		cols.add(findNextCol(row, 0, lastIndex));
 		while (lastIndex[0] != -1) {

@@ -30,6 +30,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -90,14 +92,42 @@ public class FirstTimeActivity extends AppCompatActivity {
 		viewPager.setAdapter(new MyViewPagerAdapter());
 		viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-		btnSkip.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+		btnSkip.setOnClickListener(v -> {
+			DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
+			tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
+				@Override
+				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+					DataSnapshot skip = dataSnapshot.child("skip");
+
+					if (skip.exists()) {
+						int value = Integer.parseInt(String.valueOf(skip.getValue()));
+						skip.getRef().setValue(value + 1);
+					} else {
+						skip.getRef().setValue(1);
+					}
+				}
+
+				@Override
+				public void onCancelled(@NonNull DatabaseError databaseError) {
+					U.log("FirebaseError (skip): " + databaseError.getMessage());
+				}
+			});
+
+			startSettings();
+		});
+
+		btnNext.setOnClickListener(v -> {
+			int current = viewPager.getCurrentItem() + 1;
+			if (current < layouts.length) {
+				viewPager.setCurrentItem(current);
+			} else {
+				startSettings();
+
 				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
 				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
 					@Override
-					public void onDataChange(DataSnapshot dataSnapshot) {
-						DataSnapshot skip = dataSnapshot.child("skip");
+					public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+						DataSnapshot skip = dataSnapshot.child("start");
 
 						if (skip.exists()) {
 							int value = Integer.parseInt(String.valueOf(skip.getValue()));
@@ -108,44 +138,10 @@ public class FirstTimeActivity extends AppCompatActivity {
 					}
 
 					@Override
-					public void onCancelled(DatabaseError databaseError) {
+					public void onCancelled(@NonNull DatabaseError databaseError) {
 						U.log("FirebaseError (skip): " + databaseError.getMessage());
 					}
 				});
-
-				startSettings();
-			}
-		});
-
-		btnNext.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				int current = getItem(+1);
-				if (current < layouts.length) {
-					viewPager.setCurrentItem(current);
-				} else {
-					startSettings();
-
-					DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-					tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-						@Override
-						public void onDataChange(DataSnapshot dataSnapshot) {
-							DataSnapshot skip = dataSnapshot.child("start");
-
-							if (skip.exists()) {
-								int value = Integer.parseInt(String.valueOf(skip.getValue()));
-								skip.getRef().setValue(value + 1);
-							} else {
-								skip.getRef().setValue(1);
-							}
-						}
-
-						@Override
-						public void onCancelled(DatabaseError databaseError) {
-							U.log("FirebaseError (skip): " + databaseError.getMessage());
-						}
-					});
-				}
 			}
 		});
 	}
@@ -159,13 +155,13 @@ public class FirstTimeActivity extends AppCompatActivity {
 	}
 
 	private class MyViewPagerAdapter extends PagerAdapter {
-		private LayoutInflater layoutInflater;
 
 		MyViewPagerAdapter() { }
 
+		@NonNull
 		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		public Object instantiateItem(@NonNull ViewGroup container, int position) {
+			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 			View view = layoutInflater.inflate(layouts[position], container, false);
 			container.addView(view);
@@ -179,20 +175,20 @@ public class FirstTimeActivity extends AppCompatActivity {
 		}
 
 		@Override
-		public boolean isViewFromObject(View view, Object obj) {
+		public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
 			return view == obj;
 		}
 
 
 		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
+		public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
 			View view = (View) object;
 			container.removeView(view);
 		}
 	}
 
 	//  viewpager change listener
-	ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+	private final ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
 		@Override
 		public void onPageSelected(final int position) {
@@ -209,7 +205,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 			DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
 			tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
+				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 					DataSnapshot skip = dataSnapshot.child("tutorial_" + position);
 
 					if (skip.exists()) {
@@ -221,7 +217,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 				}
 
 				@Override
-				public void onCancelled(DatabaseError databaseError) {
+				public void onCancelled(@NonNull DatabaseError databaseError) {
 					U.log("FirebaseError (skip): " + databaseError.getMessage());
 				}
 			});
@@ -248,10 +244,6 @@ public class FirstTimeActivity extends AppCompatActivity {
 
 		if (dots.length > 0)
 			dots[currentPage].setTextColor(getResources().getColor(R.color.dot_active));
-	}
-
-	private int getItem(int i) {
-		return viewPager.getCurrentItem() + i;
 	}
 
 	private void changeStatusBarColor() {
