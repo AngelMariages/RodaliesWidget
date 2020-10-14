@@ -80,18 +80,15 @@ class StationsAdapter extends BaseAdapter {
 		TextView textView = (TextView) view.findViewById(R.id.station_list_text);
 		textView.setText(stationList.get(position));
 
-		view.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Intent updateStationsIntent = new Intent(mContext, WidgetReceiver.class);
-				updateStationsIntent.setAction(Constants.ACTION_SEND_NEW_STATIONS);
-				updateStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
-				// TODO: 14-Jan-17 Could do this better
-				updateStationsIntent.putExtra(Constants.EXTRA_CONFIG_STATION, StationUtils.getIDFromName(stationList.get(position), U.getCore(mContext, widgetID)));
-				updateStationsIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, originOrDestination);
-				mContext.sendBroadcast(updateStationsIntent);
-				((Activity) mContext).finish();
-			}
+		view.setOnClickListener(view1 -> {
+			Intent updateStationsIntent = new Intent(mContext, WidgetReceiver.class);
+			updateStationsIntent.setAction(Constants.ACTION_SEND_NEW_STATIONS);
+			updateStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+			// TODO: 14-Jan-17 Could do this better
+			updateStationsIntent.putExtra(Constants.EXTRA_CONFIG_STATION, StationUtils.getIDFromName(stationList.get(position), U.getCore(mContext, widgetID)));
+			updateStationsIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, originOrDestination);
+			mContext.sendBroadcast(updateStationsIntent);
+			((Activity) mContext).finish();
 		});
 
 		return view;
@@ -99,7 +96,7 @@ class StationsAdapter extends BaseAdapter {
 
 	void filterStations(String input) {
 		stationList.clear();
-		if (!input.isEmpty() && input.length() != 0) {
+		if (!input.isEmpty()) {
 			input = input.toLowerCase();
 			input = Normalizer.normalize(input, Normalizer.Form.NFD)
 					.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");

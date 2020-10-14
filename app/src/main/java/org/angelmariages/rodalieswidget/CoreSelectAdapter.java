@@ -35,15 +35,12 @@ import java.util.ArrayList;
 
 class CoreSelectAdapter extends BaseAdapter {
 	private final Context mContext;
-	private final int widgetID;
-	private int originOrDestination;
 	private final ArrayList<String> coreList;
 	private OnCoreSelectListener onCoreSelectListener;
 
-	CoreSelectAdapter(Context context, ArrayList<String> coreList, int widgetID) {
+	CoreSelectAdapter(Context context, ArrayList<String> coreList) {
 		this.mContext = context;
 		this.coreList = coreList;
-		this.widgetID = widgetID;
 	}
 
 	@Override
@@ -70,12 +67,9 @@ class CoreSelectAdapter extends BaseAdapter {
 		TextView textView = (TextView) view.findViewById(R.id.station_list_text);
 		textView.setText(coreList.get(position));
 
-		view.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (onCoreSelectListener != null) {
-					onCoreSelectListener.onCoreSelect(coreList.get(position));
-				}
+		view.setOnClickListener(view1 -> {
+			if (onCoreSelectListener != null) {
+				onCoreSelectListener.onCoreSelect(coreList.get(position));
 			}
 		});
 

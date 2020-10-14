@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2020 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,10 +35,9 @@ import androidx.annotation.NonNull;
 import androidx.core.os.ConfigurationCompat;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +50,7 @@ import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 public final class U {
 
@@ -59,13 +59,14 @@ public final class U {
 	public static void log(String message) {
 		if (Constants.LOGGING) {
 			Log.d("RodaliesLog", message);
+			FirebaseCrashlytics.getInstance().log(message);
 		}
 	}
 
 	public static int getFirstWidgetId(Context context) {
 		try {
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-			int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
+			int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
 			if (ids.length != 0) {
 				return ids[0];
 			}
@@ -93,18 +94,18 @@ public final class U {
 	}
 
 	public static void saveCore(Context context, int widgetID, int coreID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 		sharedPreferences.edit().putInt(Constants.PREFERENCE_STRING_CORE_ID, coreID).apply();
 	}
 
 	public static int getCore(Context context, int widgetID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 		int core = sharedPreferences.getInt(Constants.PREFERENCE_STRING_CORE_ID, -1);
 
 		// TODO: 27/06/2017 Remove for next versions
 		String[] stations = U.getStations(context, widgetID);
 		if (core == -1 && stations.length == 2) {
-			if (StationUtils.nuclis.get(50).containsKey(stations[0]) && StationUtils.nuclis.get(50).containsKey(stations[1])) {
+			if (Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[0]) && Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[1])) {
 				saveCore(context, widgetID, 50);
 				return 50;
 			}
@@ -114,7 +115,7 @@ public final class U {
 	}
 
 	public static void saveStations(Context context, int widgetID, String origin, String destination) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 
 		removeOldPreferences(sharedPreferences);
 
@@ -125,7 +126,7 @@ public final class U {
 	}
 
 	public static String[] getStations(Context context, int widgetID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + String.valueOf(widgetID), Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 
 		updateOldPreferences(sharedPreferences);
 
@@ -193,7 +194,7 @@ public final class U {
 
 			journeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
+				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 					if (dataSnapshot.exists()) {
 						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
 						dataSnapshot.getRef().setValue(value + 1);
@@ -203,14 +204,14 @@ public final class U {
 				}
 
 				@Override
-				public void onCancelled(DatabaseError databaseError) {
+				public void onCancelled(@NonNull DatabaseError databaseError) {
 					U.log("FirebaseError (journeyRef): " + databaseError.getMessage());
 				}
 			});
 
 			departuresRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
+				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 					if (dataSnapshot.exists()) {
 						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
 						dataSnapshot.getRef().setValue(value + 1);
@@ -220,14 +221,14 @@ public final class U {
 				}
 
 				@Override
-				public void onCancelled(DatabaseError databaseError) {
+				public void onCancelled(@NonNull DatabaseError databaseError) {
 					U.log("FirebaseError (departuresRef): " + databaseError.getMessage());
 				}
 			});
 
 			arrivalsRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
+				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 					if (dataSnapshot.exists()) {
 						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
 						dataSnapshot.getRef().setValue(value + 1);
@@ -237,7 +238,7 @@ public final class U {
 				}
 
 				@Override
-				public void onCancelled(DatabaseError databaseError) {
+				public void onCancelled(@NonNull DatabaseError databaseError) {
 					U.log("FirebaseError (arrivalsRef): " + databaseError.getMessage());
 				}
 			});
@@ -271,54 +272,47 @@ public final class U {
 	public static void setUserProperty(Context context, final String key, final Object data) {
 		FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
 		FirebaseApp instance = FirebaseApp.getInstance();
-		if (instance != null) {
-			final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance(instance);
-			String uid = firebaseInstanceId.getId();
-			Locale locale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
-			final String language = locale.getLanguage();
+		final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance(instance);
+		String uid = firebaseInstanceId.getId();
+		Locale locale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
+		final String language = locale.getLanguage();
 
-			if (uid != null) {
-				mFirebaseDatabase = U.getFirebaseDatabase();
-				final DatabaseReference userProperties = mFirebaseDatabase.getReference("userProperties/" + uid);
-				userProperties.addListenerForSingleValueEvent(new ValueEventListener() {
+		mFirebaseDatabase = U.getFirebaseDatabase();
+		final DatabaseReference userProperties = mFirebaseDatabase.getReference("userProperties/" + uid);
+		userProperties.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				userProperties.child("device_model").addListenerForSingleValueEvent(new ValueEventListener() {
 					@Override
-					public void onDataChange(DataSnapshot dataSnapshot) {
-						userProperties.child("device_model").addListenerForSingleValueEvent(new ValueEventListener() {
-							@Override
-							public void onDataChange(DataSnapshot dataSnapshot) {
-								if (!dataSnapshot.exists()) {
-									userProperties.child("device_model").setValue(Build.MODEL);
-								}
-							}
-
-							@Override
-							public void onCancelled(DatabaseError databaseError) {
-
-							}
-						});
-
-						userProperties.child("firebase_token").setValue(FirebaseInstanceId.getInstance().getToken());
-						userProperties.child("language").setValue(language);
-
-						if (dataSnapshot.exists()) {
-							userProperties.child(key).setValue(data);
-						} else {
-							userProperties.setValue(key).addOnCompleteListener(new OnCompleteListener<Void>() {
-								@Override
-								public void onComplete(@NonNull Task<Void> task) {
-									userProperties.child(key).setValue(data);
-								}
-							});
+					public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+						if (!dataSnapshot.exists()) {
+							userProperties.child("device_model").setValue(Build.MODEL);
 						}
 					}
 
 					@Override
-					public void onCancelled(DatabaseError databaseError) {
+					public void onCancelled(@NonNull DatabaseError databaseError) {
 
 					}
 				});
+
+				FirebaseInstanceId.getInstance().getInstanceId()
+						.addOnCompleteListener(task -> userProperties.child("firebase_token").setValue(task.getResult()));
+
+				userProperties.child("language").setValue(language);
+
+				if (dataSnapshot.exists()) {
+					userProperties.child(key).setValue(data);
+				} else {
+					userProperties.setValue(key).addOnCompleteListener(task -> userProperties.child(key).setValue(data));
+				}
 			}
-		}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {
