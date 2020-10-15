@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2020 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
 package org.angelmariages.rodalieswidget;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -79,6 +81,7 @@ class RodaliesWidget extends RemoteViews {
 		this.state = state;
 
 		if (state == Constants.WIDGET_STATE_UPDATING_TABLES) {
+			startForegroundService(context);
 			new GetSchedule().execute(context, widgetID, deltaDays);
 		} else if (state == Constants.WIDGET_STATE_SCHEDULE_LOADED) {
 			Intent adapterIntent = new Intent(context, WidgetService.class);
@@ -152,7 +155,20 @@ class RodaliesWidget extends RemoteViews {
 		}
 
 		setStationNames();
-		if (state != Constants.WIDGET_STATE_UPDATING_TABLES) setPendingIntents();
+		if (state != Constants.WIDGET_STATE_UPDATING_TABLES) {
+			setPendingIntents();
+			stopForegroundService(context);
+		}
+	}
+
+	private void startForegroundService(Context context) {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+			context.startForegroundService(new Intent(context, ScheduleUpdateNotificationService.class));
+		}
+	}
+
+	private void stopForegroundService(Context context) {
+		context.stopService(new Intent(context, ScheduleUpdateNotificationService.class));
 	}
 
 	private void setStationNames() {
