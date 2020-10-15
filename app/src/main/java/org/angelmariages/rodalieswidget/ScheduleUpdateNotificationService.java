@@ -38,6 +38,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class ScheduleUpdateNotificationService extends Service {
+    private static final String UPDATE_SCHEDULE_CHANNEL_ID = "update_schedule_id";
+
     @Override
     public void onCreate() {
         showForegroundNotification();
@@ -62,14 +64,14 @@ public class ScheduleUpdateNotificationService extends Service {
         //Google Issue tracker https://issuetracker.google.com/issues/76112072 as of 9/26/2018. StartForeground notification must be in both onCreate and onStartCommand to minimize
         //crashes in event service was already started and not yet stopped, in which case onCreate is not called again
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("update_schedule_id", "Schedule update notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(UPDATE_SCHEDULE_CHANNEL_ID, "Schedule update notifications", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setSound(null, null);
             channel.enableVibration(false);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            Notification notification = new NotificationCompat.Builder(this, "444")
+            Notification notification = new NotificationCompat.Builder(this, UPDATE_SCHEDULE_CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_notification_white)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentTitle(getText(R.string.app_name))
