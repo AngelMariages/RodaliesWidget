@@ -17,17 +17,24 @@
 #}
 
 -keepattributes Signature
--keepattributes *Annotation*
--keepattributes SourceFile,LineNumberTable
 
--keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
 -keep class net.grandcentrix.tray.** { *; }
 -keep public class * extends android.content.ContentProvider
--keepnames class com.fasterxml.jackson.** { *; }
--keepnames class javax.servlet.** { *; }
--keepnames class org.ietf.jgss.** { *; }
+
 -dontwarn org.w3c.dom.**
 -dontwarn org.joda.time.**
 -dontwarn org.shaded.apache.**
 -dontwarn org.ietf.jgss.**
+
+-keepclassmembers class org.angelmariages.rodalieswidget.** { *; }
+
+# Firebase
+-keep class com.google.firebase.** { *; }
+
+# Firebase crashlytics
+-keepattributes SourceFile,LineNumberTable
+
+-keepnames class com.fasterxml.jackson.** { *; }
+-keepnames class javax.servlet.** { *; }
+-keepnames class org.ietf.jgss.** { *; }
