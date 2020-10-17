@@ -31,7 +31,7 @@ android {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 37
+        versionCode 38
         versionName "1.8"
         vectorDrawables.useSupportLibrary = true
 
@@ -41,6 +41,7 @@ android {
         release {
             debuggable false
             minifyEnabled true
+            shrinkResources true
         }
 
         debug {

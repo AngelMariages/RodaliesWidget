@@ -116,17 +116,6 @@ public class Basic {
     }
 
     @Test
-    public void widget_shouldShowSelectLocality_whenOriginOrDestination() {
-        UiObject2 update = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
-
-        update.click();
-
-        Boolean coreListViewFound = mDevice.wait(Until.hasObject(By.res(APP_PACKAGE_NAME, "coreListView")), LAUNCH_TIMEOUT);
-
-        assertTrue(coreListViewFound);
-    }
-
-    @Test
     public void widget_shouldShowSelectedStationsForLocality_whenLocalitySelected() {
         UiObject2 update = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
 
