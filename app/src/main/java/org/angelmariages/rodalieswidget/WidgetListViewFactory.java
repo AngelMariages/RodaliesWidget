@@ -53,7 +53,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final FirebaseRemoteConfig firebaseRemoteConfig;
 	private String alarm_departure_time;
 	private int transfers = 0;
-	private Context context;
+	private final Context context;
 
 	private ArrayList<TrainTime> schedule;
 	private ArrayList<RemoteViews> remoteViews;
@@ -210,13 +210,14 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 			long diff = scheduleDate.getTime().getTime() - TimeUtils.getCalendarForDelta(0).getTime().getTime();
 			diff /= 1000 * 60 * 60 * 24;
+			int intDiff = (int) diff;
 
 			Intent dayBackIntent = new Intent(context, WidgetManager.class);
-			dayBackIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) - 1);
+			dayBackIntent.putExtra(Constants.EXTRA_SWITCH_TO, intDiff - 1);
 			remoteViews.setOnClickFillInIntent(R.id.dayBack, dayBackIntent);
 
 			Intent dayForwardIntent = new Intent(context, WidgetManager.class);
-			dayForwardIntent.putExtra(Constants.EXTRA_SWITCH_TO, ((int) diff) + 1);
+			dayForwardIntent.putExtra(Constants.EXTRA_SWITCH_TO, intDiff + 1);
 			remoteViews.setOnClickFillInIntent(R.id.dayForward, dayForwardIntent);
 
 			return remoteViews;
