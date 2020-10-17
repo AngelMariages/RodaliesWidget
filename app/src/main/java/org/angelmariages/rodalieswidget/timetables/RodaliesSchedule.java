@@ -139,7 +139,8 @@ class RodaliesSchedule implements ScheduleProvider {
 
 	private ArrayList<TrainTime> parseXMLFile(String xmlData, Calendar currentCalendar) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
 		if (xmlData == null) return null;
-		InputSource source = new InputSource(new StringReader(xmlData));
+		StringReader stringReader = new StringReader(xmlData);
+		InputSource source = new InputSource(stringReader);
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -193,7 +194,7 @@ class RodaliesSchedule implements ScheduleProvider {
 
 						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false, currentCalendar));
 
-						if (recorreguts >= 1) {
+						if (recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
 								Element recorregutElement2 = (Element) parentElement.getElementsByTagName("recorregut").item(j);
 
@@ -267,6 +268,8 @@ class RodaliesSchedule implements ScheduleProvider {
 				}
 			}
 		}
+
+		stringReader.close();
 
 		return times;
 	}
