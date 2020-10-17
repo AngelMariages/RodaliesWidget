@@ -297,7 +297,7 @@ public final class U {
 				});
 
 				FirebaseInstanceId.getInstance().getInstanceId()
-						.addOnCompleteListener(task -> userProperties.child("firebase_token").setValue(task.getResult()));
+						.addOnCompleteListener(task -> userProperties.child("firebase_token").setValue(task.getResult().getToken()));
 
 				userProperties.child("language").setValue(language);
 
