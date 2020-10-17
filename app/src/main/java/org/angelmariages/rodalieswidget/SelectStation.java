@@ -71,7 +71,7 @@ public class SelectStation extends AppCompatActivity {
 		//This should not had been created
 		if (originOrDestination == -1) finish();
 
-		coreListView = (ListView) findViewById(R.id.coreListView);
+		coreListView = findViewById(R.id.coreListView);
 
 		setCoreListView();
 	}
@@ -113,9 +113,9 @@ public class SelectStation extends AppCompatActivity {
 	}
 
 	private void setStationListView(int idFromNucli) {
-		EditText searchEditView = (EditText) findViewById(R.id.searchEditText);
-		ListView stationListView = (ListView) findViewById(R.id.stationListView);
-		ImageButton changeCoreButton = (ImageButton) findViewById(R.id.changeZoneButton);
+		EditText searchEditView = findViewById(R.id.searchEditText);
+		ListView stationListView = findViewById(R.id.stationListView);
+		ImageButton changeCoreButton = findViewById(R.id.changeZoneButton);
 
 		changeCoreButton.setOnClickListener(view -> coreListView.setVisibility(View.VISIBLE));
 

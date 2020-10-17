@@ -77,10 +77,10 @@ public class FirstTimeActivity extends AppCompatActivity {
 
 		changeStatusBarColor();
 
-		viewPager = (ViewPager) findViewById(R.id.view_pager);
-		dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-		btnSkip = (Button) findViewById(R.id.skipButton);
-		btnNext = (Button) findViewById(R.id.nextButton);
+		viewPager = findViewById(R.id.view_pager);
+		dotsLayout = findViewById(R.id.layoutDots);
+		btnSkip = findViewById(R.id.skipButton);
+		btnNext = findViewById(R.id.nextButton);
 
 		layouts = new int[]{
 				R.layout.tutorial_slide_1,
