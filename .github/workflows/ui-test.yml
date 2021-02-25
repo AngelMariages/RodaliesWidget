@@ -19,6 +19,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Setup google-services.json
+        env:
+           GOOGLE_SERVICES_FILE: ${{ secrets.GOOGLE_SERVICES_FILE }}
+        run: echo $GOOGLE_SERVICES_FILE > app/google-services.json
 
       - name: Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
