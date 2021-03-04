@@ -71,13 +71,13 @@ public class Basic {
 
         int halfHeight = screenSize.y / 2;
 
-        UiObject2 widget = findWidget();
+        UiObject2 widget = findWidget(screenSize.y);
 
         while (widget == null) {
             mDevice.swipe(screenCenter.x, halfHeight, screenCenter.x, 0, 10);
             mDevice.waitForIdle();
 
-            widget = findWidget();
+            widget = findWidget(screenSize.y);
         }
 
         Rect visibleBounds = widget.getVisibleBounds();
@@ -137,7 +137,18 @@ public class Basic {
         assertNotNull(alcover);
     }
 
-    private UiObject2 findWidget() {
-        return mDevice.findObject(By.text("Rodalies Widget"));
+    private UiObject2 findWidget(int screenHeight) {
+        UiObject2 widget = mDevice.findObject(By.text("Rodalies Widget"));
+
+        if (widget != null) {
+            Rect visibleBounds = widget.getVisibleBounds();
+            int quarterOfScreenHeight = screenHeight / 4;
+
+            if ((screenHeight - visibleBounds.bottom) > quarterOfScreenHeight) {
+                return widget;
+            }
+        }
+
+        return null;
     }
 }
