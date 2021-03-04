@@ -37,7 +37,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: default
+          target: google_apis
           arch: ${{ matrix.arch }}
           profile: Nexus 6
           script: ./gradlew connectedAndroidTest --stacktrace
