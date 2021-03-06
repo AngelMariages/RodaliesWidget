@@ -40,4 +40,4 @@ jobs:
           target: google_apis
           arch: ${{ matrix.arch }}
           profile: Nexus 6
-          script: ./gradlew connectedAndroidTest --stacktrace
+          script: ./.github/workflows/run_ui_tests_script.sh
