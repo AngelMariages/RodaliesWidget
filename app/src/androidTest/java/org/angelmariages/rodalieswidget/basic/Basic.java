@@ -84,7 +84,7 @@ public class Basic {
         Point dragWidgetPoint = new Point(visibleBounds.left + 150, visibleBounds.bottom + 150);
         Point destination = new Point(dragWidgetPoint.x + 250, dragWidgetPoint.y - 250);
 
-        mDevice.swipe(new Point[]{dragWidgetPoint, dragWidgetPoint, destination}, 50);
+        mDevice.swipe(new Point[]{dragWidgetPoint, dragWidgetPoint, destination}, 30);
         mDevice.waitForIdle();
 
         mDevice.wait(Until.hasObject(By.text("The origin or the destination are not set")), LAUNCH_TIMEOUT);
@@ -106,7 +106,7 @@ public class Basic {
 
         Point screenSize = new Point(mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
 
-        mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 100, 50);
+        mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 100, 15);
     }
 
     @Test
