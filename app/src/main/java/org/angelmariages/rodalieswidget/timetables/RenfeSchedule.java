@@ -20,7 +20,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
+ *//*
+
 
 package org.angelmariages.rodalieswidget.timetables;
 
@@ -176,7 +177,8 @@ class RenfeSchedule implements ScheduleProvider {
 								break;
 						}
 					}
-					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
+					// times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
+					times.add(new TrainTime(line, departure_time, arrival_time, origin, destination, currentCalendar));
 				}
 				break;
 				case 1: {
@@ -425,4 +427,4 @@ class RenfeSchedule implements ScheduleProvider {
 		return String.format(Locale.getDefault(), "%d%02d%02d",
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
 	}
-}
+}*/

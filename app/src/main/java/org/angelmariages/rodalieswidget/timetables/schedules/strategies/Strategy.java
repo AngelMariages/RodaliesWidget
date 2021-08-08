@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Àngel Mariages
+ * Copyright (c) 2021 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,38 +20,16 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
-buildscript {
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
-        classpath 'com.google.gms:google-services:4.3.8'
+import java.util.List;
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
-    }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        jcenter()
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+public interface Strategy {
+    List<TrainTime> getSchedule(String origin, String destination, int division);
+    List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays);
 }

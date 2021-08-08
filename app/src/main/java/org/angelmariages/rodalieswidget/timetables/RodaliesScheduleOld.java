@@ -57,13 +57,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-class RodaliesSchedule implements ScheduleProvider {
+class RodaliesScheduleOld implements ScheduleProviderOld {
 	private final String origin;
 	private final String destination;
 	private String station_transfer_one;
 	private String station_transfer_two;
 
-	RodaliesSchedule(String origin, String destination) {
+	RodaliesScheduleOld(String origin, String destination) {
 		this.origin = origin;
 		this.destination = destination;
 	}
@@ -166,7 +166,8 @@ class RodaliesSchedule implements ScheduleProvider {
 					arrival_time = element.getElementsByTagName("hora_arribada").item(0).getTextContent();
 					journey_time = element.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
 
-					times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
+					// times.add(new TrainTime(line, departure_time, arrival_time, journey_time, origin, destination, currentCalendar));
+					times.add(new TrainTime(line, departure_time, arrival_time, origin, destination, currentCalendar));
 				}
 			}
 		} else if (transfers == 1) {
@@ -192,7 +193,8 @@ class RodaliesSchedule implements ScheduleProvider {
 						departure_time_transfer_one = insideItem.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time = insideItem.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false, currentCalendar));
+						// times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, false, currentCalendar));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, origin, destination, false, currentCalendar));
 
 						if (recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
@@ -205,14 +207,16 @@ class RodaliesSchedule implements ScheduleProvider {
 								line_transfer_one = insideItem2.getAttribute("linea");
 								departure_time_transfer_one = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 
-								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, true, currentCalendar));
+								// times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, journey_time, origin, destination, false, true, currentCalendar));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, origin, destination, false, currentCalendar));
 							}
 						}
 					} else {//Direct train
 						line = parentElement.getElementsByTagName("linia").item(0).getTextContent();
 						arrival_time = parentElement.getElementsByTagName("hora_arribada").item(0).getTextContent();
 						journey_time = parentElement.getElementsByTagName("duracio_trajecte").item(0).getTextContent();
-						times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, journey_time, origin, destination, true, false, currentCalendar));
+						// times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, journey_time, origin, destination, true, false, currentCalendar));
+						times.add(new TrainTime(line, departure_time, arrival_time, null, station_transfer_one, null, null, origin, destination, true, currentCalendar));
 					}
 				}
 			}
@@ -245,7 +249,8 @@ class RodaliesSchedule implements ScheduleProvider {
 						departure_time_transfer_two = insideItem2.getElementsByTagName("hora_sortida").item(0).getTextContent();
 						arrival_time_transfer_one = insideItem2.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false, currentCalendar));
+						// times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, false, currentCalendar));
+						times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, currentCalendar));
 
 						if (recorreguts > 1) {
 							for (int j = 1; j < recorreguts; j++) {
@@ -261,7 +266,8 @@ class RodaliesSchedule implements ScheduleProvider {
 								departure_time_transfer_two = insideItem4.getElementsByTagName("hora_sortida").item(0).getTextContent();
 								arrival_time_transfer_one = insideItem4.getElementsByTagName("hora_arribada").item(0).getTextContent();
 
-								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, true, currentCalendar));
+								// times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, true, currentCalendar));
+								times.add(new TrainTime(line, departure_time, arrival_time, line_transfer_one, station_transfer_one, departure_time_transfer_one, arrival_time_transfer_one, line_transfer_two, station_transfer_two, departure_time_transfer_two, arrival_time_transfer_two, origin, destination, currentCalendar));
 							}
 						}
 					}

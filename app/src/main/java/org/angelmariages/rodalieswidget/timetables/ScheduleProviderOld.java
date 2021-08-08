@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Àngel Mariages
+ * Copyright (c) 2018 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,11 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import java.util.ArrayList;
 
-buildscript {
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
-        classpath 'com.google.gms:google-services:4.3.8'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
-    }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        jcenter()
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+public interface ScheduleProviderOld {
+    ArrayList<TrainTime> getSchedule();
+    ArrayList<TrainTime> getSchedule(int deltaDays);
 }

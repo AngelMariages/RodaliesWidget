@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Àngel Mariages
+ * Copyright (c) 2021 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,38 +20,38 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import androidx.annotation.NonNull;
 
-buildscript {
-    repositories {
-        jcenter()
-        google()
+import org.jetbrains.annotations.NotNull;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
+
+import java.util.List;
+
+@Root (name="horaris", strict = false)
+public class RodaliesSchedule {
+
+    @ElementList (name="resultats")
+    private List<RodaliesXMLTime> schedule;
+
+    @ElementList (name="transbordament")
+    private List<RodaliesXMLTransfer> transfersList;
+
+    public List<RodaliesXMLTime> getSchedule() {
+        return schedule;
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
-        classpath 'com.google.gms:google-services:4.3.8'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
+    @NotNull
+    @Override
+    public String toString() {
+        return "RodaliesSchedule{" +
+                "schedule=" + schedule +
+                ", transfersList=" + transfersList +
+                '}';
     }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        jcenter()
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

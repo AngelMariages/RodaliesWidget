@@ -25,7 +25,6 @@
 
 package org.angelmariages.rodalieswidget;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -99,17 +98,17 @@ class RodaliesWidget extends RemoteViews {
 					case 1: {
 						String transferStation = null;
 						try {
-							transferStation = StationUtils.getNameFromID(trainTime.getStation_transfer_one(), core);
+							transferStation = StationUtils.getNameFromID(trainTime.getStationTransferOne(), core);
 						} catch (NumberFormatException ignored) {
 						}
 						if (transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
-							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_one());
+							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLineTransferOne());
 							try {
-								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one() + core).getBColor()));
-								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one() + core).getTColor());
+								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLineTransferOne() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(trainTime.getLineTransferOne() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one() + core);
+								U.log("Unknown color for setTexts: " + trainTime.getLineTransferOne() + core);
 							}
 						} else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
 					}
@@ -117,28 +116,28 @@ class RodaliesWidget extends RemoteViews {
 					case 2: {
 						String transferStation = null, transferStationTwo = null;
 						try {
-							transferStation = StationUtils.getNameFromID(trainTime.getStation_transfer_one(), core);
-							transferStationTwo = StationUtils.getNameFromID(trainTime.getStation_transfer_two(), core);
+							transferStation = StationUtils.getNameFromID(trainTime.getStationTransferOne(), core);
+							transferStationTwo = StationUtils.getNameFromID(trainTime.getStationTransferOne(), core);
 						} catch (NumberFormatException ignored) {
 						}
 						if (transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
-							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLine_transfer_one());
+							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLineTransferOne());
 							try {
-								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one() + core).getBColor()));
-								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_one() + core).getTColor());
+								this.setInt(R.id.lineTransferOneText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLineTransferOne() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferOneText, StationUtils.ColorLines.valueOf(trainTime.getLineTransferOne() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_one() + core);
+								U.log("Unknown color for setTexts: " + trainTime.getLineTransferOne() + core);
 							}
 						} else this.setViewVisibility(R.id.transferOneTitleText, View.GONE);
 						if (transferStationTwo != null) {
 							this.setTextViewText(R.id.transferTwoTitleText, transferStationTwo);
-							this.setTextViewText(R.id.lineTransferTwoText, trainTime.getLine_transfer_two());
+							this.setTextViewText(R.id.lineTransferTwoText, trainTime.getLineTransferTwo());
 							try {
-								this.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two() + core).getBColor()));
-								this.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(trainTime.getLine_transfer_two() + core).getTColor());
+								this.setInt(R.id.lineTransferTwoText, "setBackgroundColor", Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.getLineTransferTwo() + core).getBColor()));
+								this.setTextColor(R.id.lineTransferTwoText, StationUtils.ColorLines.valueOf(trainTime.getLineTransferTwo() + core).getTColor());
 							} catch (Exception e) {
-								U.log("Unknown color for setTexts: " + trainTime.getLine_transfer_two() + core);
+								U.log("Unknown color for setTexts: " + trainTime.getLineTransferTwo() + core);
 							}
 						} else this.setViewVisibility(R.id.transferTwoTitleText, View.GONE);
 					}

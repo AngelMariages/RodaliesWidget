@@ -106,7 +106,7 @@ public class Basic {
 
         Point screenSize = new Point(mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
 
-        mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 100, 15);
+        mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 120, 15);
     }
 
     @Test
