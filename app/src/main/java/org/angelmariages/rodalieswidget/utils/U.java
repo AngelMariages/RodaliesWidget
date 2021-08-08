@@ -59,7 +59,7 @@ public final class U {
 	public static void log(String message) {
 		if (Constants.LOGGING) {
 			Log.d("RodaliesLog", message);
-			FirebaseCrashlytics.getInstance().log(message);
+			// FirebaseCrashlytics.getInstance().log(message);
 		}
 	}
 

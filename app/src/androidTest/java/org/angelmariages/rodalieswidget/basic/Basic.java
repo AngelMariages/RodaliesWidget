@@ -27,6 +27,7 @@ package org.angelmariages.rodalieswidget.basic;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
@@ -42,7 +43,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -117,9 +117,9 @@ public class Basic {
 
     @Test
     public void widget_shouldShowSelectedStationsForLocality_whenLocalitySelected() {
-        UiObject2 update = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
+        UiObject2 originTextView = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
 
-        update.click();
+        originTextView.click();
 
         mDevice.wait(Until.hasObject(By.res(APP_PACKAGE_NAME, "coreListView")), LAUNCH_TIMEOUT);
 
@@ -137,6 +137,47 @@ public class Basic {
         assertNotNull(alcover);
     }
 
+    @Test
+    public void widget_shouldDisplayLoading_whenBothStationsSelected() {
+        UiObject2 originTextView = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
+
+        originTextView.click();
+
+        mDevice.wait(Until.hasObject(By.res(APP_PACKAGE_NAME, "coreListView")), LAUNCH_TIMEOUT);
+
+        UiObject2 barcelona = mDevice.findObject(By.text("Barcelona"));
+
+        barcelona.click();
+        mDevice.waitForIdle();
+
+        UiObject2 arenysDeMar = mDevice.findObject(By.text("Arenys de Mar"));
+
+        arenysDeMar.click();
+
+        mDevice.waitForIdle();
+
+        UiObject2 destinationTextView = mDevice.findObject(By.res(APP_PACKAGE_NAME, "destinationTextView"));
+
+        destinationTextView.click();
+
+        mDevice.waitForIdle();
+
+        if (isKeyboardOpened()) {
+            mDevice.pressBack();
+        }
+
+        UiObject2 badalona = mDevice.findObject(By.text("Badalona"));
+
+        badalona.click();
+
+        mDevice.waitForIdle();
+        mDevice.wait(Until.findObject(By.res(APP_PACKAGE_NAME, "switchDayLineView")), LAUNCH_TIMEOUT);
+
+        UiObject2 swithcDayLine = mDevice.findObject(By.res(APP_PACKAGE_NAME, "switchDayLineView"));
+
+        assertNotNull(swithcDayLine);
+    }
+
     private UiObject2 findWidget(int screenHeight) {
         UiObject2 widget = mDevice.findObject(By.text("Rodalies Widget"));
 
@@ -150,5 +191,14 @@ public class Basic {
         }
 
         return null;
+    }
+
+    private boolean isKeyboardOpened(){
+        for(AccessibilityWindowInfo window: InstrumentationRegistry.getInstrumentation().getUiAutomation().getWindows()){
+            if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
+                return true;
+            }
+        }
+        return false;
     }
 }

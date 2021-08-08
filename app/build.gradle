@@ -68,7 +68,7 @@ dependencies {
     implementation 'com.github.kizitonwose.colorpreference:core:1.0.6'
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation 'net.grandcentrix.tray:tray:0.12.0'
+    implementation 'com.frybits.harmony:harmony:1.1.8'
 
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
@@ -104,7 +104,6 @@ dependencies {
 
     // UiAutomator Testing
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'org.hamcrest:hamcrest-integration:1.4-atlassian-1'
 }
 
 apply plugin: 'com.google.gms.google-services'

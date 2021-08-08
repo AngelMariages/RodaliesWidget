@@ -44,13 +44,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
 
-        <provider
-            android:name="net.grandcentrix.tray.provider.TrayContentProvider"
-            android:authorities="org.angelmariages.rodalieswidget"
-            android:exported="true"
-            tools:replace="android:exported,android:authorities"
-            tools:ignore="ExportedContentProvider" />
-
         <receiver android:name=".WidgetManager">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

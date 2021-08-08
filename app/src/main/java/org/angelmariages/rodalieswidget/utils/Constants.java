@@ -57,7 +57,7 @@ public class Constants {
 	public static final int WIDGET_STATE_NO_TIMES = 3;
 	public static final int WIDGET_STATE_UPDATING_TABLES = 4;
 	static final String PREFERENCE_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_FILE_KEY_ID_";
-	static final String PREFERENCE_GLOBAL_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_GLOBAL_KEY";
+	public static final String PREFERENCE_GLOBAL_KEY = "org.angelmariages.RodaliesWidget.PREFERENCE_GLOBAL_KEY";
 	static final String PREFERENCE_STRING_ORIGIN = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ORIGIN";
 	static final String PREFERENCE_STRING_DESTINATION = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_DESTINATION";
 	static final String PREFERENCE_STRING_ALARM_FOR_ID = "org.angelmariages.RodaliesWidget.PREFERENCE_STRING_ALARM_FOR_ID_";
