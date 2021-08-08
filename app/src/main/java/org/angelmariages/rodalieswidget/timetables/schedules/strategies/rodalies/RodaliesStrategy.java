@@ -52,19 +52,15 @@ public class RodaliesStrategy implements Strategy {
     }
 
     @Override
-    public List<TrainTime> getSchedule(String origin, String destination, int division) {
-        return getSchedule(origin, destination, division, 0);
-    }
-
-    @Override
     public List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) {
+        Calendar calendarInstance = getCalendar(deltaDays);
 
-        Call<RodaliesSchedule> page = rodaliesAPI.getPage(origin, destination, getTodayDate(deltaDays));
+        Call<RodaliesSchedule> page = rodaliesAPI.getPage(origin, destination, formatDateToString(calendarInstance));
 
         try {
             RodaliesSchedule rodaliesSchedule = page.execute().body();
 
-            return RodaliesScheduleParser.parse(rodaliesSchedule.getSchedule(), origin, destination);
+            return RodaliesScheduleParser.parse(rodaliesSchedule.getSchedule(), origin, destination, calendarInstance);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,11 +68,18 @@ public class RodaliesStrategy implements Strategy {
         return null;
     }
 
-    // TODO: This is old, should be moved to a "Utils"?
-    private String getTodayDate(int deltaDays) {
+    private Calendar getCalendar(int deltaDays) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, deltaDays);
+        return cal;
+    }
+
+    // TODO: This is old, should be moved to a "Utils"?
+    private String formatDateToString(Calendar calendarInstance) {
         return String.format(Locale.getDefault(), "%02d/%02d/%d",
-                cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
+                calendarInstance.get(Calendar.DAY_OF_MONTH),
+                calendarInstance.get(Calendar.MONTH) + 1,
+                calendarInstance.get(Calendar.YEAR)
+        );
     }
 }

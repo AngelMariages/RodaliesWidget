@@ -30,6 +30,5 @@ import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import java.util.List;
 
 public interface Strategy {
-    List<TrainTime> getSchedule(String origin, String destination, int division);
     List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays);
 }

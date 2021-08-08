@@ -62,9 +62,4 @@ public class RnfeStrategy implements Strategy {
 
         return null;
     }
-
-    @Override
-    public List<TrainTime> getSchedule(String origin, String destination, int division) {
-        return getSchedule(origin, destination, division, 0);
-    }
 }

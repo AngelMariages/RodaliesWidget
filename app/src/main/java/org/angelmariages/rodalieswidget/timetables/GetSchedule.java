@@ -62,19 +62,13 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 	private ArrayList<TrainTime> getJSONFromDelta(Context context, int deltaDays) {
 		String jsonLines = readJSONFile(context, deltaDays);
 
-		/*ScheduleProviderOld scheduleProviderOld;
-		if (core == 50) {
-			scheduleProviderOld = new RodaliesScheduleOld(origin, destination);
-		} else {
-			scheduleProviderOld = new RenfeScheduleOld(origin, destination, core);
-		}*/
+		System.out.println("deltaDays = " + deltaDays);
 
 		if (jsonLines.isEmpty()) {
 			U.log("Getting json from internet...");
 			List<TrainTime> schedule;
 
-			//schedule = scheduleProviderOld.getSchedule(deltaDays);
-			schedule = new Schedule(origin, destination, core).get();
+			schedule = new Schedule(origin, destination, core, deltaDays).get();
 
 			ArrayList<TrainTime> hourSchedule = null;
 			if (schedule != null) {
@@ -113,7 +107,7 @@ public class GetSchedule extends AsyncTask<Object, Void, Void> {
 
 			//schedule = scheduleProviderOld.getSchedule();
 
-			schedule = new Schedule(origin, destination, core).get();
+			schedule = new Schedule(origin, destination, core, 0).get();
 
 			ArrayList<TrainTime> hourSchedule = null;
 			boolean switched = false;

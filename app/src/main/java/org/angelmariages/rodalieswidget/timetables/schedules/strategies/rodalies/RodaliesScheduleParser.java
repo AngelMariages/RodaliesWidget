@@ -26,8 +26,6 @@
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.RnfeJSONTime;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.RnfeJSONTransfer;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesXMLTime;
 
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ import java.util.List;
 public class RodaliesScheduleParser {
     private RodaliesScheduleParser() {}
 
-    public static List<TrainTime> parse(List<RodaliesXMLTime> schedule, String origin, String destination) {
+    public static List<TrainTime> parse(List<RodaliesXMLTime> schedule, String origin, String destination, Calendar calendarInstance) {
         int transfers = getTransfers(schedule);
 
         List<TrainTime> trainTimes = new ArrayList<>();
@@ -53,7 +51,7 @@ public class RodaliesScheduleParser {
                             rodaliesXMLTime.getArrivalTime(),
                             origin,
                             destination,
-                            Calendar.getInstance()
+                            calendarInstance
                     );
                 }
                 break;

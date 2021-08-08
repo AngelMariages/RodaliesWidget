@@ -25,12 +25,8 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.RnfeStrategy;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.RnfeJSONSchedule;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.RodaliesStrategy;
 
 import java.util.List;
@@ -41,11 +37,13 @@ public class Schedule {
     private final int division;
     private final RnfeStrategy rnfeStrategy;
     private final RodaliesStrategy rodaliesStrategy;
+    private final int deltaDays;
 
-    public Schedule(String origin, String destination, int division) {
+    public Schedule(String origin, String destination, int division, int deltaDays) {
         this.origin = origin;
         this.destination = destination;
         this.division = division;
+        this.deltaDays = deltaDays; // TODO: date should be calculated here instead of passing around delta days
         this.rnfeStrategy = new RnfeStrategy();
         this.rodaliesStrategy = new RodaliesStrategy();
     }
@@ -59,10 +57,10 @@ public class Schedule {
     }
 
     private List<TrainTime> getFromRnfe() {
-        return this.rnfeStrategy.getSchedule(this.origin, this.destination, this.division);
+        return this.rnfeStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 
     private List<TrainTime> getFromRodalies() {
-        return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division);
+        return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 }
