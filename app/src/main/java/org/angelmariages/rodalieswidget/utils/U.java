@@ -32,10 +32,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.core.os.ConfigurationCompat;
 import android.util.Log;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
@@ -43,13 +41,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Objects;
 
 public final class U {
@@ -59,7 +55,7 @@ public final class U {
 	public static void log(String message) {
 		if (Constants.LOGGING) {
 			Log.d("RodaliesLog", message);
-			// FirebaseCrashlytics.getInstance().log(message);
+			FirebaseCrashlytics.getInstance().log(message);
 		}
 	}
 
@@ -271,48 +267,6 @@ public final class U {
 
 	public static void setUserProperty(Context context, final String key, final Object data) {
 		FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
-		FirebaseApp instance = FirebaseApp.getInstance();
-		final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance(instance);
-		String uid = firebaseInstanceId.getId();
-		Locale locale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
-		final String language = locale.getLanguage();
-
-		mFirebaseDatabase = U.getFirebaseDatabase();
-		final DatabaseReference userProperties = mFirebaseDatabase.getReference("userProperties/" + uid);
-		userProperties.addListenerForSingleValueEvent(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				userProperties.child("device_model").addListenerForSingleValueEvent(new ValueEventListener() {
-					@Override
-					public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-						if (!dataSnapshot.exists()) {
-							userProperties.child("device_model").setValue(Build.MODEL);
-						}
-					}
-
-					@Override
-					public void onCancelled(@NonNull DatabaseError databaseError) {
-
-					}
-				});
-
-				FirebaseInstanceId.getInstance().getInstanceId()
-						.addOnCompleteListener(task -> userProperties.child("firebase_token").setValue(task.getResult().getToken()));
-
-				userProperties.child("language").setValue(language);
-
-				if (dataSnapshot.exists()) {
-					userProperties.child(key).setValue(data);
-				} else {
-					userProperties.setValue(key).addOnCompleteListener(task -> userProperties.child(key).setValue(data));
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {

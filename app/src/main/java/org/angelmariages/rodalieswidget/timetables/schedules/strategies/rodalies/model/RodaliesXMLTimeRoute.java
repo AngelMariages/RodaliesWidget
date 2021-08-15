@@ -35,7 +35,7 @@ public class RodaliesXMLTimeRoute {
     @Element(name = "linia", required = false)
     private String line;
 
-    @Element(name = "hora_sortida")
+    @Element(name = "hora_sortida", required = false)
     private String departureTime;
 
     @Element(name = "hora_arribada")

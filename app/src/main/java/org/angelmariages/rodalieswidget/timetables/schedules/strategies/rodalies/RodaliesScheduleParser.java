@@ -26,49 +26,146 @@
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesXMLTime;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesXMLTimeRoute;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesXMLTimeRouteItem;
+import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class RodaliesScheduleParser {
-    private RodaliesScheduleParser() {}
+    private RodaliesScheduleParser() {
+    }
 
-    public static List<TrainTime> parse(List<RodaliesXMLTime> schedule, String origin, String destination, Calendar calendarInstance) {
+    public static List<TrainTime> parse(RodaliesSchedule schedule, String origin, String destination, Calendar calendarInstance) {
         int transfers = getTransfers(schedule);
 
         List<TrainTime> trainTimes = new ArrayList<>();
 
-        for (RodaliesXMLTime rodaliesXMLTime : schedule) {
-            TrainTime currentTrainTime = null;
+        U.log(schedule.toString());
 
+        for (RodaliesXMLTime rodaliesXMLTime : schedule.getSchedule()) {
             switch (transfers) {
                 case 0: {
-                    currentTrainTime = new TrainTime(
-                            rodaliesXMLTime.getLine(),
-                            rodaliesXMLTime.getDepartureTime(),
-                            rodaliesXMLTime.getArrivalTime(),
-                            origin,
-                            destination,
-                            calendarInstance
+                    trainTimes.add(
+                            new TrainTime(
+                                    rodaliesXMLTime.getLine(),
+                                    rodaliesXMLTime.getDepartureTime(),
+                                    rodaliesXMLTime.getArrivalTime(),
+                                    origin,
+                                    destination,
+                                    calendarInstance
+                            )
                     );
                 }
+                case 1: {
+                    String transferStation = schedule.getTransfersList().get(0).getStationCode();
+                    int numRoutes = getNumRoutes(rodaliesXMLTime);
+
+                    if (numRoutes > 0) {
+                        RodaliesXMLTimeRoute firstRoute = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(0);
+                        RodaliesXMLTimeRouteItem firstRouteItem = firstRoute.getRodaliesXMLTimeRouteItem();
+
+                        /*
+                            Train 1:
+                                Line: rodaliesXMLTime
+                                Departure: rodaliesXMLTime
+                                Arrival: firstRouteItem
+                            Train 2:
+                                Line: firstRouteItem
+                                Code: firstRouteItem
+                                Departure: firstRouteItem
+                                Arrival: firstRoute
+                        */
+                        trainTimes.add(
+                                new TrainTime(
+                                        rodaliesXMLTime.getLine(),
+                                        rodaliesXMLTime.getDepartureTime(),
+                                        firstRouteItem.getArrivalTime(),
+                                        firstRouteItem.getLine(),
+                                        firstRouteItem.getStationCode(),
+                                        firstRouteItem.getDepartureTime(),
+                                        firstRoute.getArrivalTime(),
+                                        origin,
+                                        destination,
+                                        false,
+                                        calendarInstance
+                                )
+                        );
+
+                        // There's a second train from origin to firstTransfer at another hour
+                        /*
+                            Train 1:
+                                Line: rodaliesXMLTime
+                                Departure: rodaliesXMLTime
+                                Arrival: secondRouteItem
+                            Train 2:
+                                Line: secondRouteItem
+                                Code: secondRouteItem
+                                Departure: secondRouteItem
+                                Arrival: secondRoute
+                        */
+                        if (numRoutes == 2) {
+                            RodaliesXMLTimeRoute secondRoute = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(1);
+                            RodaliesXMLTimeRouteItem secondRouteItem = secondRoute.getRodaliesXMLTimeRouteItem();
+
+                            trainTimes.add(
+                                    new TrainTime(
+                                            rodaliesXMLTime.getLine(),
+                                            rodaliesXMLTime.getDepartureTime(),
+                                            secondRouteItem.getArrivalTime(),
+                                            secondRouteItem.getLine(),
+                                            secondRouteItem.getStationCode(),
+                                            secondRouteItem.getDepartureTime(),
+                                            secondRoute.getArrivalTime(),
+                                            origin,
+                                            destination,
+                                            false,
+                                            calendarInstance
+                                    )
+                            );
+                        }
+                    } else {
+                        // Direct train
+                        // It's like a train without transfers
+                        trainTimes.add(
+                                new TrainTime(
+                                        rodaliesXMLTime.getLine(),
+                                        rodaliesXMLTime.getDepartureTime(),
+                                        rodaliesXMLTime.getArrivalTime(),
+                                        null,
+                                        transferStation,
+                                        null,
+                                        null,
+                                        origin,
+                                        destination,
+                                        true,
+                                        calendarInstance
+                                )
+                        );
+                    }
+                }
                 break;
-            }
-
-
-            if (currentTrainTime != null) {
-                trainTimes.add(currentTrainTime);
             }
         }
 
         return trainTimes.size() > 0 ? trainTimes : null;
     }
 
-    private static int getTransfers(List<RodaliesXMLTime> schedule) {
-        if (schedule.size() > 0) {
-            return schedule.get(0).getRodaliesXMLTimeRoute() != null ? 1 : 0;
+    private static int getNumRoutes(RodaliesXMLTime rodaliesXMLTime) {
+        if (rodaliesXMLTime.getRodaliesXMLTimeRoutes() != null) {
+            return rodaliesXMLTime.getRodaliesXMLTimeRoutes().size();
+        }
+
+        return -1;
+    }
+
+    private static int getTransfers(RodaliesSchedule schedule) {
+        if (schedule != null) {
+            return schedule.getTransfersList().size();
         }
 
         return -1;

@@ -42,11 +42,15 @@ public class RodaliesXMLTransfer {
     @Text
     private String stationName;
 
+    public String getStationCode() {
+        return stationCode;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return "RodaliesXMLTransfer{" +
-                "stationCode='" + stationCode + '\'' +
+                "transferLine='" + stationCode + '\'' +
                 ", accessible='" + accessible + '\'' +
                 ", stationName='" + stationName + '\'' +
                 '}';

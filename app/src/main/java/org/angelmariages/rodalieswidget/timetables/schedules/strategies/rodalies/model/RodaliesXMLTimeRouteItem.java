@@ -37,7 +37,7 @@ public class RodaliesXMLTimeRouteItem {
     public String line;
 
     @Attribute(name="codi")
-    public String code;
+    public String stationCode;
 
     @Element(name="hora_sortida")
     public String departureTime;
@@ -45,12 +45,28 @@ public class RodaliesXMLTimeRouteItem {
     @Element(name="hora_arribada")
     public String arrivalTime;
 
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public String getStationCode() {
+        return stationCode;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return "RodaliesXMLTimeRouteItem{" +
                 "line='" + line + '\'' +
-                ", code='" + code + '\'' +
+                ", code='" + stationCode + '\'' +
                 ", departureTime='" + departureTime + '\'' +
                 ", arrivalTime='" + arrivalTime + '\'' +
                 '}';

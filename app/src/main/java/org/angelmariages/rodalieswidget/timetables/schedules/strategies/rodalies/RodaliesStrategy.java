@@ -56,11 +56,10 @@ public class RodaliesStrategy implements Strategy {
         Calendar calendarInstance = getCalendar(deltaDays);
 
         Call<RodaliesSchedule> page = rodaliesAPI.getPage(origin, destination, formatDateToString(calendarInstance));
-
         try {
             RodaliesSchedule rodaliesSchedule = page.execute().body();
 
-            return RodaliesScheduleParser.parse(rodaliesSchedule.getSchedule(), origin, destination, calendarInstance);
+            return RodaliesScheduleParser.parse(rodaliesSchedule, origin, destination, calendarInstance);
         } catch (IOException e) {
             e.printStackTrace();
         }

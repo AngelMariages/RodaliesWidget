@@ -46,6 +46,10 @@ public class RodaliesSchedule {
         return schedule;
     }
 
+    public List<RodaliesXMLTransfer> getTransfersList() {
+        return transfersList;
+    }
+
     @NotNull
     @Override
     public String toString() {
