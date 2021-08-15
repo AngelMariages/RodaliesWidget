@@ -62,12 +62,11 @@ public class RodaliesScheduleParser {
                     );
                 }
                 case 1: {
-                    String transferStation = schedule.getTransfersList().get(0).getStationCode();
                     int numRoutes = getNumRoutes(rodaliesXMLTime);
 
                     if (numRoutes > 0) {
                         RodaliesXMLTimeRoute firstRoute = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(0);
-                        RodaliesXMLTimeRouteItem firstRouteItem = firstRoute.getRodaliesXMLTimeRouteItem();
+                        RodaliesXMLTimeRouteItem firstRouteItem = firstRoute.getRodaliesXMLTimeRoutesItems().get(0);
 
                         /*
                             Train 1:
@@ -108,29 +107,32 @@ public class RodaliesScheduleParser {
                                 Departure: secondRouteItem
                                 Arrival: secondRoute
                         */
-                        if (numRoutes == 2) {
-                            RodaliesXMLTimeRoute secondRoute = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(1);
-                            RodaliesXMLTimeRouteItem secondRouteItem = secondRoute.getRodaliesXMLTimeRouteItem();
+                        if (numRoutes > 1) {
+                            for (int i = 1; i < numRoutes; i++) {
+                                RodaliesXMLTimeRoute secondRoute = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(i);
+                                RodaliesXMLTimeRouteItem secondRouteItem = secondRoute.getRodaliesXMLTimeRoutesItems().get(0);
 
-                            trainTimes.add(
-                                    new TrainTime(
-                                            rodaliesXMLTime.getLine(),
-                                            rodaliesXMLTime.getDepartureTime(),
-                                            secondRouteItem.getArrivalTime(),
-                                            secondRouteItem.getLine(),
-                                            secondRouteItem.getStationCode(),
-                                            secondRouteItem.getDepartureTime(),
-                                            secondRoute.getArrivalTime(),
-                                            origin,
-                                            destination,
-                                            false,
-                                            calendarInstance
-                                    )
-                            );
+                                trainTimes.add(
+                                        new TrainTime(
+                                                rodaliesXMLTime.getLine(),
+                                                rodaliesXMLTime.getDepartureTime(),
+                                                secondRouteItem.getArrivalTime(),
+                                                secondRouteItem.getLine(),
+                                                secondRouteItem.getStationCode(),
+                                                secondRouteItem.getDepartureTime(),
+                                                secondRoute.getArrivalTime(),
+                                                origin,
+                                                destination,
+                                                false,
+                                                calendarInstance
+                                        )
+                                );
+                            }
                         }
                     } else {
                         // Direct train
                         // It's like a train without transfers
+                        String transferStation = schedule.getTransfersList().get(0).getStationCode();
                         trainTimes.add(
                                 new TrainTime(
                                         rodaliesXMLTime.getLine(),
@@ -146,6 +148,43 @@ public class RodaliesScheduleParser {
                                         calendarInstance
                                 )
                         );
+                    }
+                }
+                break;
+                case 2: {
+                    String transferStationOne = schedule.getTransfersList().get(0).getStationCode();
+                    String transferStationTwo = schedule.getTransfersList().get(1).getStationCode();
+                    int numRoutes = getNumRoutes(rodaliesXMLTime);
+
+                    U.log("first: " + transferStationOne + " second: " + transferStationTwo);
+
+
+                    if (numRoutes > 0) {
+                        for (int i = 0; i < numRoutes; i++) {
+                            RodaliesXMLTimeRoute route = rodaliesXMLTime.getRodaliesXMLTimeRoutes().get(i);
+                            RodaliesXMLTimeRouteItem firstRouteItem = route.getRodaliesXMLTimeRoutesItems().get(0);
+                            RodaliesXMLTimeRouteItem secondRouteItem = route.getRodaliesXMLTimeRoutesItems().get(1);
+
+
+                            trainTimes.add(
+                                    new TrainTime(
+                                            rodaliesXMLTime.getLine(),
+                                            rodaliesXMLTime.getDepartureTime(),
+                                            firstRouteItem.getArrivalTime(),
+                                            firstRouteItem.getLine(),
+                                            transferStationOne,
+                                            firstRouteItem.getDepartureTime(),
+                                            secondRouteItem.getArrivalTime(),
+                                            secondRouteItem.getLine(),
+                                            transferStationTwo,
+                                            secondRouteItem.getDepartureTime(),
+                                            route.getArrivalTime(),
+                                            origin,
+                                            destination,
+                                            calendarInstance
+                                    )
+                            );
+                        }
                     }
                 }
                 break;

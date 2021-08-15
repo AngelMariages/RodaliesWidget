@@ -117,9 +117,10 @@ class RodaliesWidget extends RemoteViews {
 						String transferStation = null, transferStationTwo = null;
 						try {
 							transferStation = StationUtils.getNameFromID(trainTime.getStationTransferOne(), core);
-							transferStationTwo = StationUtils.getNameFromID(trainTime.getStationTransferOne(), core);
+							transferStationTwo = StationUtils.getNameFromID(trainTime.getStationTransferTwo(), core);
 						} catch (NumberFormatException ignored) {
 						}
+						// TODO: makes sense to have the line of the transfer? sometimes it's different
 						if (transferStation != null) {
 							this.setTextViewText(R.id.transferOneTitleText, transferStation);
 							this.setTextViewText(R.id.lineTransferOneText, trainTime.getLineTransferOne());

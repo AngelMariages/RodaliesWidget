@@ -28,7 +28,10 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalie
 import androidx.annotation.NonNull;
 
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+
+import java.util.List;
 
 @Root(strict = false)
 public class RodaliesXMLTimeRoute {
@@ -44,8 +47,8 @@ public class RodaliesXMLTimeRoute {
     @Element(name = "duracio_trajecte")
     private String travelTime;
 
-    @Element(name = "item")
-    private RodaliesXMLTimeRouteItem rodaliesXMLTimeRouteItem;
+    @ElementList(entry = "item", inline = true)
+    private List<RodaliesXMLTimeRouteItem> rodaliesXMLTimeRouteItems;
 
     public String getLine() {
         return line;
@@ -63,8 +66,8 @@ public class RodaliesXMLTimeRoute {
         return travelTime;
     }
 
-    public RodaliesXMLTimeRouteItem getRodaliesXMLTimeRouteItem() {
-        return rodaliesXMLTimeRouteItem;
+    public List<RodaliesXMLTimeRouteItem> getRodaliesXMLTimeRoutesItems() {
+        return rodaliesXMLTimeRouteItems;
     }
 
     @NonNull
@@ -75,7 +78,7 @@ public class RodaliesXMLTimeRoute {
                 ", departureTime='" + departureTime + '\'' +
                 ", arrivalTime='" + arrivalTime + '\'' +
                 ", travelTime='" + travelTime + '\'' +
-                ", rodaliesXMLTimeRouteItem=" + rodaliesXMLTimeRouteItem +
+                ", rodaliesXMLTimeRouteItem=" + rodaliesXMLTimeRouteItems +
                 '}';
     }
 }
