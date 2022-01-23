@@ -132,7 +132,12 @@ public class RodaliesScheduleParser {
                     } else {
                         // Direct train
                         // It's like a train without transfers
-                        String transferStation = schedule.getTransfersList().get(0).getStationCode();
+                        String transferStation = null;
+
+                        if (schedule.getTransfersList().size() > 0) {
+                            transferStation = schedule.getTransfersList().get(0).getStationCode();
+                        }
+
                         trainTimes.add(
                                 new TrainTime(
                                         rodaliesXMLTime.getLine(),
