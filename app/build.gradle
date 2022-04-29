@@ -83,7 +83,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test:core:1.4.0-alpha04';
-    androidTestImplementation 'androidx.test:runner:1.4.0-alpha04';
+    androidTestImplementation 'androidx.test:runner:1.5.0-alpha03';
 
     // UiAutomator Testing
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0';
