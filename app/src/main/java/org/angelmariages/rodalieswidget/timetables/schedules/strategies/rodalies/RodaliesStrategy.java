@@ -52,7 +52,7 @@ public class RodaliesStrategy implements Strategy {
     }
 
     @Override
-    public List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) {
+    public List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) throws ServiceDisruptionError {
         Calendar calendarInstance = getCalendar(deltaDays);
 
         Call<RodaliesSchedule> page = rodaliesAPI.getPage(origin, destination, formatDateToString(calendarInstance));
@@ -60,7 +60,10 @@ public class RodaliesStrategy implements Strategy {
             RodaliesSchedule rodaliesSchedule = page.execute().body();
 
             return RodaliesScheduleParser.parse(rodaliesSchedule, origin, destination, calendarInstance);
-        } catch (Exception e) {
+        } catch (ServiceDisruptionError e) {
+            throw e;
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -28,7 +28,9 @@ package org.angelmariages.rodalieswidget.timetables.schedules;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.RnfeStrategy;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.RodaliesStrategy;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.ServiceDisruptionError;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Schedule {
@@ -48,7 +50,7 @@ public class Schedule {
         this.rodaliesStrategy = new RodaliesStrategy();
     }
 
-    public List<TrainTime> get() {
+    public List<TrainTime> get() throws ServiceDisruptionError {
         if (division == 50) { // Rodalies
             return getFromRodalies();
         } else {
@@ -60,7 +62,7 @@ public class Schedule {
         return this.rnfeStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 
-    private List<TrainTime> getFromRodalies() {
+    private List<TrainTime> getFromRodalies() throws ServiceDisruptionError {
         return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 }

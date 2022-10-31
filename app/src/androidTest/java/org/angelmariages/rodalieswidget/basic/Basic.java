@@ -162,11 +162,13 @@ public class Basic {
 
         mDevice.waitForIdle();
 
-        if (isKeyboardOpened()) {
+        UiObject2 badalona = mDevice.findObject(By.text("Badalona"));
+
+        if (badalona == null && isKeyboardOpened()) {
             mDevice.pressBack();
         }
 
-        UiObject2 badalona = mDevice.findObject(By.text("Badalona"));
+        badalona = mDevice.findObject(By.text("Badalona"));
 
         badalona.click();
 

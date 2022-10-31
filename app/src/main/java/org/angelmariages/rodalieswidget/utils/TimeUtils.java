@@ -45,11 +45,11 @@ public class TimeUtils {
 		return Integer.parseInt(String.format(Locale.getDefault(), "%02d", cal.get(Calendar.MINUTE)));
 	}
 
-	public static String getTodayDateWithoutPath() {
-		return getTodayDateWithoutPath(0);
+	public static String getTodayDate() {
+		return getTodayDate(0);
 	}
 
-	public static String getTodayDateWithoutPath(int deltaDays) {
+	public static String getTodayDate(int deltaDays) {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, deltaDays);
 		return String.format(Locale.getDefault(), "%02d%02d%d",

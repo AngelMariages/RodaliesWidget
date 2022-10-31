@@ -40,7 +40,11 @@ public class RodaliesScheduleParser {
     private RodaliesScheduleParser() {
     }
 
-    public static List<TrainTime> parse(RodaliesSchedule schedule, String origin, String destination, Calendar calendarInstance) {
+    public static List<TrainTime> parse(RodaliesSchedule schedule, String origin, String destination, Calendar calendarInstance) throws ServiceDisruptionError {
+        if (schedule.getErrors() != null && schedule.getErrors().size() > 0) {
+            throw new ServiceDisruptionError(schedule.getErrors());
+        }
+
         int transfers = getTransfers(schedule);
 
         List<TrainTime> trainTimes = new ArrayList<>();

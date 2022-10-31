@@ -25,22 +25,26 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-import androidx.annotation.NonNull;
-
 import org.jetbrains.annotations.NotNull;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 import java.util.List;
 
-@Root (name="horaris", strict = false)
+@Root(name = "horaris", strict = false)
 public class RodaliesSchedule {
+    @ElementList(name = "error", inline = true, required = false)
+    private List<Error> errors;
 
-    @ElementList (name="resultats")
+    @ElementList(name = "resultats", required = false)
     private List<RodaliesXMLTime> schedule;
 
-    @ElementList (name="transbordament")
+    @ElementList(name = "transbordament", required = false)
     private List<RodaliesXMLTransfer> transfersList;
+
+    public List<Error> getErrors() {
+        return errors;
+    }
 
     public List<RodaliesXMLTime> getSchedule() {
         return schedule;

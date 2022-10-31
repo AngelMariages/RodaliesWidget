@@ -293,6 +293,25 @@ public final class U {
 		context.sendBroadcast(noStationsIntent);
 	}
 
+	public static void sendProgramedDisruptionsError(int widgetId, Context context) {
+		Intent widgetError = new Intent(context, WidgetManager.class);
+		widgetError.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+		widgetError.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+		widgetError.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS);
+		context.sendBroadcast(widgetError);
+	}
+
+	public static void sendNewTrainTimes(int widgetId, String origin, String destination, ArrayList<TrainTime> trainTimes, Context context) {
+		Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+		sendScheduleIntent.setAction(Constants.ACTION_SEND_SCHEDULE + widgetId + origin + destination);
+		sendScheduleIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+		Bundle bundle = new Bundle();
+
+		bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, trainTimes);
+		sendScheduleIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
+		context.sendBroadcast(sendScheduleIntent);
+	}
+
 	public static void sendNotifyUpdate(int widgetID, Context context) {
 		Intent notifyUpdateIntent = new Intent(context, WidgetManager.class);
 		notifyUpdateIntent.setAction(Constants.ACTION_NOTIFY_UPDATE + widgetID);
