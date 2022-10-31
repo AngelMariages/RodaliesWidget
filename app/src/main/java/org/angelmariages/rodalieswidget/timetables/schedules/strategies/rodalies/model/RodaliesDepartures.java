@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021 Àngel Mariages
+ * Copyright (c) 2022 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,25 +23,15 @@
  *
  */
 
-package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesDepartures;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.util.List;
 
-public interface RodaliesAPI {
-    @GET("gencat_rodalies_serveis/AppJava/restServices/getHoraris?horaIni=0")
-    Call<RodaliesSchedule> getSchedules(
-            @Query("origen") String origin,
-            @Query("desti") String destination,
-            @Query("dataViatge") String travelDate
-            );
-
-    @GET("gencat_rodalies_serveis/AppJava/restServices/getDepartures")
-    Call<RodaliesDepartures> getDepartures(
-            @Query("numestacio") String origin
-    );
+@Root(name = "getDepartures", strict = false)
+public class RodaliesDepartures {
+    @ElementList(name = "trains")
+    private List<RodaliesDepartureTime> departureTimeList;
 }

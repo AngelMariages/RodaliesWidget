@@ -27,9 +27,9 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalie
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.Strategy;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesDepartures;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -55,15 +55,14 @@ public class RodaliesStrategy implements Strategy {
     public List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) throws ServiceDisruptionError {
         Calendar calendarInstance = getCalendar(deltaDays);
 
-        Call<RodaliesSchedule> page = rodaliesAPI.getPage(origin, destination, formatDateToString(calendarInstance));
+        Call<RodaliesSchedule> page = rodaliesAPI.getSchedules(origin, destination, formatDateToString(calendarInstance));
         try {
             RodaliesSchedule rodaliesSchedule = page.execute().body();
 
             return RodaliesScheduleParser.parse(rodaliesSchedule, origin, destination, calendarInstance);
         } catch (ServiceDisruptionError e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
