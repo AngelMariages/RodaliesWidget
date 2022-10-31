@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2022 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.frybits.harmony.Harmony;
-import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.angelmariages.rodalieswidget.utils.AlarmUtils;
 import org.angelmariages.rodalieswidget.utils.Constants;
@@ -50,7 +50,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
 		if (widgetID == -1) return;
 
-		FirebaseApp.initializeApp(context);
+		FirebaseAnalytics.getInstance(context);
 
 		U.log("Alarm received, removing it " + widgetID);
 		String[] stations = U.getStations(context, widgetID);

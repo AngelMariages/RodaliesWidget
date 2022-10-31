@@ -92,4 +92,6 @@
     <string name="rate_app_positive_button">Sí?\nPuntua\'ns a la botiga (PlayStore)!</string>
     <string name="update_schedules_notification_text">Actualitzant horaris</string>
     <string name="programed_disruptions">Horaris no disponibles. Consulteu les afeccions programades.</string>
+    <string name="pref_anonymous_data_collection_summary">Permet la recol·lecció d\'estadístiques anònimes.</string>
+    <string name="pref_anonymous_data_collection">Estadistiques anonimes</string>
 </resources>

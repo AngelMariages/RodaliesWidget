@@ -34,9 +34,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
-import com.google.android.gms.tasks.Task
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -47,7 +44,6 @@ import org.angelmariages.rodalieswidget.utils.Constants
 import org.angelmariages.rodalieswidget.utils.StationUtils
 import org.angelmariages.rodalieswidget.utils.U
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @OptIn(DelicateCoroutinesApi::class)
 internal class RodaliesWidget(
@@ -63,23 +59,6 @@ internal class RodaliesWidget(
     private val state: Int
 
     init {
-        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        val configSettings = FirebaseRemoteConfigSettings.Builder()
-            .setMinimumFetchIntervalInSeconds(TimeUnit.HOURS.toSeconds(1))
-            .build()
-        firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
-        firebaseRemoteConfig.setDefaultsAsync(
-            Collections.singletonMap<String, Any>(
-                "remote_view_in_memory",
-                false
-            )
-        )
-        firebaseRemoteConfig.fetch(TimeUnit.MINUTES.toSeconds(30))
-            .addOnCompleteListener { task: Task<Void?> ->
-                if (task.isSuccessful) {
-                    firebaseRemoteConfig.activate()
-                }
-            }
         setStationNames()
         setPendingIntents()
         //@TODO manage web service status !important

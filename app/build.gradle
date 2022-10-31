@@ -91,12 +91,7 @@ dependencies {
     implementation 'com.frybits.harmony:harmony:1.1.9'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:28.3.0')
-
-    implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-config'
-    implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-core'
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 

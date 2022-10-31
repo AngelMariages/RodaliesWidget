@@ -60,7 +60,7 @@
             android:key="line_notifications"
             android:title="@string/pref_receive_notifications" />-->
     </PreferenceCategory>
-    <PreferenceCategory android:title="Colors">
+    <!-- <PreferenceCategory android:title="Colors">
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/widget_background"
             android:key="@string/pref_about_title"
@@ -96,8 +96,12 @@
             android:key="@string/pref_about_title"
             android:title="Contrast text"
             app:colorShape="circle" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
     <PreferenceCategory android:title="@string/pref_about_title">
+        <SwitchPreference
+            android:key="pref_anonymous_data_collection"
+            android:summary="@string/pref_anonymous_data_collection_summary"
+            android:title="@string/pref_anonymous_data_collection" />
         <Preference
             android:key="pref_view_tutorial"
             android:title="@string/pref_view_tutorial" />

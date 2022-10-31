@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2022 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +39,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
-import org.angelmariages.rodalieswidget.utils.U;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class FirstTimeActivity extends AppCompatActivity {
 	private ViewPager viewPager;
@@ -58,9 +53,12 @@ public class FirstTimeActivity extends AppCompatActivity {
 	private Button btnSkip;
 	private Button btnNext;
 	private int[] layouts;
+	private FirebaseAnalytics mFirebaseAnalytics;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 		boolean fromNotification = intent != null && intent.getAction() != null && intent.getAction().equals("notification");
@@ -92,29 +90,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 		viewPager.setAdapter(new MyViewPagerAdapter());
 		viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-		btnSkip.setOnClickListener(v -> {
-			DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-			tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-					DataSnapshot skip = dataSnapshot.child("skip");
-
-					if (skip.exists()) {
-						int value = Integer.parseInt(String.valueOf(skip.getValue()));
-						skip.getRef().setValue(value + 1);
-					} else {
-						skip.getRef().setValue(1);
-					}
-				}
-
-				@Override
-				public void onCancelled(@NonNull DatabaseError databaseError) {
-					U.log("FirebaseError (skip): " + databaseError.getMessage());
-				}
-			});
-
-			startSettings();
-		});
+		btnSkip.setOnClickListener(v -> mFirebaseAnalytics.logEvent("tutorial_skip", new Bundle()));
 
 		btnNext.setOnClickListener(v -> {
 			int current = viewPager.getCurrentItem() + 1;
@@ -122,26 +98,7 @@ public class FirstTimeActivity extends AppCompatActivity {
 				viewPager.setCurrentItem(current);
 			} else {
 				startSettings();
-
-				DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-				tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-					@Override
-					public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-						DataSnapshot skip = dataSnapshot.child("start");
-
-						if (skip.exists()) {
-							int value = Integer.parseInt(String.valueOf(skip.getValue()));
-							skip.getRef().setValue(value + 1);
-						} else {
-							skip.getRef().setValue(1);
-						}
-					}
-
-					@Override
-					public void onCancelled(@NonNull DatabaseError databaseError) {
-						U.log("FirebaseError (skip): " + databaseError.getMessage());
-					}
-				});
+				mFirebaseAnalytics.logEvent("tutorial_ended", new Bundle());
 			}
 		});
 	}
@@ -202,25 +159,9 @@ public class FirstTimeActivity extends AppCompatActivity {
 				btnSkip.setVisibility(View.VISIBLE);
 			}
 
-			DatabaseReference tutorialReference = U.getFirebaseDatabase().getReference("tutorial");
-			tutorialReference.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-					DataSnapshot skip = dataSnapshot.child("tutorial_" + position);
-
-					if (skip.exists()) {
-						int value = Integer.parseInt(String.valueOf(skip.getValue()));
-						skip.getRef().setValue(value + 1);
-					} else {
-						skip.getRef().setValue(1);
-					}
-				}
-
-				@Override
-				public void onCancelled(@NonNull DatabaseError databaseError) {
-					U.log("FirebaseError (skip): " + databaseError.getMessage());
-				}
-			});
+			Bundle params = new Bundle();
+			params.putInt("position", position);
+			mFirebaseAnalytics.logEvent("tutorial_next", params);
 		}
 
 		@Override
