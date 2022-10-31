@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2022 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,6 @@ import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -50,14 +48,12 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final boolean group_transfer_exits, show_more_transfer_trains;
 	private final int widgetID;
 	private final int core;
-	private final FirebaseRemoteConfig firebaseRemoteConfig;
 	private String alarm_departure_time;
 	private int transfers = 0;
 	private final Context context;
 
 	private ArrayList<TrainTime> schedule;
 	private ArrayList<RemoteViews> remoteViews;
-	private boolean remote_view_in_memory;
 	private long publishAnalyticsTime;
 	private long worstElapsed;
 	private boolean show_promotion_line;
@@ -87,34 +83,19 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				alarm_departure_time = AlarmUtils.getAlarm(context, widgetID, trainTime.getOrigin(), trainTime.getDestination());
 			}
 		}
-
-		firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 	}
 
 	@Override
 	public void onCreate() {
-		if (firebaseRemoteConfig != null) {
-			if (firebaseRemoteConfig.getBoolean("show_promotion_line")) {
-				show_promotion_line = true;
-				int scrollPosition = U.getScrollPosition(schedule);
-				U.log("scroll: " + scrollPosition);
-				if (schedule.size() > 0) promotion_line_number = scrollPosition + 1;
-			}
-			if (firebaseRemoteConfig.getBoolean("remote_view_in_memory")) {
-				remote_view_in_memory = true;
-				loadViewsToMemory();
-			}
+		// TODO Save in SharedPreferences
+		if (false) {
+			show_promotion_line = true;
+			int scrollPosition = U.getScrollPosition(schedule);
+			U.log("scroll: " + scrollPosition);
+			if (schedule.size() > 0) promotion_line_number = scrollPosition + 1;
 		}
-		U.setUserProperty(context, "r_view_loading_strategy", remote_view_in_memory ? "mem" : "cpu");
-	}
 
-	private void loadViewsToMemory() {
-		if (schedule != null && schedule.size() > 0) {
-			remoteViews = new ArrayList<>();
-			for (int i = 0; i < getCount(); i++) {
-				remoteViews.add(i, getViewAt(i));
-			}
-		}
+		U.setUserProperty(context, "r_view_loading_strategy", "cpu");
 	}
 
 	@Override
@@ -127,8 +108,6 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 
 		U.log("Alarm departure time: " + alarm_departure_time);
-
-		if (remote_view_in_memory) loadViewsToMemory();
 
 		if (alarm_departure_time != null) {
 			for (int i = 1; i < (show_promotion_line ? schedule.size() + 2 : schedule.size() + 1); i++) {
@@ -171,15 +150,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 		long before = System.currentTimeMillis();
 		RemoteViews row = null;
 		try {
-			if (remote_view_in_memory) {
-				if (remoteViews != null && remoteViews.size() > 0) {
-					row = remoteViews.get(position);
-				} else {
-					row = getRow(position);
-				}
-			} else {
-				row = getRow(position);
-			}
+			row = getRow(position);
 		} catch (IndexOutOfBoundsException ignored) {
 			U.setUserProperty(context, "index_out_of_bounds", "origin: " + schedule.get(0).getOrigin() +
 					" - destination: " + schedule.get(0).getDestination() + " - size:" + schedule.size() + " - position:" + position);

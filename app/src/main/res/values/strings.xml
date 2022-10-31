@@ -57,13 +57,14 @@
     <string name="pref_group_transfer_exits">Group transfer trains</string>
     <string name="pref_group_transfer_exits_summary_on">Show only the trains from the transfer station if the origin train is the same</string>
     <string name="pref_scroll_to_time">Scroll to time</string>
-    <string name="pref_donation">Do you want to help me?</string>
     <string name="pref_download_return_schedule_summary_on">Download return schedule</string>
     <string name="pref_download_return_schedule_summary_off">Don\'t download return schedule</string>
     <string name="pref_show_all_times_on">Show schedules from all the day</string>
     <string name="pref_show_all_times_off">Don\'t show the schedules for all day</string>
     <string name="pref_show_more_transfer_trains_summary_off">Don\'t show more trains from the transfer station</string>
     <string name="pref_group_transfer_exits_summary_off">Show the origin train duplicated if there are more trains from the transfer station that leave before any train from the origin</string>
+    <string name="pref_anonymous_data_collection_summary">Allow anonymous analytics data recollection.</string>
+    <string name="pref_anonymous_data_collection">Anonymous analytics</string>
     <string name="tutorial_next_button">Next</string>
     <string name="tutorial_skip_button">Skip</string>
     <string name="tutorial_start_button">Start</string>
