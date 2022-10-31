@@ -31,16 +31,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
@@ -50,287 +44,232 @@ import java.util.Objects;
 
 public final class U {
 
-	private static FirebaseDatabase mFirebaseDatabase;
+    private static FirebaseAnalytics mFirebaseAnalytics;
 
-	public static void log(String message) {
-		if (Constants.LOGGING) {
-			Log.d("RodaliesLog", message);
-			FirebaseCrashlytics.getInstance().log(message);
-		}
-	}
+    public static void log(String message) {
+        if (Constants.LOGGING) {
+            Log.d("RodaliesLog", message);
+            FirebaseCrashlytics.getInstance().log(message);
+        }
+    }
 
-	public static int getFirstWidgetId(Context context) {
-		try {
-			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-			int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
-			if (ids.length != 0) {
-				return ids[0];
-			}
-		} catch (Exception e) {
-			return -1;
-		}
-		return -1;
-	}
+    public static int getFirstWidgetId(Context context) {
+        try {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), WidgetManager.class.getName()));
+            if (ids.length != 0) {
+                return ids[0];
+            }
+        } catch (Exception e) {
+            return -1;
+        }
+        return -1;
+    }
 
-	public static boolean isFirstTime(Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_GLOBAL_KEY, Context.MODE_PRIVATE);
-		boolean isFirstTime = sharedPreferences.getBoolean(Constants.PREFERENCE_BOOLEAN_FIRST_TIME, true);
-		if (isFirstTime) {
-			sharedPreferences.edit().putBoolean(Constants.PREFERENCE_BOOLEAN_FIRST_TIME, false).apply();
-		}
-		return isFirstTime;
-	}
+    public static boolean isFirstTime(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_GLOBAL_KEY, Context.MODE_PRIVATE);
+        boolean isFirstTime = sharedPreferences.getBoolean(Constants.PREFERENCE_BOOLEAN_FIRST_TIME, true);
+        if (isFirstTime) {
+            sharedPreferences.edit().putBoolean(Constants.PREFERENCE_BOOLEAN_FIRST_TIME, false).apply();
+        }
+        return isFirstTime;
+    }
 
-	public static int getIdFromIntent(Intent intent) {
-		return intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
-	}
+    public static int getIdFromIntent(Intent intent) {
+        return intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
+    }
 
-	public static int getStateFromIntent(Intent intent) {
-		return intent.getIntExtra(Constants.EXTRA_WIDGET_STATE, -1);
-	}
+    public static int getStateFromIntent(Intent intent) {
+        return intent.getIntExtra(Constants.EXTRA_WIDGET_STATE, -1);
+    }
 
-	public static void saveCore(Context context, int widgetID, int coreID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
-		sharedPreferences.edit().putInt(Constants.PREFERENCE_STRING_CORE_ID, coreID).apply();
-	}
+    public static void saveCore(Context context, int widgetID, int coreID) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt(Constants.PREFERENCE_STRING_CORE_ID, coreID).apply();
+    }
 
-	public static int getCore(Context context, int widgetID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
-		int core = sharedPreferences.getInt(Constants.PREFERENCE_STRING_CORE_ID, -1);
+    public static int getCore(Context context, int widgetID) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
+        int core = sharedPreferences.getInt(Constants.PREFERENCE_STRING_CORE_ID, -1);
 
-		// TODO: 27/06/2017 Remove for next versions
-		String[] stations = U.getStations(context, widgetID);
-		if (core == -1 && stations.length == 2) {
-			if (Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[0]) && Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[1])) {
-				saveCore(context, widgetID, 50);
-				return 50;
-			}
-		}
+        // TODO: 27/06/2017 Remove for next versions
+        String[] stations = U.getStations(context, widgetID);
+        if (core == -1 && stations.length == 2) {
+            if (Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[0]) && Objects.requireNonNull(StationUtils.nuclis.get(50)).containsKey(stations[1])) {
+                saveCore(context, widgetID, 50);
+                return 50;
+            }
+        }
 
-		return core;
-	}
+        return core;
+    }
 
-	public static void saveStations(Context context, int widgetID, String origin, String destination) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
+    public static void saveStations(Context context, int widgetID, String origin, String destination) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 
-		removeOldPreferences(sharedPreferences);
+        removeOldPreferences(sharedPreferences);
 
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString(Constants.PREFERENCE_STRING_ORIGIN, origin);
-		editor.putString(Constants.PREFERENCE_STRING_DESTINATION, destination);
-		editor.apply();
-	}
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.PREFERENCE_STRING_ORIGIN, origin);
+        editor.putString(Constants.PREFERENCE_STRING_DESTINATION, destination);
+        editor.apply();
+    }
 
-	public static String[] getStations(Context context, int widgetID) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
+    public static String[] getStations(Context context, int widgetID) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_KEY + widgetID, Context.MODE_PRIVATE);
 
-		updateOldPreferences(sharedPreferences);
+        updateOldPreferences(sharedPreferences);
 
-		if (sharedPreferences != null) {
-			return new String[]{
-					sharedPreferences.getString(Constants.PREFERENCE_STRING_ORIGIN, "-1"),
-					sharedPreferences.getString(Constants.PREFERENCE_STRING_DESTINATION, "-1")
-			};
-		}
-		return new String[]{"-1", "-1"};
-	}
+        if (sharedPreferences != null) {
+            return new String[]{
+                    sharedPreferences.getString(Constants.PREFERENCE_STRING_ORIGIN, "-1"),
+                    sharedPreferences.getString(Constants.PREFERENCE_STRING_DESTINATION, "-1")
+            };
+        }
+        return new String[]{"-1", "-1"};
+    }
 
-	private static void updateOldPreferences(SharedPreferences sharedPreferences) {
-		int origin, destination;
-		if (sharedPreferences != null) {
-			try {
-				if ((origin = sharedPreferences.getInt(Constants.PREFERENCE_STRING_ORIGIN, -1)) != -1) {
-					sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_ORIGIN).apply();
-					sharedPreferences.edit().putString(Constants.PREFERENCE_STRING_ORIGIN, String.valueOf(origin)).apply();
-				}
-			} catch (RuntimeException ignored) {
-			}
+    private static void updateOldPreferences(SharedPreferences sharedPreferences) {
+        int origin, destination;
+        if (sharedPreferences != null) {
+            try {
+                if ((origin = sharedPreferences.getInt(Constants.PREFERENCE_STRING_ORIGIN, -1)) != -1) {
+                    sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_ORIGIN).apply();
+                    sharedPreferences.edit().putString(Constants.PREFERENCE_STRING_ORIGIN, String.valueOf(origin)).apply();
+                }
+            } catch (RuntimeException ignored) {
+            }
 
-			try {
-				if ((destination = sharedPreferences.getInt(Constants.PREFERENCE_STRING_DESTINATION, -1)) != -1) {
-					sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_DESTINATION).apply();
-					sharedPreferences.edit().putString(Constants.PREFERENCE_STRING_DESTINATION, String.valueOf(destination)).apply();
-				}
-			} catch (RuntimeException ignored) {
-			}
-		}
-	}
+            try {
+                if ((destination = sharedPreferences.getInt(Constants.PREFERENCE_STRING_DESTINATION, -1)) != -1) {
+                    sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_DESTINATION).apply();
+                    sharedPreferences.edit().putString(Constants.PREFERENCE_STRING_DESTINATION, String.valueOf(destination)).apply();
+                }
+            } catch (RuntimeException ignored) {
+            }
+        }
+    }
 
-	private static void removeOldPreferences(SharedPreferences sharedPreferences) {
-		if (sharedPreferences != null) {
-			try {
-				if (sharedPreferences.getInt(Constants.PREFERENCE_STRING_ORIGIN, -1) != -1)
-					sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_ORIGIN).apply();
-			} catch (RuntimeException ignored) {
-			}
-			try {
-				if (sharedPreferences.getInt(Constants.PREFERENCE_STRING_DESTINATION, -1) != -1)
-					sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_DESTINATION).apply();
-			} catch (RuntimeException ignored) {
-			}
-		}
-	}
+    private static void removeOldPreferences(SharedPreferences sharedPreferences) {
+        if (sharedPreferences != null) {
+            try {
+                if (sharedPreferences.getInt(Constants.PREFERENCE_STRING_ORIGIN, -1) != -1)
+                    sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_ORIGIN).apply();
+            } catch (RuntimeException ignored) {
+            }
+            try {
+                if (sharedPreferences.getInt(Constants.PREFERENCE_STRING_DESTINATION, -1) != -1)
+                    sharedPreferences.edit().remove(Constants.PREFERENCE_STRING_DESTINATION).apply();
+            } catch (RuntimeException ignored) {
+            }
+        }
+    }
 
-	public static FirebaseDatabase getFirebaseDatabase() {
-		if (mFirebaseDatabase == null) {
-			mFirebaseDatabase = FirebaseDatabase.getInstance();
-		}
-		return mFirebaseDatabase;
-	}
+    public static void logUpdates(Context context, int widgetID) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
-	public static void logUpdates(Context context, int widgetID) {
-		mFirebaseDatabase = U.getFirebaseDatabase();
+        final String[] stations = U.getStations(context, widgetID);
 
-		final String[] stations = U.getStations(context, widgetID);
+        if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
+            Bundle params = new Bundle();
 
-		if (stations.length == 2 && !stations[0].equalsIgnoreCase("-1") && !stations[1].equalsIgnoreCase("-1")) {
-			DatabaseReference journeyRef = mFirebaseDatabase.getReference("statics/journeys/" + stations[0] + "@@" + stations[1]);
-			DatabaseReference departuresRef = mFirebaseDatabase.getReference("statics/stations/" + stations[0] + "/departures");
-			DatabaseReference arrivalsRef = mFirebaseDatabase.getReference("statics/stations/" + stations[1] + "/arrivals");
+            params.putString("origin", stations[0]);
+            params.putString("destination", stations[1]);
 
-			journeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-					if (dataSnapshot.exists()) {
-						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
-						dataSnapshot.getRef().setValue(value + 1);
-					} else {
-						dataSnapshot.getRef().setValue(1);
-					}
-				}
+            mFirebaseAnalytics.logEvent("update_btn_click", params);
+        }
+    }
 
-				@Override
-				public void onCancelled(@NonNull DatabaseError databaseError) {
-					U.log("FirebaseError (journeyRef): " + databaseError.getMessage());
-				}
-			});
+    public static void logEventUpdate(ArrayList<TrainTime> trainTimes, Context context) {
+        Bundle bundle = null;
+        String origin = "-1", destination = "-1";
 
-			departuresRef.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-					if (dataSnapshot.exists()) {
-						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
-						dataSnapshot.getRef().setValue(value + 1);
-					} else {
-						dataSnapshot.getRef().setValue(1);
-					}
-				}
+        if (trainTimes.size() > 0) {
+            origin = trainTimes.get(0).getOrigin();
+            destination = trainTimes.get(0).getDestination();
+        }
 
-				@Override
-				public void onCancelled(@NonNull DatabaseError databaseError) {
-					U.log("FirebaseError (departuresRef): " + databaseError.getMessage());
-				}
-			});
+        if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
+            bundle = new Bundle();
+            bundle.putString("origin_station", origin);
+            bundle.putString("destination_station", destination);
+        }
+        FirebaseAnalytics.getInstance(context).logEvent("update_schedules", bundle);
+        setUserProperty(context, "last_time_used", System.currentTimeMillis());
+        setUserProperty(context, "last_origin", origin);
+        setUserProperty(context, "last_destination", destination);
+    }
 
-			arrivalsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-					if (dataSnapshot.exists()) {
-						int value = Integer.parseInt(String.valueOf(dataSnapshot.getValue()));
-						dataSnapshot.getRef().setValue(value + 1);
-					} else {
-						dataSnapshot.getRef().setValue(1);
-					}
-				}
+    public static void logEventSwap(Context context) {
+        FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
+    }
 
-				@Override
-				public void onCancelled(@NonNull DatabaseError databaseError) {
-					U.log("FirebaseError (arrivalsRef): " + databaseError.getMessage());
-				}
-			});
-		}
-	}
+    public static void setUserProperty(Context context, final String key, final Object data) {
+        FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
+    }
 
-	public static void logEventUpdate(ArrayList<TrainTime> trainTimes, Context context) {
-		Bundle bundle = null;
-		String origin = "-1", destination = "-1";
+    public static void sendNoInternetError(int widgetId, Context context) {
+        Intent noDataIntent = new Intent(context, WidgetManager.class);
+        noDataIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+        noDataIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+        noDataIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_INTERNET);
+        context.sendBroadcast(noDataIntent);
+    }
 
-		if (trainTimes.size() > 0) {
-			origin = trainTimes.get(0).getOrigin();
-			destination = trainTimes.get(0).getDestination();
-		}
+    public static void sendNoTimesError(int widgetId, Context context) {
+        Intent noDataIntent = new Intent(context, WidgetManager.class);
+        noDataIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+        noDataIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+        noDataIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_TIMES);
+        context.sendBroadcast(noDataIntent);
+    }
 
-		if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
-			bundle = new Bundle();
-			bundle.putString("origin_station", origin);
-			bundle.putString("destination_station", destination);
-		}
-		FirebaseAnalytics.getInstance(context).logEvent("update_schedules", bundle);
-		setUserProperty(context, "last_time_used", System.currentTimeMillis());
-		setUserProperty(context, "last_origin", origin);
-		setUserProperty(context, "last_destination", destination);
-	}
+    public static void sendNoStationsSetError(int widgetId, Context context) {
+        Intent noStationsIntent = new Intent(context, WidgetManager.class);
+        noStationsIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+        noStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+        noStationsIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_STATIONS);
+        context.sendBroadcast(noStationsIntent);
+    }
 
-	public static void logEventSwap(Context context) {
-		FirebaseAnalytics.getInstance(context).logEvent("swap_schedules", null);
-	}
+    public static void sendProgramedDisruptionsError(int widgetId, Context context) {
+        Intent widgetError = new Intent(context, WidgetManager.class);
+        widgetError.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+        widgetError.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+        widgetError.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS);
+        context.sendBroadcast(widgetError);
+    }
 
-	public static void setUserProperty(Context context, final String key, final Object data) {
-		FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
-	}
+    public static void sendNewTrainTimes(int widgetId, String origin, String destination, ArrayList<TrainTime> trainTimes, Context context) {
+        Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+        sendScheduleIntent.setAction(Constants.ACTION_SEND_SCHEDULE + widgetId + origin + destination);
+        sendScheduleIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+        Bundle bundle = new Bundle();
 
-	public static void sendNoInternetError(int widgetId, Context context) {
-		Intent noDataIntent = new Intent(context, WidgetManager.class);
-		noDataIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
-		noDataIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
-		noDataIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_INTERNET);
-		context.sendBroadcast(noDataIntent);
-	}
+        bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, trainTimes);
+        sendScheduleIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
+        context.sendBroadcast(sendScheduleIntent);
+    }
 
-	public static void sendNoTimesError(int widgetId, Context context) {
-		Intent noDataIntent = new Intent(context, WidgetManager.class);
-		noDataIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
-		noDataIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
-		noDataIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_TIMES);
-		context.sendBroadcast(noDataIntent);
-	}
+    public static void sendNotifyUpdate(int widgetID, Context context) {
+        Intent notifyUpdateIntent = new Intent(context, WidgetManager.class);
+        notifyUpdateIntent.setAction(Constants.ACTION_NOTIFY_UPDATE + widgetID);
+        notifyUpdateIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
+        context.sendBroadcast(notifyUpdateIntent);
+    }
 
-	public static void sendNoStationsSetError(int widgetId, Context context) {
-		Intent noStationsIntent = new Intent(context, WidgetManager.class);
-		noStationsIntent.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
-		noStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
-		noStationsIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_STATIONS);
-		context.sendBroadcast(noStationsIntent);
-	}
+    public static int getScrollPosition(ArrayList<TrainTime> schedule) {
+        for (int i = 0; i < schedule.size(); i++) {
+            if (TimeUtils.isScheduledTrain(schedule.get(i))) return i;
+        }
+        return 0;
+    }
 
-	public static void sendProgramedDisruptionsError(int widgetId, Context context) {
-		Intent widgetError = new Intent(context, WidgetManager.class);
-		widgetError.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
-		widgetError.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
-		widgetError.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS);
-		context.sendBroadcast(widgetError);
-	}
-
-	public static void sendNewTrainTimes(int widgetId, String origin, String destination, ArrayList<TrainTime> trainTimes, Context context) {
-		Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
-		sendScheduleIntent.setAction(Constants.ACTION_SEND_SCHEDULE + widgetId + origin + destination);
-		sendScheduleIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
-		Bundle bundle = new Bundle();
-
-		bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, trainTimes);
-		sendScheduleIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
-		context.sendBroadcast(sendScheduleIntent);
-	}
-
-	public static void sendNotifyUpdate(int widgetID, Context context) {
-		Intent notifyUpdateIntent = new Intent(context, WidgetManager.class);
-		notifyUpdateIntent.setAction(Constants.ACTION_NOTIFY_UPDATE + widgetID);
-		notifyUpdateIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID);
-		context.sendBroadcast(notifyUpdateIntent);
-	}
-
-	public static int getScrollPosition(ArrayList<TrainTime> schedule) {
-		for (int i = 0; i < schedule.size(); i++) {
-			if (TimeUtils.isScheduledTrain(schedule.get(i))) return i;
-		}
-		return 0;
-	}
-
-	public static int getColor(Context context, int resourceId) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			return context.getResources().getColor(resourceId, null);
-		} else {
-			return context.getResources().getColor(resourceId);
-		}
-	}
+    public static int getColor(Context context, int resourceId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.getResources().getColor(resourceId, null);
+        } else {
+            return context.getResources().getColor(resourceId);
+        }
+    }
 }

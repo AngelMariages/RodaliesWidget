@@ -56,7 +56,6 @@
     <string name="pref_group_transfer_exits">Agrupar trenes del transbordo</string>
     <string name="pref_group_transfer_exits_summary_on">Muestra solo los trenes de la estación de transbordo si el tren del origen es el mismo</string>
     <string name="pref_scroll_to_time">Desplazar a la hora</string>
-    <string name="pref_donation">¿Quieres ayudarme?</string>
     <string name="pref_download_return_schedule_summary_on">Descarga los horarios de vuelta</string>
     <string name="pref_download_return_schedule_summary_off">No descargues los horarios de vuelta</string>
     <string name="pref_show_all_times_on">Muestra los horarios de todo el día</string>
@@ -92,4 +91,6 @@
     <string name="rate_app_positive_button">Sí?\nPuntúala en la tienda (PlayStore)!</string>
     <string name="update_schedules_notification_text">Actualizando horarios</string>
     <string name="programed_disruptions">Horarios no disponibles. Consultar las afectaciones programadas.</string>
+    <string name="pref_anonymous_data_collection_summary">Permite la recolección de estadísticas anónimas.</string>
+    <string name="pref_anonymous_data_collection">Estadisticas anonimas</string>
 </resources>
