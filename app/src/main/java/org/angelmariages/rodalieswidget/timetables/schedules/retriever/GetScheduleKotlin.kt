@@ -69,39 +69,34 @@ class GetScheduleKotlin {
         }
     }
 
-    private suspend fun getScheduleForToday(
+    private fun getScheduleForToday(
         context: Context,
         widgetId: Int,
         origin: String,
         destination: String,
         core: Int
-    ) = coroutineScope {
+    ) {
         // If it's 00:00 and we can get the yesterday schedule and there are some trains left,
         // we should display that one because the trains past 00 are in the yesterday schedule
         if (TimeUtils.getCurrentHour() == 0) {
             val yesterdaySavedSchedule = retrieveSchedule(context, -1, origin, destination, core)
 
-            // TODO: CHANGE CONDITION!
             if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule as java.util.ArrayList<TrainTime>?)) {
                 U.sendNewTrainTimes(widgetId, origin, destination, yesterdaySavedSchedule, context)
 
-                return@coroutineScope
+                return
             }
         }
 
         try {
-            val result = withContext(Dispatchers.IO) {
-                U.log("Getting JSON for ${origin}->${destination}")
-                val result =
-                    retrieveSchedule(context, 0, origin, destination, core)
 
-                // We get also the return schedule
-                retrieveSchedule(context, 0, destination, origin, core)
+            U.log("Getting JSON for ${origin}->${destination}")
+            val result = retrieveSchedule(context, 0, origin, destination, core)
 
-                removeOldFiles(context)
+            // We get also the return schedule
+            retrieveSchedule(context, 0, destination, origin, core)
 
-                return@withContext result
-            }
+            removeOldFiles(context)
 
             U.sendNewTrainTimes(
                 widgetId, origin, destination,
@@ -114,20 +109,19 @@ class GetScheduleKotlin {
         }
     }
 
-    private suspend fun getScheduleForDelta(
+    private fun getScheduleForDelta(
         context: Context,
         widgetId: Int,
         origin: String,
         destination: String,
         core: Int,
         deltaDays: Int
-    ) = coroutineScope {
+    ) {
         try {
-            val result = withContext(Dispatchers.IO) {
-                U.log("Getting JSON for ${origin}->${destination} with delta $deltaDays")
 
-                return@withContext retrieveSchedule(context, deltaDays, origin, destination, core)
-            }
+            U.log("Getting JSON for ${origin}->${destination} with delta $deltaDays")
+
+            val result = retrieveSchedule(context, deltaDays, origin, destination, core)
 
             U.sendNewTrainTimes(
                 widgetId, origin, destination,
@@ -161,7 +155,7 @@ class GetScheduleKotlin {
             return emptyList()
         }
 
-        val trainTimes = getTrainTimesFromSchedule(context, schedule as List<TrainTime>, true)
+        val trainTimes = getTrainTimesFromSchedule(context, schedule as List<TrainTime>, deltaDays != 0)
 
         saveSchedule(context, origin, destination, deltaDays, trainTimes)
 
