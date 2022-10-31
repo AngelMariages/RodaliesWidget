@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 Àngel Mariages
+ * Copyright (c) 2021 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,41 +20,46 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import org.jetbrains.annotations.NotNull;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
-buildscript {
-    ext.kotlin_version = '1.7.20'
-    repositories {
-        mavenCentral()
-        google()
+import java.util.List;
+
+@Root(name = "horaris", strict = false)
+public class RodaliesSchedule {
+    @ElementList(name = "error", inline = true, required = false)
+    private List<Error> errors;
+
+    @ElementList(name = "resultats", required = false)
+    private List<RodaliesXMLTime> schedule;
+
+    @ElementList(name = "transbordament", required = false)
+    private List<RodaliesXMLTransfer> transfersList;
+
+    public List<Error> getErrors() {
+        return errors;
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    public List<RodaliesXMLTime> getSchedule() {
+        return schedule;
     }
-}
 
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        mavenCentral()
-        google()
+    public List<RodaliesXMLTransfer> getTransfersList() {
+        return transfersList;
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    @NotNull
+    @Override
+    public String toString() {
+        return "RodaliesSchedule{" +
+                "schedule=" + schedule +
+                ", transfersList=" + transfersList +
+                '}';
+    }
 }

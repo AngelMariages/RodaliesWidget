@@ -28,13 +28,13 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.frybits.harmony.Harmony;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.AlarmReceiver;
 
@@ -78,7 +78,7 @@ public class AlarmUtils {
 				}
 			}
 
-			new AppPreferences(context).put(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, departureTime);
+			saveAlarm(context, widgetID, origin, destination, departureTime);
 
 			U.sendNotifyUpdate(widgetID, context);
 
@@ -87,8 +87,16 @@ public class AlarmUtils {
 		}
 	}
 
+	private static void saveAlarm(Context context, int widgetID, String origin, String destination, String departureTime) {
+		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+		String alarmPrefName = Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination;
+		prefs.edit().putString(alarmPrefName, departureTime).apply();
+	}
+
 	public static String getAlarm(Context context, int widgetID, String origin, String destination) {
-		return new AppPreferences(context).getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
+		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+
+		return prefs.getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
 	}
 
 	public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
@@ -98,7 +106,9 @@ public class AlarmUtils {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		if (alarmManager != null) alarmManager.cancel(pendingIntent);
 
-		new AppPreferences(context).remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination);
+		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+		prefs.edit().remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination).apply();
+
 		U.sendNotifyUpdate(widgetID, context);
 	}
 }

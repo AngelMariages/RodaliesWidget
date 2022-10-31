@@ -91,4 +91,5 @@
     <string name="rate_app_negative">No?\nExplícanos por qué</string>
     <string name="rate_app_positive_button">Sí?\nPuntúala en la tienda (PlayStore)!</string>
     <string name="update_schedules_notification_text">Actualizando horarios</string>
+    <string name="programed_disruptions">Horarios no disponibles. Consultar las afectaciones programadas.</string>
 </resources>

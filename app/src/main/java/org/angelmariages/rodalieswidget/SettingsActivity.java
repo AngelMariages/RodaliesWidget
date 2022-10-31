@@ -29,6 +29,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -44,9 +45,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.frybits.harmony.Harmony;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.utils.Constants;
 import org.angelmariages.rodalieswidget.utils.U;
@@ -156,15 +156,17 @@ public class SettingsActivity extends AppCompatActivity {
 
 			pref_set_sound.setOnPreferenceChangeListener((preference, newValue) -> {
 				String ringtoneUri = (String) newValue;
+				SharedPreferences prefs = Harmony.getSharedPreferences(PreferencesFragment.this.getActivity(), Constants.PREFERENCE_GLOBAL_KEY);
+
 
 				if (ringtoneUri == null) {
-					new AppPreferences(PreferencesFragment.this.getActivity()).remove(Constants.PREFERENCE_STRING_ALARM_URI);
+					prefs.edit().remove(Constants.PREFERENCE_STRING_ALARM_URI).apply();
 				} else if (ringtoneUri.isEmpty()) {
-					new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--");
+					prefs.edit().putString(Constants.PREFERENCE_STRING_ALARM_URI, "--silent--").apply(); // TODO: constant
 				} else {
 					Ringtone ringtone = RingtoneManager.getRingtone(PreferencesFragment.this.getActivity(), Uri.parse(ringtoneUri));
 					Toast.makeText(PreferencesFragment.this.getActivity(), ringtone.getTitle(PreferencesFragment.this.getActivity()), Toast.LENGTH_SHORT).show();
-					new AppPreferences(PreferencesFragment.this.getActivity()).put(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri);
+					prefs.edit().putString(Constants.PREFERENCE_STRING_ALARM_URI, ringtoneUri).apply();
 				}
 				return true;
 			});
