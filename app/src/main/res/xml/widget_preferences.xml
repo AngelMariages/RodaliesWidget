@@ -106,14 +106,6 @@
             android:key="pref_view_tutorial"
             android:title="@string/pref_view_tutorial" />
 
-        <Preference
-            android:key="pref_donation"
-            android:title="@string/pref_donation">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://goo.gl/AT8chs" />
-        </Preference>
-
         <Preference android:title="@string/pref_version" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -56,7 +56,6 @@
     <string name="pref_group_transfer_exits">Agrupar trens del transbord</string>
     <string name="pref_group_transfer_exits_summary_on">Mostra només els trens de l\'estació de transbord si el tren d\'origen és el mateix</string>
     <string name="pref_scroll_to_time">Desplaça a l\'hora</string>
-    <string name="pref_donation">Vols ajudar-me?</string>
     <string name="pref_download_return_schedule_summary_on">Baixa els horaris de tornada</string>
     <string name="pref_download_return_schedule_summary_off">No baixis els horaris de tornada</string>
     <string name="pref_show_all_times_on">Mostra els horaris de tot el dia</string>

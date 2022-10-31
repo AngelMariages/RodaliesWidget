@@ -122,7 +122,6 @@ public class SettingsActivity extends AppCompatActivity {
 			SwitchPreference show_more_transfer_trains = (SwitchPreference) findPreference("show_more_transfer_trains");
 			SwitchPreference group_transfer_exits = (SwitchPreference) findPreference("group_transfer_exits");
 			SwitchPreference pref_anonymous_data_collection = (SwitchPreference) findPreference("pref_anonymous_data_collection");
-			Preference pref_donation = findPreference("pref_donation");
 			Preference pref_view_tutorial = findPreference("pref_view_tutorial");
 			RingtonePreference pref_set_sound = (RingtonePreference) findPreference("pref_set_sound");
 
@@ -150,11 +149,6 @@ public class SettingsActivity extends AppCompatActivity {
 				onPreferenceChangeC("pref_anonymous_data_collection", newValue);
 				mFirebaseAnalytics.setAnalyticsCollectionEnabled((Boolean) newValue);
 				return true;
-			});
-
-			pref_donation.setOnPreferenceClickListener(preference -> {
-				onPreferenceChangeC("pref_donation", true);
-				return false;
 			});
 
 			pref_set_sound.setOnPreferenceChangeListener((preference, newValue) -> false);
