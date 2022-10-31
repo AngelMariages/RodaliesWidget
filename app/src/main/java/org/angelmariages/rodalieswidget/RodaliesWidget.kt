@@ -278,14 +278,10 @@ internal class RodaliesWidget(
     }
 
     private fun updateStationsText(originText: String?, destinationText: String?) {
-        var originText: String? = originText
-        var destinationText: String? = destinationText
         val nullOrigin = context.resources.getString(R.string.no_origin_set)
         val nullDestination = context.resources.getString(R.string.no_destination_set)
-        if (originText == null) originText = nullOrigin
-        if (destinationText == null) destinationText = nullDestination
-        setTextViewText(R.id.originTextView, originText)
-        setTextViewText(R.id.destinationTextView, destinationText)
+        setTextViewText(R.id.originTextView, originText ?: nullOrigin)
+        setTextViewText(R.id.destinationTextView, destinationText ?: nullDestination)
     }
 
     private fun getWidgetID(): String {
