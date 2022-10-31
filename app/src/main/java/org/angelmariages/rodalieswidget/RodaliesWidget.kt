@@ -84,106 +84,113 @@ internal class RodaliesWidget(
         setPendingIntents()
         //@TODO manage web service status !important
         this.state = state
-        if (state == Constants.WIDGET_STATE_UPDATING_TABLES) {
-            startForegroundService(context)
-            // GetSchedule().execute(context, widgetID, deltaDays)
-            GlobalScope.launch(Dispatchers.IO) {
-                GetScheduleKotlin().execute(context, widgetID, deltaDays)
-                println("Finished!")
-            }
-        } else if (state == Constants.WIDGET_STATE_SCHEDULE_LOADED) {
-            val adapterIntent = Intent(context, WidgetService::class.java)
-            adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            adapterIntent.data = Uri.fromParts("content", widgetID.toString() + Math.random(), null)
-            val bundle = Bundle()
-            bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, schedule)
-            adapterIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle)
-            if (schedule != null && schedule.size > 0) {
-                val core = U.getCore(context, widgetID)
-                val trainTime = schedule[0]
-                when (trainTime.transfer) {
-                    1 -> {
-                        var transferStation: String? = null
-                        try {
-                            transferStation =
-                                StationUtils.getNameFromID(trainTime.stationTransferOne, core)
-                        } catch (ignored: NumberFormatException) {
-                        }
-                        if (transferStation != null) {
-                            setTextViewText(R.id.transferOneTitleText, transferStation)
-                            setTextViewText(R.id.lineTransferOneText, trainTime.lineTransferOne)
-                            try {
-                                setInt(
-                                    R.id.lineTransferOneText,
-                                    "setBackgroundColor",
-                                    Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).bColor)
-                                )
-                                setTextColor(
-                                    R.id.lineTransferOneText,
-                                    StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).tColor
-                                )
-                            } catch (e: Exception) {
-                                U.log("Unknown color for setTexts: " + trainTime.lineTransferOne + core)
-                            }
-                        } else setViewVisibility(R.id.transferOneTitleText, View.GONE)
-                    }
-                    2 -> {
-                        var transferStation: String? = null
-                        var transferStationTwo: String? = null
-                        try {
-                            transferStation =
-                                StationUtils.getNameFromID(trainTime.stationTransferOne, core)
-                            transferStationTwo =
-                                StationUtils.getNameFromID(trainTime.stationTransferTwo, core)
-                        } catch (ignored: NumberFormatException) {
-                        }
-                        // TODO: makes sense to have the line of the transfer? sometimes it's different
-                        if (transferStation != null) {
-                            setTextViewText(R.id.transferOneTitleText, transferStation)
-                            setTextViewText(R.id.lineTransferOneText, trainTime.lineTransferOne)
-                            try {
-                                setInt(
-                                    R.id.lineTransferOneText,
-                                    "setBackgroundColor",
-                                    Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).bColor)
-                                )
-                                setTextColor(
-                                    R.id.lineTransferOneText,
-                                    StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).tColor
-                                )
-                            } catch (e: Exception) {
-                                U.log("Unknown color for setTexts: " + trainTime.lineTransferOne + core)
-                            }
-                        } else setViewVisibility(R.id.transferOneTitleText, View.GONE)
-                        if (transferStationTwo != null) {
-                            setTextViewText(R.id.transferTwoTitleText, transferStationTwo)
-                            setTextViewText(R.id.lineTransferTwoText, trainTime.lineTransferTwo)
-                            try {
-                                setInt(
-                                    R.id.lineTransferTwoText,
-                                    "setBackgroundColor",
-                                    Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferTwo + core).bColor)
-                                )
-                                setTextColor(
-                                    R.id.lineTransferTwoText,
-                                    StationUtils.ColorLines.valueOf(trainTime.lineTransferTwo + core).tColor
-                                )
-                            } catch (e: Exception) {
-                                U.log("Unknown color for setTexts: " + trainTime.lineTransferTwo + core)
-                            }
-                        } else setViewVisibility(R.id.transferTwoTitleText, View.GONE)
-                    }
+        when (state) {
+            Constants.WIDGET_STATE_UPDATING_TABLES -> {
+                startForegroundService(context)
+                // GetSchedule().execute(context, widgetID, deltaDays)
+                GlobalScope.launch(Dispatchers.IO) {
+                    GetScheduleKotlin().execute(context, widgetID, deltaDays)
+                    println("Finished!")
                 }
             }
-            this.setRemoteAdapter(R.id.scheduleListView, adapterIntent)
-        } else if (state == Constants.WIDGET_STATE_NO_INTERNET) {
-            setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_internet))
-        } else if (state == Constants.WIDGET_STATE_NO_STATIONS) {
-            setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_stations))
-        } else if (state == Constants.WIDGET_STATE_NO_TIMES) {
-            setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_times))
-        } else if (state == Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS) {
-            setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.programed_disruptions))
+            Constants.WIDGET_STATE_SCHEDULE_LOADED -> {
+                val adapterIntent = Intent(context, WidgetService::class.java)
+                adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                adapterIntent.data = Uri.fromParts("content", widgetID.toString() + Math.random(), null)
+                val bundle = Bundle()
+                bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, schedule)
+                adapterIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle)
+                if (schedule != null && schedule.size > 0) {
+                    val core = U.getCore(context, widgetID)
+                    val trainTime = schedule[0]
+                    when (trainTime.transfer) {
+                        1 -> {
+                            var transferStation: String? = null
+                            try {
+                                transferStation =
+                                    StationUtils.getNameFromID(trainTime.stationTransferOne, core)
+                            } catch (ignored: NumberFormatException) {
+                            }
+                            if (transferStation != null) {
+                                setTextViewText(R.id.transferOneTitleText, transferStation)
+                                setTextViewText(R.id.lineTransferOneText, trainTime.lineTransferOne)
+                                try {
+                                    setInt(
+                                        R.id.lineTransferOneText,
+                                        "setBackgroundColor",
+                                        Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).bColor)
+                                    )
+                                    setTextColor(
+                                        R.id.lineTransferOneText,
+                                        StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).tColor
+                                    )
+                                } catch (e: Exception) {
+                                    U.log("Unknown color for setTexts: " + trainTime.lineTransferOne + core)
+                                }
+                            } else setViewVisibility(R.id.transferOneTitleText, View.GONE)
+                        }
+                        2 -> {
+                            var transferStation: String? = null
+                            var transferStationTwo: String? = null
+                            try {
+                                transferStation =
+                                    StationUtils.getNameFromID(trainTime.stationTransferOne, core)
+                                transferStationTwo =
+                                    StationUtils.getNameFromID(trainTime.stationTransferTwo, core)
+                            } catch (ignored: NumberFormatException) {
+                            }
+                            // TODO: makes sense to have the line of the transfer? sometimes it's different
+                            if (transferStation != null) {
+                                setTextViewText(R.id.transferOneTitleText, transferStation)
+                                setTextViewText(R.id.lineTransferOneText, trainTime.lineTransferOne)
+                                try {
+                                    setInt(
+                                        R.id.lineTransferOneText,
+                                        "setBackgroundColor",
+                                        Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).bColor)
+                                    )
+                                    setTextColor(
+                                        R.id.lineTransferOneText,
+                                        StationUtils.ColorLines.valueOf(trainTime.lineTransferOne + core).tColor
+                                    )
+                                } catch (e: Exception) {
+                                    U.log("Unknown color for setTexts: " + trainTime.lineTransferOne + core)
+                                }
+                            } else setViewVisibility(R.id.transferOneTitleText, View.GONE)
+                            if (transferStationTwo != null) {
+                                setTextViewText(R.id.transferTwoTitleText, transferStationTwo)
+                                setTextViewText(R.id.lineTransferTwoText, trainTime.lineTransferTwo)
+                                try {
+                                    setInt(
+                                        R.id.lineTransferTwoText,
+                                        "setBackgroundColor",
+                                        Color.parseColor(StationUtils.ColorLines.valueOf(trainTime.lineTransferTwo + core).bColor)
+                                    )
+                                    setTextColor(
+                                        R.id.lineTransferTwoText,
+                                        StationUtils.ColorLines.valueOf(trainTime.lineTransferTwo + core).tColor
+                                    )
+                                } catch (e: Exception) {
+                                    U.log("Unknown color for setTexts: " + trainTime.lineTransferTwo + core)
+                                }
+                            } else setViewVisibility(R.id.transferTwoTitleText, View.GONE)
+                        }
+                    }
+                }
+                this.setRemoteAdapter(R.id.scheduleListView, adapterIntent)
+            }
+            Constants.WIDGET_STATE_NO_INTERNET -> {
+                setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_internet))
+            }
+            Constants.WIDGET_STATE_NO_STATIONS -> {
+                setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_stations))
+            }
+            Constants.WIDGET_STATE_NO_TIMES -> {
+                setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.no_times))
+            }
+            Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS -> {
+                setTextViewText(R.id.reasonTextView, context.resources.getString(R.string.programed_disruptions))
+            }
         }
         setStationNames()
         if (state != Constants.WIDGET_STATE_UPDATING_TABLES) {

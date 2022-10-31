@@ -65,6 +65,7 @@ public class RodaliesScheduleParser {
                             )
                     );
                 }
+                break;
                 case 1: {
                     int numRoutes = getNumRoutes(rodaliesXMLTime);
 

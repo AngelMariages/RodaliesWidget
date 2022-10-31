@@ -210,7 +210,9 @@ public class WidgetManager extends AppWidgetProvider {
 			if (!show_more_transfer_trains) {
 				ArrayList<TrainTime> scheduleTmp = new ArrayList<>(schedule);
 				for (TrainTime trainTime : scheduleTmp) {
-					//if (trainTime.isSame_origin_train()) schedule.remove(trainTime);
+					if (trainTime.isSameOriginTrain()) {
+						schedule.remove(trainTime);
+					}
 				}
 			}
 
