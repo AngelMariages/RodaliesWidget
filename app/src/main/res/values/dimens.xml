@@ -38,4 +38,5 @@
     <dimen name="slide_padding">40dp</dimen>
 
     <dimen name="time_list_text_size">14sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

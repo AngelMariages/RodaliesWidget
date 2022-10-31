@@ -30,15 +30,15 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
+import com.frybits.harmony.Harmony;
 import com.google.firebase.FirebaseApp;
-
-import net.grandcentrix.tray.AppPreferences;
 
 import org.angelmariages.rodalieswidget.utils.AlarmUtils;
 import org.angelmariages.rodalieswidget.utils.Constants;
@@ -59,7 +59,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 		}
 
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-		String customUri = new AppPreferences(context).getString(Constants.PREFERENCE_STRING_ALARM_URI, null);
+		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY); // TODO: this class shouldn't have to handle directly SharedPreferences
+		String customUri = prefs.getString(Constants.PREFERENCE_STRING_ALARM_URI, null);
+
 		if (customUri != null) {
 			if (customUri.equalsIgnoreCase("--silent--")) soundUri = null;
 			else soundUri = Uri.parse(customUri);

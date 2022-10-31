@@ -22,15 +22,20 @@
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "org.angelmariages.rodalieswidget"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 33
+        multiDexEnabled true
         versionCode 38
         versionName "1.8"
         vectorDrawables.useSupportLibrary = true
@@ -53,23 +58,40 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    namespace 'org.angelmariages.rodalieswidget'
+    buildFeatures {
+        viewBinding {
+            enabled true
+        }
+        dataBinding {
+            enabled true
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    // Kotlin
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'com.github.kizitonwose.colorpreference:core:1.0.6'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.8'
 
-    implementation 'net.grandcentrix.tray:tray:0.12.0'
+    implementation 'com.frybits.harmony:harmony:1.1.9'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.6.0')
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
 
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-config'
@@ -78,18 +100,39 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
+    //MultiDex
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Retrofit (HTTP)
+    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
+    implementation "com.squareup.retrofit2:converter-moshi:${retrofit_version}"
+    implementation("com.squareup.retrofit2:converter-simplexml:${retrofit_version}") {
+        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+    }
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    // Moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+
     // Tests
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestImplementation 'androidx.test:core:1.4.0-alpha04';
-    androidTestImplementation 'androidx.test:runner:1.4.0-alpha04';
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:core:1.4.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
 
     // UiAutomator Testing
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0';
-    androidTestImplementation 'org.hamcrest:hamcrest-integration:1.4-atlassian-1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'kotlin-kapt'
+

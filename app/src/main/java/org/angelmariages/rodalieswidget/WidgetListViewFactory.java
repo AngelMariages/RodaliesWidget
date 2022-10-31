@@ -136,12 +136,12 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				if (index == promotion_line_number) continue;
 				if (index > promotion_line_number) index--;
 				TrainTime trainTime = schedule.get(index);
-				if (trainTime.getTransfer() == 2 && trainTime.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits) {
-					if (trainTime.getDeparture_time_transfer_one().equalsIgnoreCase(alarm_departure_time)) {
+				if (trainTime.getTransfer() == 2 && trainTime.isSameOriginTrain() && show_more_transfer_trains && group_transfer_exits) {
+					if (trainTime.getDepartureTimeTransferOne().equalsIgnoreCase(alarm_departure_time)) {
 						getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
 					}
 				} else {
-					if (trainTime.getDeparture_time().equalsIgnoreCase(alarm_departure_time)) {
+					if (trainTime.getDepartureTime().equalsIgnoreCase(alarm_departure_time)) {
 						getViewAt(i).setImageViewResource(R.id.imageView, R.drawable.ic_alarm);
 					}
 				}
@@ -243,11 +243,11 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			switch (transfers) {
 				case 0: {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-					setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+					setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
 
 					setDisabledTexts(row, isNotScheduledTrain);
 
-					if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+					if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 						row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 					} else {
 						row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
@@ -255,34 +255,34 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 				break;
 				case 1: {
-					if (trainTime.isDirect_train()) {
+					if (trainTime.isDirectTrain()) {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+						setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
 
 						setDisabledTexts(row, isNotScheduledTrain);
 
-						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 						} else {
 							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
 						}
 					} else {
-						if (trainTime.isSame_origin_train()) {
+						if (trainTime.isSameOriginTrain()) {
 							if (show_more_transfer_trains) {
 								if (group_transfer_exits) {
 									row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
+									setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
 
 									setDisabledTexts(row, isNotScheduledTrain);
 								} else {
 									row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-									setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
-									setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+									setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
+									setTextsTransferOne(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
 
 									setDisabledTexts(row, isNotScheduledTrain);
 									setDisabledTextsTransferOne(row, isNotScheduledTrain);
 								}
-								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 								} else {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
@@ -290,13 +290,13 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 							}
 						} else {
 							row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-							setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
-							setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
+							setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
+							setTextsTransferOne(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
 
 							setDisabledTexts(row, isNotScheduledTrain);
 							setDisabledTextsTransferOne(row, isNotScheduledTrain);
 
-							if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+							if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 								row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 							} else {
 								row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
@@ -306,32 +306,32 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 				break;
 				case 2: {
-					if (trainTime.isSame_origin_train()) {
+					if (trainTime.isSameOriginTrain()) {
 						if (show_more_transfer_trains) {
 							if (group_transfer_exits) {
 								row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
-								setTexts(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
-								setTextsTransferOne(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+								setTexts(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
+								setTextsTransferOne(row, trainTime.getLineTransferTwo(), trainTime.getDepartureTimeTransferTwo(), trainTime.getArrivalTimeTransferTwo());
 
 								setDisabledTexts(row, isNotScheduledTrain);
 								setDisabledTextsTransferOne(row, isNotScheduledTrain);
 
-								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time_transfer_one())) {
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTimeTransferOne())) {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 								} else {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
 								}
 							} else {
 								row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
-								setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
-								setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
-								setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+								setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
+								setTextsTransferOne(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
+								setTextsTransferTwo(row, trainTime.getLineTransferTwo(), trainTime.getDepartureTimeTransferTwo(), trainTime.getArrivalTimeTransferTwo());
 
 								setDisabledTexts(row, isNotScheduledTrain);
 								setDisabledTextsTransferOne(row, isNotScheduledTrain);
 								setDisabledTextsTransferTwo(row, isNotScheduledTrain);
 
-								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+								if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 								} else {
 									row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
@@ -340,15 +340,15 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						}
 					} else {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list_two_transfer);
-						setTexts(row, trainTime.getLine(), trainTime.getDeparture_time(), trainTime.getArrival_time());
-						setTextsTransferOne(row, trainTime.getLine_transfer_one(), trainTime.getDeparture_time_transfer_one(), trainTime.getArrival_time_transfer_one());
-						setTextsTransferTwo(row, trainTime.getLine_transfer_two(), trainTime.getDeparture_time_transfer_two(), trainTime.getArrival_time_transfer_two());
+						setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
+						setTextsTransferOne(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
+						setTextsTransferTwo(row, trainTime.getLineTransferTwo(), trainTime.getDepartureTimeTransferTwo(), trainTime.getArrivalTimeTransferTwo());
 
 						setDisabledTexts(row, isNotScheduledTrain);
 						setDisabledTextsTransferOne(row, isNotScheduledTrain);
 						setDisabledTextsTransferTwo(row, isNotScheduledTrain);
 
-						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDeparture_time())) {
+						if (alarm_departure_time != null && alarm_departure_time.equalsIgnoreCase(trainTime.getDepartureTime())) {
 							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_alarm);
 						} else {
 							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
@@ -362,10 +362,10 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 				Intent intent = new Intent(context, WidgetManager.class);
 				// TODO: 25/12/2017 ??
 				TrainTime trainT = schedule.get(0);
-				if (trainT.getTransfer() == 2 && trainT.isSame_origin_train() && show_more_transfer_trains && group_transfer_exits)
-					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, trainT.getDeparture_time_transfer_one());
+				if (trainT.getTransfer() == 2 && trainT.isSameOriginTrain() && show_more_transfer_trains && group_transfer_exits)
+					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, trainT.getDepartureTimeTransferOne());
 				else
-					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDeparture_time());
+					intent.putExtra(Constants.EXTRA_ALARM_DEPARTURE_TIME, schedule.get(position).getDepartureTime());
 				row.setOnClickFillInIntent(R.id.timesListLayout, intent);
 			}
 

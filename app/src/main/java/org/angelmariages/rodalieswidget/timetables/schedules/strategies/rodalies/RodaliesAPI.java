@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Àngel Mariages
+ * Copyright (c) 2021 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-package org.angelmariages.rodalieswidget.timetables;
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
 
-import java.util.ArrayList;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesDepartures;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
 
-public interface ScheduleProvider {
-    ArrayList<TrainTime> getSchedule();
-    ArrayList<TrainTime> getSchedule(int deltaDays);
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+public interface RodaliesAPI {
+    @GET("gencat_rodalies_serveis/AppJava/restServices/getHoraris?horaIni=0")
+    Call<RodaliesSchedule> getSchedules(
+            @Query("origen") String origin,
+            @Query("desti") String destination,
+            @Query("dataViatge") String travelDate
+            );
+
+    @GET("gencat_rodalies_serveis/AppJava/restServices/getDepartures")
+    Call<RodaliesDepartures> getDepartures(
+            @Query("numestacio") String origin
+    );
 }

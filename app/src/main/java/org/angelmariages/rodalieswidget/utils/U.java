@@ -32,10 +32,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.core.os.ConfigurationCompat;
 import android.util.Log;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
@@ -43,13 +41,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Objects;
 
 public final class U {
@@ -271,48 +267,6 @@ public final class U {
 
 	public static void setUserProperty(Context context, final String key, final Object data) {
 		FirebaseAnalytics.getInstance(context).setUserProperty(key, data.toString());
-		FirebaseApp instance = FirebaseApp.getInstance();
-		final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance(instance);
-		String uid = firebaseInstanceId.getId();
-		Locale locale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
-		final String language = locale.getLanguage();
-
-		mFirebaseDatabase = U.getFirebaseDatabase();
-		final DatabaseReference userProperties = mFirebaseDatabase.getReference("userProperties/" + uid);
-		userProperties.addListenerForSingleValueEvent(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				userProperties.child("device_model").addListenerForSingleValueEvent(new ValueEventListener() {
-					@Override
-					public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-						if (!dataSnapshot.exists()) {
-							userProperties.child("device_model").setValue(Build.MODEL);
-						}
-					}
-
-					@Override
-					public void onCancelled(@NonNull DatabaseError databaseError) {
-
-					}
-				});
-
-				FirebaseInstanceId.getInstance().getInstanceId()
-						.addOnCompleteListener(task -> userProperties.child("firebase_token").setValue(task.getResult().getToken()));
-
-				userProperties.child("language").setValue(language);
-
-				if (dataSnapshot.exists()) {
-					userProperties.child(key).setValue(data);
-				} else {
-					userProperties.setValue(key).addOnCompleteListener(task -> userProperties.child(key).setValue(data));
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
 	}
 
 	public static void sendNoInternetError(int widgetId, Context context) {
@@ -337,6 +291,25 @@ public final class U {
 		noStationsIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
 		noStationsIntent.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_NO_STATIONS);
 		context.sendBroadcast(noStationsIntent);
+	}
+
+	public static void sendProgramedDisruptionsError(int widgetId, Context context) {
+		Intent widgetError = new Intent(context, WidgetManager.class);
+		widgetError.setAction(Constants.ACTION_WIDGET_NO_DATA + widgetId);
+		widgetError.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+		widgetError.putExtra(Constants.EXTRA_WIDGET_STATE, Constants.WIDGET_STATE_PROGRAMED_DISRUPTIONS);
+		context.sendBroadcast(widgetError);
+	}
+
+	public static void sendNewTrainTimes(int widgetId, String origin, String destination, ArrayList<TrainTime> trainTimes, Context context) {
+		Intent sendScheduleIntent = new Intent(context, WidgetManager.class);
+		sendScheduleIntent.setAction(Constants.ACTION_SEND_SCHEDULE + widgetId + origin + destination);
+		sendScheduleIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetId);
+		Bundle bundle = new Bundle();
+
+		bundle.putSerializable(Constants.EXTRA_SCHEDULE_DATA, trainTimes);
+		sendScheduleIntent.putExtra(Constants.EXTRA_SCHEDULE_BUNDLE, bundle);
+		context.sendBroadcast(sendScheduleIntent);
 	}
 
 	public static void sendNotifyUpdate(int widgetID, Context context) {

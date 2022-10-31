@@ -21,12 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.angelmariages.rodalieswidget.timetables;
-
-import androidx.annotation.NonNull;
-
-import org.angelmariages.rodalieswidget.utils.U;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -41,92 +36,141 @@ public class TrainTime implements Serializable {
 	private final long date;
 	private int transfer = 0;
 	private final String line;
-	private final String departure_time;
-	private final String arrival_time;
-	private final String travel_time;
-	private String line_transfer_one = null;
-	private String station_transfer_one = null;
-	private String departure_time_transfer_one = null;
-	private String arrival_time_transfer_one = null;
-	private String line_transfer_two = null;
-	private String station_transfer_two = null;
-	private String departure_time_transfer_two = null;
-	private String arrival_time_transfer_two = null;
+	private final String departureTime;
+	private final String arrivalTime;
+	private final String travelTime;
+	private String lineTransferOne = null;
+	private String stationTransferOne = null;
+	private String departureTimeTransferOne = null;
+	private String arrivalTimeTransferOne = null;
+	private String lineTransferTwo = null;
+	private String stationTransferTwo = null;
+	private String departureTimeTransferTwo = null;
+	private String arrivalTimeTransferTwo = null;
 	private final String origin;
 	private final String destination;
-	private boolean direct_train = false;
-	private boolean same_origin_train = false;
+	private boolean isDirectTrain = false;
+	private boolean isSameOriginTrain = false;
 
-	TrainTime(String line, String departure_time, String arrival_time, String travel_time, String origin, String destination, Calendar from_date) {
+	public TrainTime(String line, String departureTime, String arrivalTime, String origin, String destination, Calendar from_date) {
 		this.line = line;
-		this.departure_time = formatHour(departure_time);
-		this.arrival_time = formatHour(arrival_time);
-		this.travel_time = formatHour(travel_time);
+		this.departureTime = formatHour(departureTime);
+		this.arrivalTime = formatHour(arrivalTime);
 		this.origin = origin;
 		this.destination = destination;
+
 		this.date = from_date.getTimeInMillis();
+
+		this.travelTime = calcTravelTime();
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String travel_time, String origin, String destination, boolean direct_train, boolean same_origin_train, Calendar from_date) {
+	public TrainTime(String line, String departureTime, String arrivalTime, String lineTransferOne, String stationTransferOne, String departureTimeTransferOne, String arrivalTimeTransferOne, String origin, String destination, boolean isDirectTrain, Calendar from_date) {
 		this.transfer = 1;
 		this.line = line;
-		this.departure_time = formatHour(departure_time);
-		this.arrival_time = formatHour(arrival_time);
-		this.travel_time = formatHour(travel_time);
-		this.line_transfer_one = line_transfer_one;
-		this.station_transfer_one = station_transfer_one;
-		this.departure_time_transfer_one = formatHour(departure_time_transfer_one);
-		this.arrival_time_transfer_one = formatHour(arrival_time_transfer_one);
+		this.departureTime = formatHour(departureTime);
+		this.arrivalTime = formatHour(arrivalTime);
+		this.lineTransferOne = lineTransferOne;
+		this.stationTransferOne = stationTransferOne;
+		this.departureTimeTransferOne = formatHour(departureTimeTransferOne);
+		this.arrivalTimeTransferOne = formatHour(arrivalTimeTransferOne);
 		this.origin = origin;
 		this.destination = destination;
-		this.direct_train = direct_train;
-		this.same_origin_train = same_origin_train;
+		this.isDirectTrain = isDirectTrain;
+
+		this.isSameOriginTrain = isSameOriginTrain(line, departureTime, arrivalTime);
 		this.date = from_date.getTimeInMillis();
+
+		this.travelTime = calcTravelTime();
 	}
 
-	TrainTime(String line, String departure_time, String arrival_time, String line_transfer_one, String station_transfer_one, String departure_time_transfer_one, String arrival_time_transfer_one, String line_transfer_two, String station_transfer_two, String departure_time_transfer_two, String arrival_time_transfer_two, String origin, String destination, boolean same_origin_train, Calendar from_date) {
+	public TrainTime(String line, String departureTime, String arrivalTime, String lineTransferOne, String stationTransferOne, String departureTimeTransferOne, String arrivalTimeTransferOne, String lineTransferTwo, String stationTransferTwo, String departureTimeTransferTwo, String arrivalTimeTransferTwo, String origin, String destination, Calendar from_date) {
 		this.transfer = 2;
 		this.line = line;
-		this.departure_time = formatHour(departure_time);
-		this.arrival_time = formatHour(arrival_time);
-		// TODO: 29/01/17 Travel time might be incorrect when there's no departure_time
-		this.travel_time = formatHour(getTravelTime(departure_time, arrival_time_transfer_two));
-		this.line_transfer_one = line_transfer_one;
-		this.station_transfer_one = station_transfer_one;
-		this.departure_time_transfer_one = formatHour(departure_time_transfer_one);
-		this.arrival_time_transfer_one = formatHour(arrival_time_transfer_one);
-		this.line_transfer_two = line_transfer_two;
-		this.station_transfer_two = station_transfer_two;
-		this.departure_time_transfer_two = formatHour(departure_time_transfer_two);
-		this.arrival_time_transfer_two = formatHour(arrival_time_transfer_two);
+		this.departureTime = formatHour(departureTime);
+		this.arrivalTime = formatHour(arrivalTime);
+		this.lineTransferOne = lineTransferOne;
+		this.stationTransferOne = stationTransferOne;
+		this.departureTimeTransferOne = formatHour(departureTimeTransferOne);
+		this.arrivalTimeTransferOne = formatHour(arrivalTimeTransferOne);
+		this.lineTransferTwo = lineTransferTwo;
+		this.stationTransferTwo = stationTransferTwo;
+		this.departureTimeTransferTwo = formatHour(departureTimeTransferTwo);
+		this.arrivalTimeTransferTwo = formatHour(arrivalTimeTransferTwo);
 		this.origin = origin;
 		this.destination = destination;
-		this.same_origin_train = same_origin_train;
+
+		this.isSameOriginTrain = isSameOriginTrain(line, departureTime, arrivalTime);
 		this.date = from_date.getTimeInMillis();
+
+		this.travelTime = calcTravelTime();
 	}
 
-	@NonNull
+	private boolean isSameOriginTrain(String line, String departure_time, String arrival_time) {
+		return (line == null || line.isEmpty()) ||(departure_time == null || departure_time.isEmpty()) || (arrival_time == null || arrival_time.isEmpty());
+	}
+
+	private String calcTravelTime() {
+		String firstDepartureTime = departureTime;
+		if (firstDepartureTime == null) {
+			if (departureTimeTransferOne != null) {
+				firstDepartureTime = departureTimeTransferOne;
+			} else if (departureTimeTransferTwo != null) {
+				firstDepartureTime = departureTimeTransferTwo;
+			}
+		}
+
+		String lastArrivalTime = arrivalTimeTransferTwo;
+		if (lastArrivalTime == null) {
+			if (arrivalTimeTransferOne != null) {
+				lastArrivalTime = arrivalTimeTransferOne;
+			} else if (arrivalTime != null) {
+				lastArrivalTime = arrivalTime;
+			}
+		}
+
+		if (firstDepartureTime != null && lastArrivalTime != null) {
+			try {
+				SimpleDateFormat format;
+				if (firstDepartureTime.contains(":")) format = new SimpleDateFormat("HH:mm");
+				else format = new SimpleDateFormat("HH.mm");
+
+				format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+				Date departureDate = new Date(format.parse(firstDepartureTime).getTime());
+				Date arrivalTime = new Date(format.parse(lastArrivalTime).getTime());
+
+				return format.format(new Date((arrivalTime.getTime() - departureDate.getTime())));
+			} catch (ParseException e) {
+				System.out.println("PARSE EXCEPTION: " + e.getMessage());
+				//U.log("PARSE EXCEPTION: ");
+				//U.log(e.getMessage());
+			}
+		}
+
+		return "00:00";
+	}
+
 	@Override
 	public String toString() {
-		return "TrainTime{" +
-				"transfer=" + transfer +
-				", line='" + line + '\'' +
-				", departure_time='" + departure_time + '\'' +
-				", arrival_time='" + arrival_time + '\'' +
-				", travel_time='" + travel_time + '\'' +
-				", line_transfer_one='" + line_transfer_one + '\'' +
-				", station_transfer_one='" + station_transfer_one + '\'' +
-				", departure_time_transfer_one='" + departure_time_transfer_one + '\'' +
-				", arrival_time_transfer_one='" + arrival_time_transfer_one + '\'' +
-				", line_transfer_two='" + line_transfer_two + '\'' +
-				", station_transfer_two='" + station_transfer_two + '\'' +
-				", departure_time_transfer_two='" + departure_time_transfer_two + '\'' +
-				", arrival_time_transfer_two='" + arrival_time_transfer_two + '\'' +
-				", origin=" + origin +
-				", destination=" + destination +
-				", direct_train=" + direct_train +
-				", same_origin_train=" + same_origin_train +
-				'}';
+		return "TrainTime {" +
+				"\n\ttransfer=" + transfer +
+				"\n\tline='" + line + '\'' +
+				"\n\tdepartureTime='" + departureTime + '\'' +
+				"\n\tarrivalTime='" + arrivalTime + '\'' +
+				"\n\ttravelTime='" + travelTime + '\'' +
+				"\n\tlineTransferOne='" + lineTransferOne + '\'' +
+				"\n\tstationTransferOne='" + stationTransferOne + '\'' +
+				"\n\tdepartureTimeTransferOne='" + departureTimeTransferOne + '\'' +
+				"\n\tarrivalTimeTransferOne='" + arrivalTimeTransferOne + '\'' +
+				"\n\tlineTransferTwo='" + lineTransferTwo + '\'' +
+				"\n\tstationTransferTwo='" + stationTransferTwo + '\'' +
+				"\n\tdepartureTimeTransferTwo='" + departureTimeTransferTwo + '\'' +
+				"\n\tarrivalTimeTransferTwo='" + arrivalTimeTransferTwo + '\'' +
+				"\n\torigin=" + origin +
+				"\n\tdestination=" + destination +
+				"\n\tisDirectTrain=" + isDirectTrain +
+				"\n\tisSameOriginTrain=" + isSameOriginTrain +
+				"\n}";
 	}
 
 	private String formatHour(String hour) {
@@ -137,24 +181,9 @@ public class TrainTime implements Serializable {
 			return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
 		else if (splitTwoDots.length == 2)
 			return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
+		else if (splitTwoDots.length == 3)
+			return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
 		else return null;
-	}
-
-	private String getTravelTime(String departure_time, String arrival_time) {
-		if (departure_time == null || arrival_time == null) return "00:00";
-		try {
-			SimpleDateFormat format;
-			if (departure_time.contains(":")) format = new SimpleDateFormat("HH:mm");
-			else format = new SimpleDateFormat("HH.mm");
-			format.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date departureDate = new Date(format.parse(departure_time).getTime());
-			Date arrivalTime = new Date(format.parse(arrival_time).getTime());
-			return format.format(new Date((arrivalTime.getTime() - departureDate.getTime())));
-		} catch (ParseException e) {
-			U.log("PARSE EXCEPTION: ");
-			U.log(e.getMessage());
-		}
-		return "00:00";
 	}
 
 	public int getTransfer() {
@@ -165,56 +194,56 @@ public class TrainTime implements Serializable {
 		return line;
 	}
 
-	public String getDeparture_time() {
-		return departure_time;
+	public String getDepartureTime() {
+		return departureTime;
 	}
 
-	public String getArrival_time() {
-		return arrival_time;
+	public String getArrivalTime() {
+		return arrivalTime;
 	}
 
-	String getTravel_time() {
-		return travel_time;
+	public String getTravelTime() {
+		return travelTime;
 	}
 
-	public String getLine_transfer_one() {
-		return line_transfer_one;
+	public String getLineTransferOne() {
+		return lineTransferOne;
 	}
 
-	public String getStation_transfer_one() {
-		return station_transfer_one;
+	public String getStationTransferOne() {
+		return stationTransferOne;
 	}
 
-	public String getDeparture_time_transfer_one() {
-		return departure_time_transfer_one;
+	public String getDepartureTimeTransferOne() {
+		return departureTimeTransferOne;
 	}
 
-	public String getArrival_time_transfer_one() {
-		return arrival_time_transfer_one;
+	public String getArrivalTimeTransferOne() {
+		return arrivalTimeTransferOne;
 	}
 
-	public String getLine_transfer_two() {
-		return line_transfer_two;
+	public String getLineTransferTwo() {
+		return lineTransferTwo;
 	}
 
-	public String getStation_transfer_two() {
-		return station_transfer_two;
+	public String getStationTransferTwo() {
+		return stationTransferTwo;
 	}
 
-	public String getDeparture_time_transfer_two() {
-		return departure_time_transfer_two;
+	public String getDepartureTimeTransferTwo() {
+		return departureTimeTransferTwo;
 	}
 
-	public String getArrival_time_transfer_two() {
-		return arrival_time_transfer_two;
+	public String getArrivalTimeTransferTwo() {
+		return arrivalTimeTransferTwo;
 	}
 
-	public boolean isDirect_train() {
-		return direct_train;
+	public boolean isDirectTrain() {
+		return isDirectTrain;
 	}
 
-	public boolean isSame_origin_train() {
-		return same_origin_train;
+	public boolean isSameOriginTrain() {
+		return isSameOriginTrain;
 	}
 
 	public String getOrigin() {
@@ -233,12 +262,12 @@ public class TrainTime implements Serializable {
 
 	public Calendar getDateWithTime() {
 		String time = null;
-		if(departure_time != null) {
-			time = departure_time;
-		} else if(departure_time_transfer_one != null) {
-			time = departure_time_transfer_one;
-		} else if(departure_time_transfer_two != null) {
-			time = departure_time_transfer_two;
+		if(departureTime != null) {
+			time = departureTime;
+		} else if(departureTimeTransferOne != null) {
+			time = departureTimeTransferOne;
+		} else if(departureTimeTransferTwo != null) {
+			time = departureTimeTransferTwo;
 		}
 		if (time != null) {
 			String[] split = time.split(":");

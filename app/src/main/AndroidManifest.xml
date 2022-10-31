@@ -1,38 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ MIT License
-  ~
-  ~ Copyright (c) 2020 Àngel Mariages
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
-  ~ of this software and associated documentation files (the "Software"), to deal
-  ~ in the Software without restriction, including without limitation the rights
-  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  ~ copies of the Software, and to permit persons to whom the Software is
-  ~ furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all
-  ~ copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ~ SOFTWARE.
-  ~
-  -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.angelmariages.rodalieswidget">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -40,18 +14,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
 
-        <provider
-            android:name="net.grandcentrix.tray.provider.TrayContentProvider"
-            android:authorities="org.angelmariages.rodalieswidget"
-            android:exported="true"
-            tools:replace="android:exported,android:authorities"
-            tools:ignore="ExportedContentProvider" />
-
-        <receiver android:name=".WidgetManager">
+        <receiver
+            android:name=".WidgetManager"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -65,10 +34,10 @@
         <activity
             android:name=".SelectStation"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/title_activity_select_station"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -83,48 +52,49 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SelectAlarmActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/title_activity_select_alarm"
             android:noHistory="true"
             android:theme="@style/Theme_Dialog" />
-
         <activity
             android:name=".SettingsActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-
-        <!-- noHistory! -->
+            android:theme="@style/AppTheme" /> <!-- noHistory! -->
         <activity
             android:name=".FirstTimeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".RateAppActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/rate_app_question"
             android:noHistory="true"
             android:theme="@style/Theme_Dialog" />
 
         <service
             android:name=".WidgetService"
+            android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <service android:name=".ScheduleUpdateNotificationService"/>
-
+        <service android:name=".ScheduleUpdateNotificationService" />
 
         <receiver
             android:name=".AlarmReceiver"
+            android:exported="false"
             android:process=":alarm" />
     </application>
 

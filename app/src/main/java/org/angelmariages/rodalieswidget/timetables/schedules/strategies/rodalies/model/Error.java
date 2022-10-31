@@ -20,41 +20,27 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Text;
 
-buildscript {
-    ext.kotlin_version = '1.7.20'
-    repositories {
-        mavenCentral()
-        google()
+@Root
+public class Error {
+    @Attribute
+    public String type;
+
+    @Attribute
+    public String lang;
+
+    @Text
+    private String error;
+
+    public String getError() {
+        return error;
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        mavenCentral()
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

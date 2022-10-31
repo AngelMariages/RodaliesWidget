@@ -20,41 +20,31 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-ext {
-    retrofit_version= "2.9.0"
-}
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
-buildscript {
-    ext.kotlin_version = '1.7.20'
-    repositories {
-        mavenCentral()
-        google()
+@Root(name = "train", strict = false)
+public class RodaliesDepartureTime {
+    @Element(name = "departureDateHourSelectedStation")
+    private String departureTime;
+
+    @Element(name = "platformSelectedStation", required = false)
+    private Integer departurePlatform;
+
+    @Element(name = "delay")
+    private Integer delay;
+
+    @Override
+    public String toString() {
+        return "RodaliesDepartureTime{" +
+                "departureTime='" + departureTime + '\'' +
+                ", departurePlatform=" + departurePlatform +
+                ", delay=" + delay +
+                '}';
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        mavenCentral()
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
