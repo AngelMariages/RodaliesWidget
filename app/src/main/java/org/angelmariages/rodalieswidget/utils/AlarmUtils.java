@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.frybits.harmony.Harmony;
@@ -41,74 +42,82 @@ import org.angelmariages.rodalieswidget.AlarmReceiver;
 import java.util.Calendar;
 
 public class AlarmUtils {
-	private static void logEventAlarmSet(Context context, String departure_time, String origin, String destination) {
-		Bundle bundle = null;
-		if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
-			bundle = new Bundle();
-			bundle.putString("origin_station", origin);
-			bundle.putString("destination_station", destination);
-			bundle.putString("departure_time", departure_time);
-		}
+    private static void logEventAlarmSet(Context context, String departure_time, String origin, String destination) {
+        Bundle bundle = null;
+        if (!origin.equalsIgnoreCase("-1") && !destination.equalsIgnoreCase("-1")) {
+            bundle = new Bundle();
+            bundle.putString("origin_station", origin);
+            bundle.putString("destination_station", destination);
+            bundle.putString("departure_time", departure_time);
+        }
 
-		FirebaseAnalytics.getInstance(context).logEvent("alarm_set", bundle);
-	}
+        FirebaseAnalytics.getInstance(context).logEvent("alarm_set", bundle);
+    }
 
-	public static void logEventAlarmFired(Context context) {
-		FirebaseAnalytics.getInstance(context).logEvent("alarm_fired", null);
-	}
+    public static void logEventAlarmFired(Context context) {
+        FirebaseAnalytics.getInstance(context).logEvent("alarm_fired", null);
+    }
 
-	public static void setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {
-		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		Calendar calendar = Calendar.getInstance();
-		String[] hourMinutes = alarmTime.split(":");
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
-				new Intent(context, AlarmReceiver.class).putExtra(Constants.EXTRA_WIDGET_ID, widgetID),
-				PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA);
+    private static int getIntentFlags() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA | PendingIntent.FLAG_IMMUTABLE;
+        }
 
-		if (hourMinutes.length == 2) {
-			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
-			calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
-			calendar.set(Calendar.SECOND, 0);
-			if (alarmManager != null) {
-				alarmManager.cancel(pendingIntent);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-					alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-				} else {
-					alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-				}
-			}
+        return PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA;
+    }
 
-			saveAlarm(context, widgetID, origin, destination, departureTime);
+    public static void setAlarm(Context context, @NonNull String departureTime, @NonNull String alarmTime, int widgetID, String origin, String destination) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        String[] hourMinutes = alarmTime.split(":");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
+                new Intent(context, AlarmReceiver.class).putExtra(Constants.EXTRA_WIDGET_ID, widgetID),
+                getIntentFlags());
 
-			U.sendNotifyUpdate(widgetID, context);
+        if (hourMinutes.length == 2) {
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourMinutes[0]));
+            calendar.set(Calendar.MINUTE, Integer.parseInt(hourMinutes[1]));
+            calendar.set(Calendar.SECOND, 0);
+            if (alarmManager != null) {
+                alarmManager.cancel(pendingIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
+            }
 
-			logEventAlarmSet(context, departureTime, origin, destination);
+            saveAlarm(context, widgetID, origin, destination, departureTime);
 
-		}
-	}
+            U.sendNotifyUpdate(widgetID, context);
 
-	private static void saveAlarm(Context context, int widgetID, String origin, String destination, String departureTime) {
-		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
-		String alarmPrefName = Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination;
-		prefs.edit().putString(alarmPrefName, departureTime).apply();
-	}
+            logEventAlarmSet(context, departureTime, origin, destination);
 
-	public static String getAlarm(Context context, int widgetID, String origin, String destination) {
-		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+        }
+    }
 
-		return prefs.getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
-	}
+    private static void saveAlarm(Context context, int widgetID, String origin, String destination, String departureTime) {
+        SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+        String alarmPrefName = Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination;
+        prefs.edit().putString(alarmPrefName, departureTime).apply();
+    }
 
-	public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
-				new Intent(context, AlarmReceiver.class).putExtra(Constants.EXTRA_WIDGET_ID, widgetID),
-				PendingIntent.FLAG_UPDATE_CURRENT | Intent.FILL_IN_DATA);
-		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if (alarmManager != null) alarmManager.cancel(pendingIntent);
+    public static String getAlarm(Context context, int widgetID, String origin, String destination) {
+        SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
 
-		SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
-		prefs.edit().remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination).apply();
+        return prefs.getString(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination, null);
+    }
 
-		U.sendNotifyUpdate(widgetID, context);
-	}
+    public static void removeAlarm(Context context, int widgetID, String origin, String destination) {
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 272829,
+                new Intent(context, AlarmReceiver.class).putExtra(Constants.EXTRA_WIDGET_ID, widgetID),
+                getIntentFlags());
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) alarmManager.cancel(pendingIntent);
+
+        SharedPreferences prefs = Harmony.getSharedPreferences(context, Constants.PREFERENCE_GLOBAL_KEY);
+        prefs.edit().remove(Constants.PREFERENCE_STRING_ALARM_FOR_ID + widgetID + origin + destination).apply();
+
+        U.sendNotifyUpdate(widgetID, context);
+    }
 }

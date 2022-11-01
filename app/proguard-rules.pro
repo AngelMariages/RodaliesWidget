@@ -38,3 +38,33 @@
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
+
+# Retrofit
+-keep class com.squareup.okhttp.** { *; }
+-keep class retrofit.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+
+-dontwarn com.squareup.okhttp.**
+-dontwarn okio.**
+-dontwarn retrofit.**
+-dontwarn rx.**
+
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+# Models
+-keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.** { *; }
+-keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.** { *; }
+
+# (2)Simple XML
+-keep public class org.simpleframework.**{ *; }
+-keep class org.simpleframework.xml.**{ *; }
+-keep class org.simpleframework.xml.core.**{ *; }
+-keep class org.simpleframework.xml.util.**{ *; }
+
+-keepattributes ElementList, Element, Signature, Root, *Annotation*
+
+-keepclassmembers class * {
+    @org.simpleframework.xml.* *;
+}

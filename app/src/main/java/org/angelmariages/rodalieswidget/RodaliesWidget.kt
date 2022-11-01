@@ -216,6 +216,14 @@ internal class RodaliesWidget(
         setConfigStationIntent()
     }
 
+    private fun getIntentFlags(): Int {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        }
+
+        return PendingIntent.FLAG_UPDATE_CURRENT
+    }
+
     private fun setListViewClickIntent() {
         //It this intent is not set the intent when on click on a row of the list view doesn't work
         val listViewClickIntent = Intent(context, WidgetManager::class.java)
@@ -223,7 +231,7 @@ internal class RodaliesWidget(
         listViewClickIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID)
         val clickPI = PendingIntent.getBroadcast(
             context, 0,
-            listViewClickIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            listViewClickIntent, getIntentFlags()
         )
         setPendingIntentTemplate(R.id.scheduleListView, clickPI)
     }
@@ -235,7 +243,7 @@ internal class RodaliesWidget(
         updateButtonIntent.putExtra(Constants.EXTRA_WIDGET_STATE, state)
         val pendingIntent = PendingIntent.getBroadcast(
             context, 0,
-            updateButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            updateButtonIntent, getIntentFlags()
         )
         setOnClickPendingIntent(R.id.updateButton, pendingIntent)
     }
@@ -247,7 +255,8 @@ internal class RodaliesWidget(
         swapButtonIntent.putExtra(Constants.EXTRA_WIDGET_STATE, state)
         val swapPI = PendingIntent.getBroadcast(
             context, 0,
-            swapButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            swapButtonIntent,
+            getIntentFlags()
         )
         setOnClickPendingIntent(R.id.swapButton, swapPI)
     }
@@ -259,7 +268,7 @@ internal class RodaliesWidget(
         originStationIntent.putExtra(Constants.EXTRA_ORIGINorDESTINATION, Constants.ORIGIN)
         val showDialogPI1 = PendingIntent.getBroadcast(
             context, 0,
-            originStationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            originStationIntent, getIntentFlags()
         )
         setOnClickPendingIntent(R.id.originLayout, showDialogPI1)
         val destinationStationIntent = Intent(context, WidgetManager::class.java)
@@ -272,7 +281,7 @@ internal class RodaliesWidget(
         )
         val showDialogPI2 = PendingIntent.getBroadcast(
             context, 0,
-            destinationStationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            destinationStationIntent, getIntentFlags()
         )
         setOnClickPendingIntent(R.id.destinationLayout, showDialogPI2)
     }

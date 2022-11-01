@@ -25,19 +25,19 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
+import com.tickaroo.tikxml.annotation.Element;
+import com.tickaroo.tikxml.annotation.Xml;
 
-@Root(name = "train", strict = false)
+@Xml(name = "train")
 public class RodaliesDepartureTime {
     @Element(name = "departureDateHourSelectedStation")
-    private String departureTime;
+    public String departureTime;
 
-    @Element(name = "platformSelectedStation", required = false)
-    private Integer departurePlatform;
+    @Element(name = "platformSelectedStation")
+    public Integer departurePlatform;
 
     @Element(name = "delay")
-    private Integer delay;
+    public Integer delay;
 
     @Override
     public String toString() {

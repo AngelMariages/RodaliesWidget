@@ -90,7 +90,11 @@ public class FirstTimeActivity extends AppCompatActivity {
 		viewPager.setAdapter(new MyViewPagerAdapter());
 		viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-		btnSkip.setOnClickListener(v -> mFirebaseAnalytics.logEvent("tutorial_skip", new Bundle()));
+		btnSkip.setOnClickListener(v -> {
+			mFirebaseAnalytics.logEvent("tutorial_skip", new Bundle());
+
+			startSettings();
+		});
 
 		btnNext.setOnClickListener(v -> {
 			int current = viewPager.getCurrentItem() + 1;

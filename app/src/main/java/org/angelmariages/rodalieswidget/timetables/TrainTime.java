@@ -33,12 +33,12 @@ import java.util.TimeZone;
 public class TrainTime implements Serializable {
 	private static final long serialVersionUID = 12345L;
 
-	private final long date;
+	private long date;
 	private int transfer = 0;
-	private final String line;
-	private final String departureTime;
-	private final String arrivalTime;
-	private final String travelTime;
+	private String line;
+	private String departureTime;
+	private String arrivalTime;
+	private String travelTime;
 	private String lineTransferOne = null;
 	private String stationTransferOne = null;
 	private String departureTimeTransferOne = null;
@@ -47,10 +47,12 @@ public class TrainTime implements Serializable {
 	private String stationTransferTwo = null;
 	private String departureTimeTransferTwo = null;
 	private String arrivalTimeTransferTwo = null;
-	private final String origin;
-	private final String destination;
+	private String origin;
+	private String destination;
 	private boolean isDirectTrain = false;
 	private boolean isSameOriginTrain = false;
+
+	public TrainTime() {}
 
 	public TrainTime(String line, String departureTime, String arrivalTime, String origin, String destination, Calendar from_date) {
 		this.line = line;

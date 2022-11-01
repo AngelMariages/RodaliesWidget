@@ -40,6 +40,7 @@ import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class U {
@@ -180,7 +181,7 @@ public final class U {
         }
     }
 
-    public static void logEventUpdate(ArrayList<TrainTime> trainTimes, Context context) {
+    public static void logEventUpdate(List<TrainTime> trainTimes, Context context) {
         Bundle bundle = null;
         String origin = "-1", destination = "-1";
 
@@ -258,7 +259,7 @@ public final class U {
         context.sendBroadcast(notifyUpdateIntent);
     }
 
-    public static int getScrollPosition(ArrayList<TrainTime> schedule) {
+    public static int getScrollPosition(List<TrainTime> schedule) {
         for (int i = 0; i < schedule.size(); i++) {
             if (TimeUtils.isScheduledTrain(schedule.get(i))) return i;
         }

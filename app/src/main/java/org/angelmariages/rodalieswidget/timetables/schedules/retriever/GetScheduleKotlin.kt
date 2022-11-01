@@ -81,15 +81,14 @@ class GetScheduleKotlin {
         if (TimeUtils.getCurrentHour() == 0) {
             val yesterdaySavedSchedule = retrieveSchedule(context, -1, origin, destination, core)
 
-            if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule as java.util.ArrayList<TrainTime>?)) {
-                U.sendNewTrainTimes(widgetId, origin, destination, yesterdaySavedSchedule, context)
+            if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule)) {
+                U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(yesterdaySavedSchedule), context)
 
                 return
             }
         }
 
         try {
-
             U.log("Getting JSON for ${origin}->${destination}")
             val result = retrieveSchedule(context, 0, origin, destination, core)
 
@@ -98,12 +97,9 @@ class GetScheduleKotlin {
 
             removeOldFiles(context)
 
-            U.sendNewTrainTimes(
-                widgetId, origin, destination,
-                result as java.util.ArrayList<TrainTime>, context
-            )
+            U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
         } catch (e: ServiceDisruptionError) {
-            if (e.errors.any { e -> e.error.contains("disruptions") }) {
+            if (e.errors.any { it.error.contains("disruptions") }) {
                 U.sendProgramedDisruptionsError(widgetId, context)
             }
         }
@@ -123,12 +119,9 @@ class GetScheduleKotlin {
 
             val result = retrieveSchedule(context, deltaDays, origin, destination, core)
 
-            U.sendNewTrainTimes(
-                widgetId, origin, destination,
-                result as java.util.ArrayList<TrainTime>, context
-            )
+            U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
         } catch (e: ServiceDisruptionError) {
-            if (e.errors.any { e -> e.error.contains("disruptions") }) {
+            if (e.errors.any { it.error.contains("disruptions") }) {
                 U.sendProgramedDisruptionsError(widgetId, context)
             }
         }
@@ -155,7 +148,7 @@ class GetScheduleKotlin {
             return emptyList()
         }
 
-        val trainTimes = getTrainTimesFromSchedule(context, schedule as List<TrainTime>, deltaDays != 0)
+        val trainTimes = getTrainTimesFromSchedule(context, schedule, deltaDays != 0)
 
         saveSchedule(context, origin, destination, deltaDays, trainTimes)
 
@@ -166,7 +159,7 @@ class GetScheduleKotlin {
         context: Context,
         schedule: List<TrainTime>,
         forceAdd: Boolean
-    ): ArrayList<TrainTime> {
+    ): List<TrainTime> {
         val hourSchedule = ArrayList<TrainTime>()
         val showAllTimes = PreferenceManager.getDefaultSharedPreferences(context)
             .getBoolean("show_all_times", false)
@@ -189,6 +182,14 @@ class GetScheduleKotlin {
         }
 
         return hourSchedule
+    }
+
+    private fun <T>listAsArrayList(original: List<T>): ArrayList<T> {
+        val asArrayList = arrayListOf<T>()
+
+        asArrayList.addAll(original)
+
+        return asArrayList
     }
 
 }

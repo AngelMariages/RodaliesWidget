@@ -25,13 +25,13 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Root;
+import com.tickaroo.tikxml.annotation.Element;
+import com.tickaroo.tikxml.annotation.Xml;
 
 import java.util.List;
 
-@Root(name = "getDepartures", strict = false)
+@Xml(name = "getDepartures")
 public class RodaliesDepartures {
-    @ElementList(name = "trains")
-    private List<RodaliesDepartureTime> departureTimeList;
+    @Element(name = "trains")
+    public List<RodaliesDepartureTime> departureTimeList;
 }
