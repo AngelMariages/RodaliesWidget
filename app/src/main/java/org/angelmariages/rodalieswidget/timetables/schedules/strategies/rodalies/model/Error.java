@@ -38,9 +38,5 @@ public class Error {
     public String lang;
 
     @Text
-    private String error;
-
-    public String getError() {
-        return error;
-    }
+    public String error;
 }

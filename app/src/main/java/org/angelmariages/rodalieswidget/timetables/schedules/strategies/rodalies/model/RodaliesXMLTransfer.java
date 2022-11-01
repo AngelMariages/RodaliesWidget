@@ -31,16 +31,16 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Text;
 
-@Root(strict=false)
+@Root(strict = false)
 public class RodaliesXMLTransfer {
-    @Attribute(name="codi")
-    private String stationCode;
+    @Attribute(name = "codi")
+    public String stationCode;
 
-    @Attribute(name="accesible")
-    private String accessible;
+    @Attribute(name = "accesible")
+    public String accessible;
 
     @Text
-    private String stationName;
+    public String stationName;
 
     public String getStationCode() {
         return stationCode;

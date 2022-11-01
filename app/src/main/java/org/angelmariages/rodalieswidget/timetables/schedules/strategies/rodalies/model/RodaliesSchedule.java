@@ -34,13 +34,13 @@ import java.util.List;
 @Root(name = "horaris", strict = false)
 public class RodaliesSchedule {
     @ElementList(name = "error", inline = true, required = false)
-    private List<Error> errors;
+    public List<Error> errors;
 
     @ElementList(name = "resultats", required = false)
-    private List<RodaliesXMLTime> schedule;
+    public List<RodaliesXMLTime> schedule;
 
     @ElementList(name = "transbordament", required = false)
-    private List<RodaliesXMLTransfer> transfersList;
+    public List<RodaliesXMLTransfer> transfersList;
 
     public List<Error> getErrors() {
         return errors;

@@ -36,19 +36,19 @@ import java.util.List;
 @Root(strict = false)
 public class RodaliesXMLTimeRoute {
     @Element(name = "linia", required = false)
-    private String line;
+    public String line;
 
     @Element(name = "hora_sortida", required = false)
-    private String departureTime;
+    public String departureTime;
 
     @Element(name = "hora_arribada")
-    private String arrivalTime;
+    public String arrivalTime;
 
     @Element(name = "duracio_trajecte")
-    private String travelTime;
+    public String travelTime;
 
     @ElementList(entry = "item", inline = true)
-    private List<RodaliesXMLTimeRouteItem> rodaliesXMLTimeRouteItems;
+    public List<RodaliesXMLTimeRouteItem> rodaliesXMLTimeRouteItems;
 
     public String getLine() {
         return line;
@@ -60,10 +60,6 @@ public class RodaliesXMLTimeRoute {
 
     public String getArrivalTime() {
         return arrivalTime;
-    }
-
-    public String getTravelTime() {
-        return travelTime;
     }
 
     public List<RodaliesXMLTimeRouteItem> getRodaliesXMLTimeRoutesItems() {
