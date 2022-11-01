@@ -94,8 +94,8 @@ private fun retrieveFile(
     fileName: String
 ): String? {
     try {
-        context.openFileInput(fileName).use { inputStream ->
-            return inputStream.bufferedReader().use {
+        return context.openFileInput(fileName).use { inputStream ->
+            inputStream.bufferedReader().use {
                 it.readText()
             }
         }
