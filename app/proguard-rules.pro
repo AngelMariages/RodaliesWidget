@@ -39,32 +39,16 @@
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
 
-# Retrofit
--keep class com.squareup.okhttp.** { *; }
--keep class retrofit.** { *; }
--keep interface com.squareup.okhttp.** { *; }
+# TikMXL
 
--dontwarn com.squareup.okhttp.**
--dontwarn okio.**
--dontwarn retrofit.**
--dontwarn rx.**
+-keep class com.tickaroo.tikxml.** { *; }
+-keep @com.tickaroo.tikxml.annotation.Xml public class *
+-keep class **$$TypeAdapter { *; }
 
--keepclasseswithmembers class * {
-    @retrofit.http.* <methods>;
+-keepclasseswithmembernames class * {
+    @com.tickaroo.tikxml.* <fields>;
 }
 
-# Models
--keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.** { *; }
--keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.** { *; }
-
-# (2)Simple XML
--keep public class org.simpleframework.**{ *; }
--keep class org.simpleframework.xml.**{ *; }
--keep class org.simpleframework.xml.core.**{ *; }
--keep class org.simpleframework.xml.util.**{ *; }
-
--keepattributes ElementList, Element, Signature, Root, *Annotation*
-
--keepclassmembers class * {
-    @org.simpleframework.xml.* *;
+-keepclasseswithmembernames class * {
+    @com.tickaroo.tikxml.* <methods>;
 }
