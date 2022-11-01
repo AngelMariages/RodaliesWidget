@@ -28,22 +28,23 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalie
 import androidx.annotation.NonNull;
 
 import com.tickaroo.tikxml.annotation.Element;
+import com.tickaroo.tikxml.annotation.PropertyElement;
 import com.tickaroo.tikxml.annotation.Xml;
 
 import java.util.List;
 
 @Xml
 public class RodaliesXMLTimeRoute {
-    @Element(name = "linia")
+    @PropertyElement(name = "linia")
     public String line;
 
-    @Element(name = "hora_sortida")
+    @PropertyElement(name = "hora_sortida")
     public String departureTime;
 
-    @Element(name = "hora_arribada")
+    @PropertyElement(name = "hora_arribada")
     public String arrivalTime;
 
-    @Element(name = "duracio_trajecte")
+    @PropertyElement(name = "duracio_trajecte")
     public String travelTime;
 
     @Element(name = "item")

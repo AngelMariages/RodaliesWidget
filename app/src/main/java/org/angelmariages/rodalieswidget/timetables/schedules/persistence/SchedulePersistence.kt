@@ -60,7 +60,7 @@ fun saveSchedule(
 }
 
 fun isValidTrainTimes(trainTimes: List<TrainTime>): Boolean {
-    return trainTimes.any { it.departureTime.isNotEmpty() }
+    return trainTimes.any { it.departureTime != null && it.departureTime.isNotEmpty() }
 }
 
 fun retrieveSavedSchedule(

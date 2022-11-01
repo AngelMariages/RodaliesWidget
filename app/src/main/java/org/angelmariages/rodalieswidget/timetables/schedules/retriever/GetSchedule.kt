@@ -39,7 +39,7 @@ import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 import org.angelmariages.rodalieswidget.utils.TimeUtils
 import org.angelmariages.rodalieswidget.utils.U
 
-class GetScheduleKotlin {
+class GetSchedule {
     suspend fun execute(
         context: Context,
         widgetId: Int,

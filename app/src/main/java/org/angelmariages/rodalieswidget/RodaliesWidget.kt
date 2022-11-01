@@ -39,7 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.angelmariages.rodalieswidget.timetables.TrainTime
-import org.angelmariages.rodalieswidget.timetables.schedules.retriever.GetScheduleKotlin
+import org.angelmariages.rodalieswidget.timetables.schedules.retriever.GetSchedule
 import org.angelmariages.rodalieswidget.utils.Constants
 import org.angelmariages.rodalieswidget.utils.StationUtils
 import org.angelmariages.rodalieswidget.utils.U
@@ -68,7 +68,7 @@ internal class RodaliesWidget(
                 startForegroundService(context)
                 // GetSchedule().execute(context, widgetID, deltaDays)
                 GlobalScope.launch(Dispatchers.IO) {
-                    GetScheduleKotlin().execute(context, widgetID, deltaDays)
+                    GetSchedule().execute(context, widgetID, deltaDays)
                     println("Finished!")
                 }
             }
@@ -217,11 +217,19 @@ internal class RodaliesWidget(
     }
 
     private fun getIntentFlags(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
         }
+    }
 
-        return PendingIntent.FLAG_UPDATE_CURRENT
+    private fun getMutableIntentFlags(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
     }
 
     private fun setListViewClickIntent() {
@@ -231,7 +239,8 @@ internal class RodaliesWidget(
         listViewClickIntent.putExtra(Constants.EXTRA_WIDGET_ID, widgetID)
         val clickPI = PendingIntent.getBroadcast(
             context, 0,
-            listViewClickIntent, getIntentFlags()
+            // For PendingIntentTemplate we need the MUTABLE flag
+            listViewClickIntent, getMutableIntentFlags()
         )
         setPendingIntentTemplate(R.id.scheduleListView, clickPI)
     }

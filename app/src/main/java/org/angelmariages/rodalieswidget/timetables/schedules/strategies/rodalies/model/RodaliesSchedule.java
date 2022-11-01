@@ -26,10 +26,12 @@
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
 import com.tickaroo.tikxml.annotation.Element;
+import com.tickaroo.tikxml.annotation.Path;
 import com.tickaroo.tikxml.annotation.Xml;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Xml(name = "horaris")
@@ -37,11 +39,13 @@ public class RodaliesSchedule {
     @Element(name = "error")
     public List<Error> errors;
 
-    @Element(name = "resultats")
+    @Path("resultats")
+    @Element(name = "item")
     public List<RodaliesXMLTime> schedule;
 
-    @Element(name = "transbordament")
-    public List<RodaliesXMLTransfer> transfersList;
+    @Path("transbordament")
+    @Element(name = "estacio")
+    public List<RodaliesXMLTransfer> transfersList = new ArrayList<>();
 
     public List<Error> getErrors() {
         return errors;

@@ -28,7 +28,7 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalie
 import androidx.annotation.NonNull;
 
 import com.tickaroo.tikxml.annotation.Attribute;
-import com.tickaroo.tikxml.annotation.Element;
+import com.tickaroo.tikxml.annotation.PropertyElement;
 import com.tickaroo.tikxml.annotation.Xml;
 
 @Xml
@@ -39,10 +39,10 @@ public class RodaliesXMLTimeRouteItem {
     @Attribute(name = "codi")
     public String stationCode;
 
-    @Element(name = "hora_sortida")
+    @PropertyElement(name = "hora_sortida")
     public String departureTime;
 
-    @Element(name = "hora_arribada")
+    @PropertyElement(name = "hora_arribada")
     public String arrivalTime;
 
     public String getArrivalTime() {

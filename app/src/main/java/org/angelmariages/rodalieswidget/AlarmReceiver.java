@@ -38,6 +38,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.frybits.harmony.Harmony;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.angelmariages.rodalieswidget.utils.AlarmUtils;
@@ -50,6 +51,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		int widgetID = intent.getIntExtra(Constants.EXTRA_WIDGET_ID, -1);
 		if (widgetID == -1) return;
 
+		FirebaseApp.initializeApp(context);
 		FirebaseAnalytics.getInstance(context);
 
 		U.log("Alarm received, removing it " + widgetID);
