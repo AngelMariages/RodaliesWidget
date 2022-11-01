@@ -99,6 +99,7 @@
     </PreferenceCategory>-->
     <PreferenceCategory android:title="@string/pref_about_title">
         <SwitchPreference
+            android:defaultValue="true"
             android:key="pref_anonymous_data_collection"
             android:summary="@string/pref_anonymous_data_collection_summary"
             android:title="@string/pref_anonymous_data_collection" />
