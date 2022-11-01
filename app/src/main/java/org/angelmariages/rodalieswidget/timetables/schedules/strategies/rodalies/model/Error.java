@@ -25,11 +25,11 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
+import com.tickaroo.tikxml.annotation.Attribute;
+import com.tickaroo.tikxml.annotation.TextContent;
+import com.tickaroo.tikxml.annotation.Xml;
 
-@Root
+@Xml
 public class Error {
     @Attribute
     public String type;
@@ -37,6 +37,6 @@ public class Error {
     @Attribute
     public String lang;
 
-    @Text
+    @TextContent
     public String error;
 }

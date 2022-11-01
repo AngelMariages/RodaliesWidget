@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class TimeUtils {
@@ -99,17 +100,12 @@ public class TimeUtils {
 		return Calendar.getInstance();
 	}
 
-	public static boolean isScheduleExpired(ArrayList<TrainTime> schedule) {
+	public static boolean isScheduleExpired(List<TrainTime> schedule) {
 		if (schedule != null && schedule.size() > 0) {
 			TrainTime trainTime = schedule.get(schedule.size() - 1);
 			return trainTime.getDate() != null && !isScheduledTrain(trainTime);
 		}
 		return true;
-	}
-
-	public static long getCurrentDateAsTimestamp() {
-		Calendar cal = getCalendarForDelta(0);
-		return cal.getTimeInMillis();
 	}
 
 	public static boolean isScheduledTrain(TrainTime trainTime) {

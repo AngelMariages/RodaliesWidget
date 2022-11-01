@@ -27,11 +27,11 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalie
 
 import androidx.annotation.NonNull;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
+import com.tickaroo.tikxml.annotation.Attribute;
+import com.tickaroo.tikxml.annotation.TextContent;
+import com.tickaroo.tikxml.annotation.Xml;
 
-@Root(strict = false)
+@Xml
 public class RodaliesXMLTransfer {
     @Attribute(name = "codi")
     public String stationCode;
@@ -39,7 +39,7 @@ public class RodaliesXMLTransfer {
     @Attribute(name = "accesible")
     public String accessible;
 
-    @Text
+    @TextContent
     public String stationName;
 
     public String getStationCode() {

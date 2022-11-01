@@ -136,7 +136,7 @@ public class RodaliesScheduleParser {
                         }
                     } else {
                         // Direct train
-                        // It's like a train without transfers
+                        // It's like a 1 transfer train but without transfers defined
                         String transferStation = null;
 
                         if (schedule.getTransfersList().size() > 0) {
@@ -175,6 +175,9 @@ public class RodaliesScheduleParser {
                             RodaliesXMLTimeRouteItem firstRouteItem = route.getRodaliesXMLTimeRoutesItems().get(0);
                             RodaliesXMLTimeRouteItem secondRouteItem = route.getRodaliesXMLTimeRoutesItems().get(1);
 
+                            // TODO: If numRoutes > 1 then route 2 is same origin as 1 (sameOriginTrain)
+
+                            Boolean isSameOriginTrain = i > 0;
 
                             trainTimes.add(
                                     new TrainTime(
@@ -191,6 +194,7 @@ public class RodaliesScheduleParser {
                                             route.getArrivalTime(),
                                             origin,
                                             destination,
+                                            isSameOriginTrain,
                                             calendarInstance
                                     )
                             );

@@ -39,7 +39,7 @@ import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 import org.angelmariages.rodalieswidget.utils.TimeUtils
 import org.angelmariages.rodalieswidget.utils.U
 
-class GetScheduleKotlin {
+class GetSchedule {
     suspend fun execute(
         context: Context,
         widgetId: Int,
@@ -83,14 +83,13 @@ class GetScheduleKotlin {
                 listAsArrayList(retrieveSchedule(context, -1, origin, destination, core))
 
             if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule)) {
-                U.sendNewTrainTimes(widgetId, origin, destination, yesterdaySavedSchedule, context)
+                U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(yesterdaySavedSchedule), context)
 
                 return
             }
         }
 
         try {
-
             U.log("Getting JSON for ${origin}->${destination}")
             val result = retrieveSchedule(context, 0, origin, destination, core)
 
@@ -149,7 +148,7 @@ class GetScheduleKotlin {
         if (schedule == null) {
             return emptyList()
         }
-
+        
         val trainTimes =
             getTrainTimesFromSchedule(context, listAsArrayList(schedule), deltaDays != 0)
 
@@ -194,4 +193,5 @@ class GetScheduleKotlin {
 
         return asArrayList
     }
+
 }
