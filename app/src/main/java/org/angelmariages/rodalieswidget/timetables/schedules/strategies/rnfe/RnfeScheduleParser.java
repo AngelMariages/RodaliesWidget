@@ -99,6 +99,7 @@ public class RnfeScheduleParser {
                             rnfeJSONTime.getArrivalTime(), // First train arrival is Transfer 2 arrival
                             origin,
                             destination,
+                            false,
                             Calendar.getInstance()
                     );
                 }

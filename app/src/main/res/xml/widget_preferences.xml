@@ -22,8 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/pref_schedule_title">
         <SwitchPreference
             android:key="show_all_times"
@@ -99,9 +98,9 @@
     </PreferenceCategory>-->
     <PreferenceCategory android:title="@string/pref_about_title">
         <SwitchPreference
-            android:defaultValue="true"
             android:key="pref_anonymous_data_collection"
             android:summary="@string/pref_anonymous_data_collection_summary"
+            android:defaultValue="true"
             android:title="@string/pref_anonymous_data_collection" />
         <Preference
             android:key="pref_view_tutorial"

@@ -25,9 +25,11 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
 
+import com.tickaroo.tikxml.TikXml;
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory;
+
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.Strategy;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesDepartures;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
 
 import java.util.Calendar;
@@ -36,7 +38,6 @@ import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class RodaliesStrategy implements Strategy {
 
@@ -45,7 +46,14 @@ public class RodaliesStrategy implements Strategy {
     public RodaliesStrategy() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://serveis.rodalies.gencat.cat/")
-                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .addConverterFactory(
+                        TikXmlConverterFactory
+                                .create(
+                                        new TikXml.Builder()
+                                                .exceptionOnUnreadXml(false)
+                                                .build()
+                                )
+                )
                 .build();
 
         rodaliesAPI = retrofit.create(RodaliesAPI.class);

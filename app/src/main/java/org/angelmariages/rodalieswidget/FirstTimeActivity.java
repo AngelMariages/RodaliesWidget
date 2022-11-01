@@ -58,7 +58,6 @@ public class FirstTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         boolean fromNotification = intent != null && intent.getAction() != null && intent.getAction().equals("notification");
