@@ -42,6 +42,10 @@ fun saveSchedule(
     deltaDays: Int,
     trainTimes: List<TrainTime>
 ) {
+    if (!isValidTrainTimes(trainTimes)) {
+        return
+    }
+
     val fileName = getFileName(origin, destination, deltaDays)
     val moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
@@ -53,6 +57,10 @@ fun saveSchedule(
     val fileContents = jsonAdapter.toJson(trainTimes)
 
     saveFile(context, fileName, fileContents.toByteArray())
+}
+
+fun isValidTrainTimes(trainTimes: List<TrainTime>): Boolean {
+    return trainTimes.any { it.departureTime.isNotEmpty() }
 }
 
 fun retrieveSavedSchedule(

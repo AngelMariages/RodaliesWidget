@@ -79,7 +79,8 @@ class GetScheduleKotlin {
         // If it's 00:00 and we can get the yesterday schedule and there are some trains left,
         // we should display that one because the trains past 00 are in the yesterday schedule
         if (TimeUtils.getCurrentHour() == 0) {
-            val yesterdaySavedSchedule = retrieveSchedule(context, -1, origin, destination, core)
+            val yesterdaySavedSchedule =
+                listAsArrayList(retrieveSchedule(context, -1, origin, destination, core))
 
             if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule)) {
                 U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(yesterdaySavedSchedule), context)
@@ -147,8 +148,9 @@ class GetScheduleKotlin {
         if (schedule == null) {
             return emptyList()
         }
-
-        val trainTimes = getTrainTimesFromSchedule(context, schedule, deltaDays != 0)
+        
+        val trainTimes =
+            getTrainTimesFromSchedule(context, listAsArrayList(schedule), deltaDays != 0)
 
         saveSchedule(context, origin, destination, deltaDays, trainTimes)
 
@@ -184,7 +186,7 @@ class GetScheduleKotlin {
         return hourSchedule
     }
 
-    private fun <T>listAsArrayList(original: List<T>): ArrayList<T> {
+    private fun <T> listAsArrayList(original: List<T>): ArrayList<T> {
         val asArrayList = arrayListOf<T>()
 
         asArrayList.addAll(original)

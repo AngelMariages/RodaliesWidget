@@ -48,154 +48,156 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class FirstTimeActivity extends AppCompatActivity {
-	private ViewPager viewPager;
-	private LinearLayout dotsLayout;
-	private Button btnSkip;
-	private Button btnNext;
-	private int[] layouts;
-	private FirebaseAnalytics mFirebaseAnalytics;
+    private ViewPager viewPager;
+    private LinearLayout dotsLayout;
+    private Button btnSkip;
+    private Button btnNext;
+    private int[] layouts;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
-	@Override
-	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        boolean fromNotification = intent != null && intent.getAction() != null && intent.getAction().equals("notification");
 
-		super.onCreate(savedInstanceState);
-		Intent intent = getIntent();
-		boolean fromNotification = intent != null && intent.getAction() != null && intent.getAction().equals("notification");
+        if (!fromNotification && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("tutorial_viewed", false)) {
+            startSettings();
+        }
 
-		if (!fromNotification && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("tutorial_viewed", false)) {
-			startSettings();
-		}
+        // Making notification bar transparent
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+        setContentView(R.layout.first_time_activity);
 
-		// Making notification bar transparent
-		if (Build.VERSION.SDK_INT >= 21) {
-			getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-		}
-		setContentView(R.layout.first_time_activity);
+        changeStatusBarColor();
 
-		changeStatusBarColor();
+        viewPager = findViewById(R.id.view_pager);
+        dotsLayout = findViewById(R.id.layoutDots);
+        btnSkip = findViewById(R.id.skipButton);
+        btnNext = findViewById(R.id.nextButton);
 
-		viewPager = findViewById(R.id.view_pager);
-		dotsLayout = findViewById(R.id.layoutDots);
-		btnSkip = findViewById(R.id.skipButton);
-		btnNext = findViewById(R.id.nextButton);
+        layouts = new int[]{
+                R.layout.tutorial_slide_1,
+                R.layout.tutorial_slide_2,
+                R.layout.tutorial_slide_3};
 
-		layouts = new int[]{
-				R.layout.tutorial_slide_1,
-				R.layout.tutorial_slide_2,
-				R.layout.tutorial_slide_3};
+        addBottomDots(0);
 
-		addBottomDots(0);
+        viewPager.setAdapter(new MyViewPagerAdapter());
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-		viewPager.setAdapter(new MyViewPagerAdapter());
-		viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        btnSkip.setOnClickListener(v -> {
+            mFirebaseAnalytics.logEvent("tutorial_skip", new Bundle());
 
-		btnSkip.setOnClickListener(v -> {
-			mFirebaseAnalytics.logEvent("tutorial_skip", new Bundle());
+            startSettings();
+        });
 
-			startSettings();
-		});
+        btnNext.setOnClickListener(v -> {
+            int current = viewPager.getCurrentItem() + 1;
+            if (current < layouts.length) {
+                viewPager.setCurrentItem(current);
+            } else {
+                startSettings();
+                mFirebaseAnalytics.logEvent("tutorial_ended", new Bundle());
+            }
+        });
+    }
 
-		btnNext.setOnClickListener(v -> {
-			int current = viewPager.getCurrentItem() + 1;
-			if (current < layouts.length) {
-				viewPager.setCurrentItem(current);
-			} else {
-				startSettings();
-				mFirebaseAnalytics.logEvent("tutorial_ended", new Bundle());
-			}
-		});
-	}
+    private void startSettings() {
+        startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
 
-	private void startSettings() {
-		startActivity(new Intent(FirstTimeActivity.this, SettingsActivity.class));
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("tutorial_viewed", true).apply();
 
-		PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("tutorial_viewed", true).apply();
+        finish();
+    }
 
-		finish();
-	}
+    private class MyViewPagerAdapter extends PagerAdapter {
 
-	private class MyViewPagerAdapter extends PagerAdapter {
+        MyViewPagerAdapter() {
+        }
 
-		MyViewPagerAdapter() { }
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		@NonNull
-		@Override
-		public Object instantiateItem(@NonNull ViewGroup container, int position) {
-			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(layouts[position], container, false);
+            container.addView(view);
 
-			View view = layoutInflater.inflate(layouts[position], container, false);
-			container.addView(view);
+            return view;
+        }
 
-			return view;
-		}
+        @Override
+        public int getCount() {
+            return layouts.length;
+        }
 
-		@Override
-		public int getCount() {
-			return layouts.length;
-		}
-
-		@Override
-		public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
-			return view == obj;
-		}
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
+            return view == obj;
+        }
 
 
-		@Override
-		public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
-			View view = (View) object;
-			container.removeView(view);
-		}
-	}
+        @Override
+        public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
+            View view = (View) object;
+            container.removeView(view);
+        }
+    }
 
-	//  viewpager change listener
-	private final ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+    //  viewpager change listener
+    private final ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
-		@Override
-		public void onPageSelected(final int position) {
-			addBottomDots(position);
+        @Override
+        public void onPageSelected(final int position) {
+            addBottomDots(position);
 
-			if (position == layouts.length - 1) {
-				btnNext.setText(getString(R.string.tutorial_start_button));
-				btnSkip.setVisibility(View.INVISIBLE);
-			} else {
-				btnNext.setText(getString(R.string.tutorial_next_button));
-				btnSkip.setVisibility(View.VISIBLE);
-			}
+            if (position == layouts.length - 1) {
+                btnNext.setText(getString(R.string.tutorial_start_button));
+                btnSkip.setVisibility(View.INVISIBLE);
+            } else {
+                btnNext.setText(getString(R.string.tutorial_next_button));
+                btnSkip.setVisibility(View.VISIBLE);
+            }
 
-			Bundle params = new Bundle();
-			params.putInt("position", position);
-			mFirebaseAnalytics.logEvent("tutorial_next", params);
-		}
+            Bundle params = new Bundle();
+            params.putInt("position", position);
+            mFirebaseAnalytics.logEvent("tutorial_next", params);
+        }
 
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) { }
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
 
-		@Override
-		public void onPageScrollStateChanged(int arg0) { }
-	};
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+    };
 
-	private void addBottomDots(int currentPage) {
-		TextView[] dots = new TextView[layouts.length];
+    private void addBottomDots(int currentPage) {
+        TextView[] dots = new TextView[layouts.length];
 
-		dotsLayout.removeAllViews();
-		for (int i = 0; i < dots.length; i++) {
-			dots[i] = new TextView(this);
-			dots[i].setText("\u2022");
-			dots[i].setTextSize(36);
-			dots[i].setTextColor(getResources().getColor(R.color.dot_inactive));
-			dotsLayout.addView(dots[i]);
-		}
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(this);
+            dots[i].setText("\u2022");
+            dots[i].setTextSize(36);
+            dots[i].setTextColor(getResources().getColor(R.color.dot_inactive));
+            dotsLayout.addView(dots[i]);
+        }
 
-		if (dots.length > 0)
-			dots[currentPage].setTextColor(getResources().getColor(R.color.dot_active));
-	}
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(getResources().getColor(R.color.dot_active));
+    }
 
-	private void changeStatusBarColor() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			Window window = getWindow();
-			window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-			window.setStatusBarColor(Color.TRANSPARENT);
-		}
-	}
+    private void changeStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
 }

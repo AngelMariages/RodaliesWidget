@@ -39,6 +39,7 @@ public class RodaliesXMLTransfer {
     @Attribute(name = "accesible")
     public String accessible;
 
+
     @TextContent
     public String stationName;
 

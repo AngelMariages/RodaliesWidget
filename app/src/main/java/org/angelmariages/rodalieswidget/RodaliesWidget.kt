@@ -255,8 +255,7 @@ internal class RodaliesWidget(
         swapButtonIntent.putExtra(Constants.EXTRA_WIDGET_STATE, state)
         val swapPI = PendingIntent.getBroadcast(
             context, 0,
-            swapButtonIntent,
-            getIntentFlags()
+            swapButtonIntent, getIntentFlags()
         )
         setOnClickPendingIntent(R.id.swapButton, swapPI)
     }
