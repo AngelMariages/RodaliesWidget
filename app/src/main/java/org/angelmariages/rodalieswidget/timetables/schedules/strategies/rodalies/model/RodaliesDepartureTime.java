@@ -31,13 +31,13 @@ import org.simpleframework.xml.Root;
 @Root(name = "train", strict = false)
 public class RodaliesDepartureTime {
     @Element(name = "departureDateHourSelectedStation")
-    private String departureTime;
+    public String departureTime;
 
     @Element(name = "platformSelectedStation", required = false)
-    private Integer departurePlatform;
+    public Integer departurePlatform;
 
     @Element(name = "delay")
-    private Integer delay;
+    public Integer delay;
 
     @Override
     public String toString() {

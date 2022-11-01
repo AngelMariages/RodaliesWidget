@@ -33,5 +33,5 @@ import java.util.List;
 @Root(name = "getDepartures", strict = false)
 public class RodaliesDepartures {
     @ElementList(name = "trains")
-    private List<RodaliesDepartureTime> departureTimeList;
+    public List<RodaliesDepartureTime> departureTimeList;
 }
