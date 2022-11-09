@@ -45,9 +45,13 @@ public class RnfeStrategy implements Strategy {
     public List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) {
         RnfeJSONAPI jsonapi = new RnfeJSONAPI(origin, destination, division);
 
-        String pageFromInternet = jsonapi.getPageFromInternet(deltaDays);
-
         try {
+            String pageFromInternet = jsonapi.getPageFromInternet(deltaDays);
+
+            if (pageFromInternet == null) {
+                return null;
+            }
+
             RnfeJSONSchedule fromMoshi = MOSHI_ADAPTER.fromJson(pageFromInternet);
 
             if (fromMoshi == null) {

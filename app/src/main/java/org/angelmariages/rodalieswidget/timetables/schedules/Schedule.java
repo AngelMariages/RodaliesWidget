@@ -30,7 +30,6 @@ import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.Rnf
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.RodaliesStrategy;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.ServiceDisruptionError;
 
-import java.io.IOException;
 import java.util.List;
 
 public class Schedule {
