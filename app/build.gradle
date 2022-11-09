@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 33
@@ -36,8 +36,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 33
         multiDexEnabled true
-        versionCode 43
-        versionName "2.0.3"
+        versionCode 45
+        versionName "2.0.5"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,6 +46,7 @@ android {
         release {
             debuggable false
             minifyEnabled true
+            proguardFiles 'proguard-rules.pro'
             shrinkResources true
         }
 
@@ -92,8 +93,8 @@ dependencies {
 
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
-    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
 
     //MultiDex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -106,8 +107,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     // XML
     implementation 'com.tickaroo.tikxml:annotation:0.8.13'
+    //noinspection GradleDependency
     implementation 'com.tickaroo.tikxml:core:0.8.13'
+    //noinspection GradleDependency
     implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
+    //noinspection GradleDependency
     kapt('com.tickaroo.tikxml:processor:0.8.13')
 
     // Moshi
@@ -124,8 +128,6 @@ dependencies {
     // UiAutomator Testing
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
-
-apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'org.jetbrains.kotlin.android'

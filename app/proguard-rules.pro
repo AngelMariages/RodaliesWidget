@@ -30,6 +30,7 @@
 -keepclassmembers class org.angelmariages.rodalieswidget.** { *; }
 
 # Firebase
+-keep class com.google.android.gms.** { *; }
 -keep class com.google.firebase.** { *; }
 
 # Firebase crashlytics
@@ -40,6 +41,10 @@
 -keepnames class org.ietf.jgss.** { *; }
 
 # TikMXL
+
+# Models
+-keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.** { *; }
+-keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.** { *; }
 
 -keep class com.tickaroo.tikxml.** { *; }
 -keep @com.tickaroo.tikxml.annotation.Xml public class *
