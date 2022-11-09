@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -82,7 +83,8 @@ public class Basic {
 
         Rect visibleBounds = widget.getVisibleBounds();
         Point dragWidgetPoint = new Point(visibleBounds.left + 150, visibleBounds.bottom + 150);
-        Point destination = new Point(dragWidgetPoint.x + 250, dragWidgetPoint.y - 250);
+        Point destination = new Point(screenCenter.x, screenCenter.y);
+
 
         mDevice.swipe(new Point[]{dragWidgetPoint, dragWidgetPoint, destination}, 30);
         mDevice.waitForIdle();
@@ -106,7 +108,15 @@ public class Basic {
 
         Point screenSize = new Point(mDevice.getDisplayWidth(), mDevice.getDisplayHeight());
 
-        mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 100, 15);
+        do {
+            mDevice.drag(update.getVisibleCenter().x, update.getVisibleCenter().y, screenSize.x / 2, 240, 15);
+
+            mDevice.pressHome();
+            mDevice.waitForIdle();
+
+            update = mDevice.findObject(By.res(APP_PACKAGE_NAME, "originTextView"));
+        } while (update != null);
+
     }
 
     @Test
@@ -155,6 +165,7 @@ public class Basic {
         arenysDeMar.click();
 
         mDevice.waitForIdle();
+        mDevice.wait(Until.findObject(By.res(APP_PACKAGE_NAME, "switchDayLineView")), 1500);
 
         UiObject2 destinationTextView = mDevice.findObject(By.res(APP_PACKAGE_NAME, "destinationTextView"));
 
