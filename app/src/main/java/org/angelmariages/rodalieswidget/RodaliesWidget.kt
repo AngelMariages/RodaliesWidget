@@ -34,6 +34,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -65,8 +66,13 @@ internal class RodaliesWidget(
         this.state = state
         when (state) {
             Constants.WIDGET_STATE_UPDATING_TABLES -> {
-                startForegroundService(context)
-                // GetSchedule().execute(context, widgetID, deltaDays)
+                try {
+                    startForegroundService(context)
+                } catch (e: Exception) {
+                    U.log("Exception starting foreground service")
+                    U.log(e.message)
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                }
                 GlobalScope.launch(Dispatchers.IO) {
                     GetSchedule().execute(context, widgetID, deltaDays)
                     println("Finished!")
