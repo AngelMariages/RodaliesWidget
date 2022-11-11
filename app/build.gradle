@@ -112,7 +112,7 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
     //noinspection GradleDependency
-    kapt('com.tickaroo.tikxml:processor:0.8.13')
+    kapt('com.tickaroo.tikxml:processor:0.8.15')
 
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
