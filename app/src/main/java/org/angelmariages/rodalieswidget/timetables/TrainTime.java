@@ -145,7 +145,6 @@ public class TrainTime implements Serializable {
 
                 return format.format(new Date((arrivalTime.getTime() - departureDate.getTime())));
             } catch (ParseException e) {
-                System.out.println("PARSE EXCEPTION: " + e.getMessage());
                 //U.log("PARSE EXCEPTION: ");
                 //U.log(e.getMessage());
             }

@@ -75,7 +75,6 @@ internal class RodaliesWidget(
                 }
                 GlobalScope.launch(Dispatchers.IO) {
                     GetSchedule().execute(context, widgetID, deltaDays)
-                    println("Finished!")
                 }
             }
             Constants.WIDGET_STATE_SCHEDULE_LOADED -> {

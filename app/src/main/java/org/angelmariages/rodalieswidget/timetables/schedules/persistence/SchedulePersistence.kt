@@ -87,7 +87,6 @@ fun retrieveSavedSchedule(
         return jsonAdapter.fromJson(content)
     } catch (e: Exception) {
         U.log("Error on retrieveSchedule: " + e.message)
-        println(e)
     }
 
     return null
@@ -109,7 +108,6 @@ private fun retrieveFile(
         }
     } catch (e: IOException) {
         U.log("Error on retrieveFile: " + e.message)
-        println(e)
     }
 
     return null
@@ -122,7 +120,6 @@ private fun saveFile(context: Context, fileName: String, fileContents: ByteArray
         }
     } catch (e: IOException) {
         U.log("Error on saveFile: " + e.message)
-        println(e)
     }
 }
 

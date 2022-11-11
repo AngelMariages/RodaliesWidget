@@ -27,6 +27,8 @@ package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.mo
 
 import com.squareup.moshi.Json;
 
+import org.angelmariages.rodalieswidget.utils.U;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,7 +148,8 @@ public class RnfeJSONTime implements Comparable<RnfeJSONTime> {
 
             return departureDate.compareTo(departureDateCompared);
         } catch (ParseException e) {
-            System.out.println("Can't compare: " + e);
+            U.log("Can't compare: " + e.getMessage());
+            U.logException(e);
             return 0;
         }
     }
