@@ -26,6 +26,8 @@ package org.angelmariages.rodalieswidget.utils;
 
 import android.graphics.Color;
 
+import androidx.annotation.Nullable;
+
 import java.util.LinkedHashMap;
 
 public final class StationUtils {
@@ -710,7 +712,8 @@ public final class StationUtils {
 		return null;
 	}
 
-	public static String getNameFromID(String stationID, int nucliID) {
+	@Nullable
+	public static String getNameFromID(@Nullable  String stationID, @Nullable int nucliID) {
 		LinkedHashMap<String, String> selectedNucli = nuclis.get(nucliID);
 
 		if(stationID == null || selectedNucli == null) return null;
