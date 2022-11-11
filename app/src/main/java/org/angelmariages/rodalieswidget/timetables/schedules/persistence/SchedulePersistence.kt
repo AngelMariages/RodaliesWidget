@@ -32,6 +32,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.angelmariages.rodalieswidget.timetables.TrainTime
 import org.angelmariages.rodalieswidget.utils.TimeUtils
 import org.angelmariages.rodalieswidget.utils.U
+import java.io.File
+import java.io.FileFilter
 import java.io.IOException
 
 
@@ -93,7 +95,40 @@ fun retrieveSavedSchedule(
 }
 
 fun removeOldFiles(context: Context) {
-    // TODO: implement
+    val filesDir: File = context.filesDir
+    val endsWith = "_${TimeUtils.getTodayDate()}.json"
+
+    val filenameFilter = FileFilter fileFilter@{ file ->
+        val name = file.nameWithoutExtension
+        if (!name.contains("horaris_")) {
+            return@fileFilter false
+        }
+        if (name.contains("_") && file.extension.contains("json")) {
+            val split: List<String> = name.split("_")
+            if (split.size == 4) {
+                val fileDate = split.last()
+
+                return@fileFilter !TimeUtils.isFuture(
+                    fileDate
+                ) && !TimeUtils.isYesterday(
+                    fileDate
+                )
+            }
+        }
+
+        return@fileFilter !file.name.endsWith(endsWith)
+    }
+
+    val fileList = filesDir.listFiles(filenameFilter) ?: emptyArray()
+
+    for (file in fileList) {
+        try {
+            U.log("Trying to delete file ${file.name}...")
+            U.log("RESULT: ${file.delete()}")
+        } catch(e: SecurityException) {
+            U.logException(e)
+        }
+    }
 }
 
 private fun retrieveFile(
