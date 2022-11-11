@@ -39,6 +39,8 @@ import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 import org.angelmariages.rodalieswidget.utils.TimeUtils
 import org.angelmariages.rodalieswidget.utils.U
 
+private class EmptyScheduleException : Exception()
+
 class GetSchedule {
     suspend fun execute(
         context: Context,
@@ -79,28 +81,56 @@ class GetSchedule {
         // If it's 00:00 and we can get the yesterday schedule and there are some trains left,
         // we should display that one because the trains past 00 are in the yesterday schedule
         if (TimeUtils.getCurrentHour() == 0) {
-            val yesterdaySavedSchedule =
-                listAsArrayList(retrieveSchedule(context, -1, origin, destination, core))
+            val yesterdaySavedSchedule = listAsArrayList(
+                retrieveSchedule(
+                    context,
+                    -1,
+                    origin,
+                    destination,
+                    core
+                ).getOrDefault(emptyList())
+            )
 
             if (!TimeUtils.isScheduleExpired(yesterdaySavedSchedule)) {
-                U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(yesterdaySavedSchedule), context)
+                U.sendNewTrainTimes(
+                    widgetId,
+                    origin,
+                    destination,
+                    listAsArrayList(yesterdaySavedSchedule),
+                    context
+                )
 
                 return
             }
         }
 
-        try {
-            U.log("Getting JSON for ${origin}->${destination}")
-            val result = retrieveSchedule(context, 0, origin, destination, core)
 
-            // We get also the return schedule
-            retrieveSchedule(context, 0, destination, origin, core)
+        U.log("Getting JSON for ${origin}->${destination}")
 
-            removeOldFiles(context)
+        val result = retrieveSchedule(context, 0, origin, destination, core).getOrElse {
+            safelyHandleRetrieveException(widgetId, context, it)
+            return
+        }
 
-            U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
-        } catch (e: ServiceDisruptionError) {
-            if (e.errors.any { it.error.contains("disruptions") }) {
+        // We get also the return schedule
+        retrieveSchedule(context, 0, destination, origin, core).fold(
+            onSuccess = {},
+            onFailure = {
+                safelyHandleRetrieveException(widgetId, context, it)
+            }
+        )
+
+        removeOldFiles(context)
+
+        U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
+    }
+
+    private fun safelyHandleRetrieveException(widgetId: Int, context: Context, err: Throwable) {
+        U.logException(err)
+        if (err is EmptyScheduleException) {
+            U.sendNoTimesError(widgetId, context)
+        } else if (err is ServiceDisruptionError) {
+            if (err.errors.any { it.error.contains("disruptions") }) {
                 U.sendProgramedDisruptionsError(widgetId, context)
             }
         }
@@ -114,18 +144,14 @@ class GetSchedule {
         core: Int,
         deltaDays: Int
     ) {
-        try {
+        U.log("Getting JSON for ${origin}->${destination} with delta $deltaDays")
 
-            U.log("Getting JSON for ${origin}->${destination} with delta $deltaDays")
-
-            val result = retrieveSchedule(context, deltaDays, origin, destination, core)
-
-            U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
-        } catch (e: ServiceDisruptionError) {
-            if (e.errors.any { it.error.contains("disruptions") }) {
-                U.sendProgramedDisruptionsError(widgetId, context)
-            }
+        val result = retrieveSchedule(context, 0, origin, destination, core).getOrElse {
+            safelyHandleRetrieveException(widgetId, context, it)
+            return
         }
+
+        U.sendNewTrainTimes(widgetId, origin, destination, listAsArrayList(result), context)
     }
 
     private fun retrieveSchedule(
@@ -134,27 +160,33 @@ class GetSchedule {
         origin: String,
         destination: String,
         core: Int
-    ): List<TrainTime> {
+    ): Result<List<TrainTime>> {
         val savedSchedule = retrieveSavedSchedule(context, origin, destination, deltaDays)
 
         if (savedSchedule != null) {
-            return savedSchedule
+            return Result.success(savedSchedule)
         }
 
         U.log("Empty file, getting from Internet...")
 
-        val schedule = Schedule(origin, destination, core, deltaDays).get() ?: null
+        val schedule: MutableList<TrainTime>?
+
+        try {
+            schedule = Schedule(origin, destination, core, deltaDays).get() ?: null
+        } catch (e: ServiceDisruptionError) {
+            return Result.failure(e)
+        }
 
         if (schedule == null) {
-            return emptyList()
+            return Result.failure(EmptyScheduleException())
         }
-        
+
         val trainTimes =
             getTrainTimesFromSchedule(context, listAsArrayList(schedule), deltaDays != 0)
 
         saveSchedule(context, origin, destination, deltaDays, trainTimes)
 
-        return trainTimes
+        return Result.success(trainTimes)
     }
 
     private fun getTrainTimesFromSchedule(
