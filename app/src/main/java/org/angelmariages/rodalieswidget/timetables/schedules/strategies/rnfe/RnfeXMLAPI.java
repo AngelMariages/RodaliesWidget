@@ -58,8 +58,6 @@ public class RnfeXMLAPI {
     public String getPageFromInternet(int deltaDays) {
         URL requestURL = getRequestURL(deltaDays);
 
-        System.out.println(requestURL);
-
         Request request = new Request.Builder()
                 .url(requestURL)
                 .addHeader("Pragma", "no-cache")

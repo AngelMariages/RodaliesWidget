@@ -62,8 +62,6 @@ public class RnfeJSONAPI {
 
         RequestBody body = RequestBody.create(JSON, requestParams);
 
-        System.out.println(requestParams);
-
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Pragma", "no-cache")
