@@ -38,6 +38,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +46,11 @@ import java.util.Objects;
 
 public final class U {
 
-    private static FirebaseAnalytics mFirebaseAnalytics;
-
     public static void log(String message) {
         if (Constants.LOGGING) {
             Log.d("RodaliesLog", message);
-            FirebaseCrashlytics.getInstance().log(message);
         }
+        FirebaseCrashlytics.getInstance().log(message);
     }
 
     public static int getFirstWidgetId(Context context) {
@@ -167,7 +166,7 @@ public final class U {
     }
 
     public static void logUpdates(Context context, int widgetID) {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
         final String[] stations = U.getStations(context, widgetID);
 
@@ -270,7 +269,12 @@ public final class U {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return context.getResources().getColor(resourceId, null);
         } else {
+            //noinspection deprecation
             return context.getResources().getColor(resourceId);
         }
+    }
+
+    public static void logException(@NotNull Throwable err) {
+        FirebaseCrashlytics.getInstance().recordException(err);
     }
 }
