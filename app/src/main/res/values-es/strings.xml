@@ -48,7 +48,7 @@
     <string name="pref_receive_notifications" >Recibir notificaciones de incidencias</string>
     <string name="pref_about_title" >Sobre</string>
     <string name="pref_show_licenses" >Licencias</string>
-    <string name="pref_version" >Versión 2.0.6</string>
+    <string name="pref_version" >Versión 2.0.7</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="pref_show_more_transfer_trains">Más trenes de transbordo</string>
     <string name="pref_show_more_transfer_trains_summary_on">Muestra más trenes que puedes coger en la estación de transbordo hacia el mismo destino</string>
