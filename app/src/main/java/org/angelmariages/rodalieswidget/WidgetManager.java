@@ -128,8 +128,10 @@ public class WidgetManager extends AppWidgetProvider {
 			U.log("Got update to: " + widgetID);
 			U.log("UpdateContains: " + newOrigin + "," + newDestination);
 
-			updateStationTexts(StationUtils.getNameFromID(newOrigin, U.getCore(context, widgetID)), StationUtils.getNameFromID(newDestination, U.getCore(context, widgetID)),
-					context, widgetID);
+			String originText = StationUtils.getNameFromID(newOrigin, U.getCore(context, widgetID));
+			String destinationText = StationUtils.getNameFromID(newDestination, U.getCore(context, widgetID));
+
+			updateStationTexts(originText, destinationText, context, widgetID);
 		} else if (intentAction.startsWith(Constants.ACTION_CLICK_LIST_ITEM)) {
 			int widgetID = U.getIdFromIntent(intent);
 

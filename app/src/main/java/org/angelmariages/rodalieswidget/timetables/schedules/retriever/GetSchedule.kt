@@ -181,41 +181,29 @@ class GetSchedule {
             return Result.failure(EmptyScheduleException())
         }
 
-        val trainTimes =
-            getTrainTimesFromSchedule(context, listAsArrayList(schedule), deltaDays != 0)
+        val scheduleAsList = listAsArrayList(schedule)
 
-        saveSchedule(context, origin, destination, deltaDays, trainTimes)
+        saveSchedule(context, origin, destination, deltaDays, scheduleAsList)
 
-        return Result.success(trainTimes)
+        if (deltaDays == 0) {
+            return Result.success(filterNotScheduledTrainsIfNeeded(context, scheduleAsList))
+        }
+
+        return Result.success(scheduleAsList)
     }
 
-    private fun getTrainTimesFromSchedule(
+    private fun filterNotScheduledTrainsIfNeeded(
         context: Context,
-        schedule: List<TrainTime>,
-        forceAdd: Boolean
+        schedule: List<TrainTime>
     ): List<TrainTime> {
-        val hourSchedule = ArrayList<TrainTime>()
         val showAllTimes = PreferenceManager.getDefaultSharedPreferences(context)
             .getBoolean("show_all_times", false)
 
-        for (trainTime in schedule) {
-            if (forceAdd) {
-                hourSchedule.add(trainTime)
-            } else if (!showAllTimes) {
-                if (TimeUtils.isScheduledTrain(trainTime)) {
-                    hourSchedule.add(trainTime)
-                }
-            } else {
-                hourSchedule.add(trainTime)
-            }
+        if (showAllTimes) {
+            return schedule
         }
 
-        //fallback
-        if (!forceAdd && !showAllTimes && hourSchedule.size == 0) {
-            hourSchedule.addAll(schedule)
-        }
-
-        return hourSchedule
+        return schedule.filter { TimeUtils.isScheduledTrain(it) }
     }
 
     private fun <T> listAsArrayList(original: List<T>): ArrayList<T> {
