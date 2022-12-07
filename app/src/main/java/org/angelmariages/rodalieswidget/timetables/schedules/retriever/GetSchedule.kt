@@ -132,6 +132,8 @@ class GetSchedule {
         } else if (err is ServiceDisruptionError) {
             if (err.errors.any { it.error.contains("disruptions") }) {
                 U.sendProgramedDisruptionsError(widgetId, context)
+            } else {
+                U.sendNoTimesError(widgetId, context)
             }
         }
     }
@@ -146,7 +148,7 @@ class GetSchedule {
     ) {
         U.log("Getting JSON for ${origin}->${destination} with delta $deltaDays")
 
-        val result = retrieveSchedule(context, 0, origin, destination, core).getOrElse {
+        val result = retrieveSchedule(context, deltaDays, origin, destination, core).getOrElse {
             safelyHandleRetrieveException(widgetId, context, it)
             return
         }
@@ -164,6 +166,10 @@ class GetSchedule {
         val savedSchedule = retrieveSavedSchedule(context, origin, destination, deltaDays)
 
         if (savedSchedule != null) {
+            if (deltaDays == 0) {
+                return Result.success(filterNotScheduledTrainsIfNeeded(context, savedSchedule))
+            }
+
             return Result.success(savedSchedule)
         }
 

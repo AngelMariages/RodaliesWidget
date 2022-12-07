@@ -77,8 +77,6 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <service android:name=".ScheduleUpdateNotificationService" />
-
         <receiver
             android:name=".AlarmReceiver"
             android:exported="false"
