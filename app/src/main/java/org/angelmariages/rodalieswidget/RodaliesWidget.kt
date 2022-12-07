@@ -34,19 +34,12 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.angelmariages.rodalieswidget.timetables.TrainTime
-import org.angelmariages.rodalieswidget.timetables.schedules.retriever.GetSchedule
+import org.angelmariages.rodalieswidget.timetables.schedules.retriever.GetScheduleWorker
 import org.angelmariages.rodalieswidget.utils.Constants
 import org.angelmariages.rodalieswidget.utils.StationUtils
 import org.angelmariages.rodalieswidget.utils.U
-import java.util.*
 
-@OptIn(DelicateCoroutinesApi::class)
 internal class RodaliesWidget(
     private val context: Context,
     private val widgetID: Int,
@@ -66,16 +59,7 @@ internal class RodaliesWidget(
         this.state = state
         when (state) {
             Constants.WIDGET_STATE_UPDATING_TABLES -> {
-                try {
-                    startForegroundService(context)
-                } catch (e: Exception) {
-                    U.log("Exception starting foreground service")
-                    U.log(e.message)
-                    FirebaseCrashlytics.getInstance().recordException(e)
-                }
-                GlobalScope.launch(Dispatchers.IO) {
-                    GetSchedule().execute(context, widgetID, deltaDays)
-                }
+                GetScheduleWorker.enqueueRefreshWidget(context, widgetID, deltaDays)
             }
             Constants.WIDGET_STATE_SCHEDULE_LOADED -> {
                 val adapterIntent = Intent(context, WidgetService::class.java)
@@ -177,35 +161,13 @@ internal class RodaliesWidget(
             }
         }
         setStationNames()
-        if (state != Constants.WIDGET_STATE_UPDATING_TABLES) {
-            setPendingIntents()
-            stopForegroundService(context)
-        }
-    }
-
-    private fun startForegroundService(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(
-                Intent(
-                    context,
-                    ScheduleUpdateNotificationService::class.java
-                )
-            )
-        }
-    }
-
-    private fun stopForegroundService(context: Context) {
-        context.stopService(Intent(context, ScheduleUpdateNotificationService::class.java))
+        setPendingIntents()
     }
 
     private fun setStationNames() {
         val stations = U.getStations(context, widgetID)
         if (stations.size == 2) {
             val core = U.getCore(context, widgetID)
-
-            /*Crashlytics.setString("origin", stations[0]);
-			Crashlytics.setString("destination", stations[1]);
-			Crashlytics.setInt("core", core);*/
 
             updateStationsText(
                 StationUtils.getNameFromID(stations[0], core),

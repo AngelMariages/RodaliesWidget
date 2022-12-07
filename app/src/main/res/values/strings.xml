@@ -51,7 +51,7 @@
     <string name="pref_receive_notifications">Receive incident notifications</string>
     <string name="pref_about_title">About</string>
     <string name="pref_show_licenses">Licenses</string>
-    <string name="pref_version">Version 2.0.7</string>
+    <string name="pref_version">Version 2.0.8</string>
     <string name="pref_show_more_transfer_trains">More transfer trains</string>
     <string name="pref_show_more_transfer_trains_summary_on">Show more trains that you can go into in your transfer station going to the same destination</string>
     <string name="pref_group_transfer_exits">Group transfer trains</string>
