@@ -209,7 +209,13 @@ class GetSchedule {
             return schedule
         }
 
-        return schedule.filter { TimeUtils.isScheduledTrain(it) }
+        val filteredSchedule = schedule.filter { TimeUtils.isScheduledTrain(it) }
+
+        if (filteredSchedule.isEmpty()) {
+            return schedule
+        }
+
+        return filteredSchedule
     }
 
     private fun <T> listAsArrayList(original: List<T>): ArrayList<T> {
