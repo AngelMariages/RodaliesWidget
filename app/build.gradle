@@ -29,7 +29,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     defaultConfig {
         applicationId "org.angelmariages.rodalieswidget"
@@ -61,12 +61,8 @@ android {
     }
     namespace 'org.angelmariages.rodalieswidget'
     buildFeatures {
-        viewBinding {
-            enabled true
-        }
-        dataBinding {
-            enabled true
-        }
+        viewBinding true
+        dataBinding true
     }
     kotlinOptions {
         jvmTarget = '1.8'
