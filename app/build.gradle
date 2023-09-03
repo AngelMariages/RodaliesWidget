@@ -60,8 +60,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     namespace 'org.angelmariages.rodalieswidget'
     buildFeatures {
@@ -69,7 +69,7 @@ android {
         dataBinding true
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17
     }
 }
 
@@ -96,15 +96,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
 
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // DO NOT UPDATE BECAUSE GRADLE 8.1 is incompatible with compileSDK 34 right now
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+
     //MultiDex
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Retrofit (HTTP)
     implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
     implementation "com.squareup.retrofit2:converter-moshi:${retrofit_version}"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.0'
     // XML
     implementation 'com.tickaroo.tikxml:annotation:0.8.13'
     //noinspection GradleDependency
