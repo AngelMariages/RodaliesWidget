@@ -29,7 +29,6 @@ plugins {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -40,8 +39,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 33
         multiDexEnabled true
-        versionCode 48
-        versionName "2.0.8"
+        versionCode 49
+        versionName "2.0.9"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -78,6 +77,7 @@ dependencies {
 
     // Kotlin
     implementation 'androidx.core:core-ktx:1.10.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
@@ -90,6 +90,13 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10'
 
     implementation 'com.frybits.harmony:harmony:1.2.2'
+
+    // Do not update, breaks for SDK 33
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    //noinspection GradleDependency
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    //noinspection GradleDependency
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
@@ -113,6 +120,7 @@ dependencies {
     implementation 'com.tickaroo.tikxml:core:0.8.13'
     //noinspection GradleDependency
     implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
+    // If using KSP it will break because of proguard
     //noinspection GradleDependency
     kapt('com.tickaroo.tikxml:processor:0.8.13')
 
@@ -134,4 +142,3 @@ dependencies {
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-kapt'
-

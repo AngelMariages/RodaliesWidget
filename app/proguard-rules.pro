@@ -40,12 +40,17 @@
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
 
-# TikMXL
-
 # Models
 -keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.model.** { *; }
 -keep public class org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.** { *; }
 
+# Retrofit Calls
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+# TikMXL
 -keep class com.tickaroo.tikxml.** { *; }
 -keep @com.tickaroo.tikxml.annotation.Xml public class *
 -keep class **$$TypeAdapter { *; }
