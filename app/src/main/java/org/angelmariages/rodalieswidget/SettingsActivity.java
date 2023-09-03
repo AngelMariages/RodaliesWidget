@@ -147,7 +147,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 startFirstTimePI = PendingIntent.getActivity(context, 0, startFirstTimeIntent, PendingIntent.FLAG_IMMUTABLE);
             } else {
-                startFirstTimePI = PendingIntent.getActivity(context, 0, startFirstTimeIntent, 0);
+                startFirstTimePI = PendingIntent.getActivity(context, 0, startFirstTimeIntent, PendingIntent.FLAG_IMMUTABLE);
             }
             notificationBuilder.setContentIntent(startFirstTimePI);
 

@@ -29,7 +29,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     defaultConfig {
         applicationId "org.angelmariages.rodalieswidget"
@@ -56,20 +56,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     namespace 'org.angelmariages.rodalieswidget'
     buildFeatures {
-        viewBinding {
-            enabled true
-        }
-        dataBinding {
-            enabled true
-        }
+        viewBinding true
+        dataBinding true
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17
     }
 }
 
@@ -78,7 +74,7 @@ dependencies {
 
     // Kotlin
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
