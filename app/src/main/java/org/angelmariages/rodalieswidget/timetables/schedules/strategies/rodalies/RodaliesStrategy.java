@@ -67,7 +67,9 @@ public class RodaliesStrategy implements Strategy {
         try {
             RodaliesSchedule rodaliesSchedule = page.execute().body();
 
-            return RodaliesScheduleParser.parse(rodaliesSchedule, origin, destination, calendarInstance);
+            if (rodaliesSchedule != null) {
+                return RodaliesScheduleParser.parse(rodaliesSchedule, origin, destination, calendarInstance);
+            }
         } catch (ServiceDisruptionError e) {
             throw e;
         } catch (Exception e) {
