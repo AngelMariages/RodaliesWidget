@@ -23,6 +23,8 @@
  */
 package org.angelmariages.rodalieswidget.timetables;
 
+import org.angelmariages.rodalieswidget.utils.U;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -177,16 +179,21 @@ public class TrainTime implements Serializable {
     }
 
     private String formatHour(String hour) {
-        if (hour == null) return null;
-        String[] splitDot = hour.split("\\.");
-        String[] splitTwoDots = hour.split(":");
-        if (splitDot.length == 2)
-            return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
-        else if (splitTwoDots.length == 2)
-            return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
-        else if (splitTwoDots.length == 3)
-            return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
-        else return null;
+        try {
+            if (hour == null) return null;
+            String[] splitDot = hour.split("\\.");
+            String[] splitTwoDots = hour.split(":");
+            if (splitDot.length == 2)
+                return String.format("%02d:%02d", Integer.parseInt(splitDot[0]), Integer.parseInt(splitDot[1]));
+            else if (splitTwoDots.length == 2)
+                return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
+            else if (splitTwoDots.length == 3)
+                return String.format("%02d:%02d", Integer.parseInt(splitTwoDots[0]), Integer.parseInt(splitTwoDots[1]));
+            else return null;
+        } catch (Exception e) {
+            U.log(e.getMessage());
+            return null;
+        }
     }
 
     public int getTransfer() {

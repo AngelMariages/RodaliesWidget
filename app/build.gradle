@@ -120,8 +120,8 @@ dependencies {
     kapt('com.tickaroo.tikxml:processor:0.8.13')
 
     // Moshi
-    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.1'
 
     // Tests
     testImplementation 'junit:junit:4.13.2'

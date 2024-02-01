@@ -25,10 +25,14 @@
 
 package org.angelmariages.rodalieswidget.timetables.schedules;
 
+import android.os.Build;
+
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.RnfeStrategy;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.RodaliesStrategy;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.ServiceDisruptionError;
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2.Rodalies2Strategy;
+import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.List;
 
@@ -62,6 +66,14 @@ public class Schedule {
     }
 
     private List<TrainTime> getFromRodalies() throws ServiceDisruptionError {
-        return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
+        List<TrainTime> schedule = new Rodalies2Strategy().getSchedule(this.origin, this.destination, this.division, deltaDays);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            U.log(schedule.stream().findFirst().toString());
+        }
+
+        return schedule;
+
+//        return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 }
