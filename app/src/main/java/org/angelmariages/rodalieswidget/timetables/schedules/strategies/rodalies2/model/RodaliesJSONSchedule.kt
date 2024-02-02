@@ -40,5 +40,26 @@ data class RodaliesJSONResult(
 @JsonClass(generateAdapter = true)
 data class RodaliesJSONItem(
     val departsAtOrigin: String,
-    val arrivesAtDestination: String
+    val arrivesAtDestination: String,
+    val steps: List<RodaliesJSONStep>
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONStep(
+    val departsAt: String?,
+    val arrivesAt: String?,
+    val line: RodaliesJSONLine,
+    val station: RodaliesJSONStation?
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONLine(
+    val id: String,
+    val name: String
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONStation(
+    val id: String,
+    val name: String,
 )

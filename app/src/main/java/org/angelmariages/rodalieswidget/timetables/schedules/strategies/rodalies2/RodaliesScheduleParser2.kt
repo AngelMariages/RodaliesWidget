@@ -36,21 +36,86 @@ fun parse(
     destination: String,
     calendarInstance: Calendar
 ): List<TrainTime> {
-    val transfers = 0;
+    val transfers = getTransfersNumber(schedule)
     val trainTimes = ArrayList<TrainTime>()
 
-    for (timeItem in schedule.result.items) {
-        trainTimes.add(
-            TrainTime(
-                "R1",
-                timeItem.departsAtOrigin,
-                timeItem.arrivesAtDestination,
-                origin,
-                destination,
-                calendarInstance
-            )
-        )
+    val scheduleItems = schedule.result.items
+
+    for (timeItem in scheduleItems) {
+        when (transfers) {
+            0 -> {
+                trainTimes.add(
+                    TrainTime(
+                        timeItem.steps.first().line.name,
+                        timeItem.departsAtOrigin,
+                        timeItem.arrivesAtDestination,
+                        origin,
+                        destination,
+                        calendarInstance
+                    )
+                )
+            }
+
+            1 -> {
+                // timeItem.departsAtOrigin is first train departure time
+                // secondStep.arrivesAt is first train arrival time
+                // secondStep.departsAt is second train departure time
+                // timeItem.arrivesAtDestination is second train arrival time
+                // firstStep.line.name is first train line
+                // secondStep.line.name is second train line
+                // firstStep.station.name is null
+                // secondStep.station.name is transfer station
+                val firstStep = timeItem.steps[0]
+                val secondStep = timeItem.steps.getOrNull(1)
+
+                if (secondStep != null) {
+                    trainTimes.add(
+                        TrainTime(
+                            firstStep.line.name,
+                            timeItem.departsAtOrigin,
+                            secondStep.arrivesAt,
+                            secondStep.line.name,
+                            secondStep.station?.id,
+                            secondStep.departsAt,
+                            timeItem.arrivesAtDestination,
+                            origin,
+                            destination,
+                            false,
+                            calendarInstance
+                        )
+                    )
+                } else {
+                    trainTimes.add(
+                        TrainTime(
+                            firstStep.line.name,
+                            timeItem.departsAtOrigin,
+                            timeItem.arrivesAtDestination,
+                            null,
+                            null,
+                            null,
+                            null,
+                            origin,
+                            destination,
+                            true,
+                            calendarInstance
+                        )
+                    )
+                }
+            }
+
+            else -> {}
+        }
     }
 
     return trainTimes
+}
+
+private fun getTransfersNumber(schedule: RodaliesJSONSchedule): Int {
+    val items = schedule.result.items
+
+    if (items.any { it.steps.size > 1 }) {
+        return 1
+    }
+
+    return 0
 }
