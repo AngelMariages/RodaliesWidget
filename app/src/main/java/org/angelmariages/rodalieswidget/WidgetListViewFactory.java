@@ -212,7 +212,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 			TrainTime trainTime = schedule.get(position);
 			boolean isNotScheduledTrain = !TimeUtils.isScheduledTrain(trainTime);
 			switch (transfers) {
-				case 0: {
+				case 0 -> {
 					row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 					setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
 
@@ -224,8 +224,7 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
 					}
 				}
-				break;
-				case 1: {
+				case 1 -> {
 					if (trainTime.isDirectTrain()) {
 						row = new RemoteViews(context.getPackageName(), R.layout.time_list);
 						setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
@@ -238,11 +237,16 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 							row.setImageViewResource(R.id.alarmImageView, R.drawable.ic_no_alarm);
 						}
 					} else {
-						if (trainTime.isSameOriginTrain()) {
+						TrainTime previousTrainTime = null;
+						if (position > 0) {
+							previousTrainTime = schedule.get(position - 1);
+						}
+
+						if (trainTime.isSameOriginTrain() || isSameOriginTrain(trainTime, previousTrainTime)) {
 							if (show_more_transfer_trains) {
 								if (group_transfer_exits) {
 									row = new RemoteViews(context.getPackageName(), R.layout.time_list);
-									setTexts(row, trainTime.getLine(), trainTime.getDepartureTime(), trainTime.getArrivalTime());
+									setTexts(row, trainTime.getLineTransferOne(), trainTime.getDepartureTimeTransferOne(), trainTime.getArrivalTimeTransferOne());
 
 									setDisabledTexts(row, isNotScheduledTrain);
 								} else {
@@ -275,9 +279,13 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						}
 					}
 				}
-				break;
-				case 2: {
-					if (trainTime.isSameOriginTrain()) {
+				case 2 -> {
+					TrainTime previousTrainTime = null;
+					if (position > 0) {
+						previousTrainTime = schedule.get(position - 1);
+					}
+
+					if (trainTime.isSameOriginTrain() || isSameOriginTrain(trainTime, previousTrainTime)) {
 						if (show_more_transfer_trains) {
 							if (group_transfer_exits) {
 								row = new RemoteViews(context.getPackageName(), R.layout.time_list_one_transfer);
@@ -326,7 +334,6 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 						}
 					}
 				}
-				break;
 			}
 
 			if (row != null) {
@@ -342,6 +349,14 @@ class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
 			return row;
 		}
+	}
+
+	private boolean isSameOriginTrain(TrainTime currentTrainTime, TrainTime previousTrainTime) {
+		if (previousTrainTime == null) return false;
+
+		return currentTrainTime.getOrigin().equalsIgnoreCase(previousTrainTime.getOrigin()) &&
+				currentTrainTime.getDestination().equalsIgnoreCase(previousTrainTime.getDestination()) &&
+				currentTrainTime.getDepartureTime().equalsIgnoreCase(previousTrainTime.getDepartureTime());
 	}
 
 	private void setTexts(RemoteViews row, String line, String departure_time, String arrival_time) {

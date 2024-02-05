@@ -102,7 +102,61 @@ fun parse(
                     )
                 }
             }
+            2 -> {
+                // timeItem.departsAtOrigin is first train departure time
+                // secondStep.arrivesAt is first train arrival time
+                // secondStep.departsAt is second train departure time
+                // thirdStep.arrivesAt is second train arrival time
+                // thirdStep.departsAt is third train departure time
+                // timeItem.arrivesAtDestination is third train arrival time
+                // firstStep.line.name is first train line
+                // secondStep.line.name is second train line
+                // thirdStep.line.name is third train line
+                // firstStep.station.name is null
+                // secondStep.station.name is transfer station
+                // thirdStep.station.name is null
+                val firstStep = timeItem.steps[0]
+                val secondStep = timeItem.steps.getOrNull(1)
+                val thirdStep = timeItem.steps.getOrNull(2)
 
+                if (thirdStep != null) {
+                    trainTimes.add(
+                        TrainTime(
+                            firstStep.line.name,
+                            timeItem.departsAtOrigin,
+                            secondStep?.arrivesAt,
+                            secondStep?.line?.name,
+                            secondStep?.station?.id,
+                            secondStep?.departsAt,
+                            thirdStep.arrivesAt,
+                            thirdStep.line.name,
+                            thirdStep.station?.id,
+                            thirdStep.departsAt,
+                            timeItem.arrivesAtDestination,
+                            origin,
+                            destination,
+                            false,
+                            calendarInstance
+                        )
+                    )
+                } else {
+                    trainTimes.add(
+                        TrainTime(
+                            firstStep.line.name,
+                            timeItem.departsAtOrigin,
+                            timeItem.arrivesAtDestination,
+                            null,
+                            null,
+                            null,
+                            null,
+                            origin,
+                            destination,
+                            true,
+                            calendarInstance
+                        )
+                    )
+                }
+            }
             else -> {}
         }
     }
@@ -113,8 +167,12 @@ fun parse(
 private fun getTransfersNumber(schedule: RodaliesJSONSchedule): Int {
     val items = schedule.result.items
 
-    if (items.any { it.steps.size > 1 }) {
+    if (items.any { it.steps.size == 2 }) {
         return 1
+    }
+
+    if (items.any { it.steps.size == 3 }) {
+        return 2
     }
 
     return 0
