@@ -28,7 +28,7 @@ package org.angelmariages.rodalieswidget.timetables.schedules;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rnfe.RnfeStrategy;
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.RodaliesStrategy;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.ServiceDisruptionError;
+import org.angelmariages.rodalieswidget.utils.U;
 
 import java.util.List;
 
@@ -37,7 +37,6 @@ public class Schedule {
     private final String destination;
     private final int division;
     private final RnfeStrategy rnfeStrategy;
-    private final RodaliesStrategy rodaliesStrategy;
     private final int deltaDays;
 
     public Schedule(String origin, String destination, int division, int deltaDays) {
@@ -46,10 +45,9 @@ public class Schedule {
         this.division = division;
         this.deltaDays = deltaDays; // TODO: date should be calculated here instead of passing around delta days
         this.rnfeStrategy = new RnfeStrategy();
-        this.rodaliesStrategy = new RodaliesStrategy();
     }
 
-    public List<TrainTime> get() throws ServiceDisruptionError {
+    public List<TrainTime> get() {
         if (division == 50) { // Rodalies
             return getFromRodalies();
         } else {
@@ -61,7 +59,16 @@ public class Schedule {
         return this.rnfeStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
     }
 
-    private List<TrainTime> getFromRodalies() throws ServiceDisruptionError {
-        return rodaliesStrategy.getSchedule(this.origin, this.destination, this.division, deltaDays);
+    private List<TrainTime> getFromRodalies() {
+        List<TrainTime> schedule = new RodaliesStrategy().getSchedule(this.origin, this.destination, this.division, deltaDays);
+
+        if (schedule == null) {
+            U.log("Rodalies schedule is null");
+            return null;
+        }
+
+        U.log(schedule.stream().findFirst().toString());
+
+        return schedule;
     }
 }

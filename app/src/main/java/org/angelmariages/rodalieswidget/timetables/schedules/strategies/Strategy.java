@@ -26,11 +26,10 @@
 package org.angelmariages.rodalieswidget.timetables.schedules.strategies;
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.ServiceDisruptionError;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface Strategy {
-    List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) throws ServiceDisruptionError, IOException;
+    List<TrainTime> getSchedule(String origin, String destination, int division, int deltaDays) throws IOException;
 }

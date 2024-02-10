@@ -58,6 +58,7 @@ class GetScheduleWorker(appContext: Context, workerParams: WorkerParameters) :
                     )
                     .build()
 
+                // Enqueue the work
                 it.enqueue(request)
             })
         }
@@ -69,8 +70,12 @@ class GetScheduleWorker(appContext: Context, workerParams: WorkerParameters) :
 
         U.log("Recieved work request for: $widgetID -> deltaDays: $deltaDays")
 
-        run {
-            return@run GetSchedule().execute(applicationContext, widgetID, deltaDays)
+        runCatching {
+            return@runCatching GetSchedule().execute(applicationContext, widgetID, deltaDays)
+        }.onFailure {
+            U.log("Error getting schedule: $it")
+            U.sendNoTimesError(widgetID, applicationContext)
+            return Result.failure()
         }
 
         return Result.success()

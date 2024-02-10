@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021 Àngel Mariages
+ * Copyright (c) 2024 Àngel Mariages
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,25 +23,43 @@
  *
  */
 
-package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies;
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model
 
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesDepartures;
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesSchedule;
+import com.squareup.moshi.JsonClass
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONSchedule(
+    val result: RodaliesJSONResult,
+)
 
-public interface RodaliesAPI {
-    @GET("gencat_rodalies_serveis/AppJava/restServices/getHoraris?horaIni=0")
-    Call<RodaliesSchedule> getSchedules(
-            @Query("origen") String origin,
-            @Query("desti") String destination,
-            @Query("dataViatge") String travelDate
-            );
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONResult(
+    val items: List<RodaliesJSONItem>
+)
 
-    @GET("gencat_rodalies_serveis/AppJava/restServices/getDepartures")
-    Call<RodaliesDepartures> getDepartures(
-            @Query("numestacio") String origin
-    );
-}
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONItem(
+    val departsAtOrigin: String,
+    val arrivesAtDestination: String,
+    val steps: List<RodaliesJSONStep>
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONStep(
+    val departsAt: String?,
+    val arrivesAt: String?,
+    val line: RodaliesJSONLine,
+    val station: RodaliesJSONStation?
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONLine(
+    val id: String,
+    val name: String
+)
+
+@JsonClass(generateAdapter = true)
+data class RodaliesJSONStation(
+    val id: String,
+    val name: String,
+)

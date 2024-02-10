@@ -28,19 +28,53 @@ plugins {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdk 33
+    def isReleaseBuild = project.gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
+
+    def versionPropsFile = file('version.properties')
+
+    if (!versionPropsFile.canRead()) {
+        throw new GradleException("Could not read version.properties!")
+    }
+
+    Properties versionProps = new Properties()
+
+    versionProps.load(new FileInputStream(versionPropsFile))
+
+    def versionMajor = versionProps['MAJOR'].toInteger()
+    def versionMinor = versionProps['MINOR'].toInteger()
+    def versionPatch = versionProps['PATCH'].toInteger()
+
+    if (isReleaseBuild) {
+        versionPatch += 1
+
+        if (versionPatch == 100) {
+            versionPatch = 0
+            versionMinor += 1
+        }
+        if (versionMinor == 10) {
+            versionMinor = 0
+            versionMajor += 1
+        }
+
+        versionProps['MAJOR'] = versionMajor.toString()
+        versionProps['MINOR'] = versionMinor.toString()
+        versionProps['PATCH'] = versionPatch.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+    }
+
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.angelmariages.rodalieswidget"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 33
-        multiDexEnabled true
-        versionCode 49
-        versionName "2.0.9"
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -65,7 +99,6 @@ android {
     namespace 'org.angelmariages.rodalieswidget'
     buildFeatures {
         viewBinding true
-        dataBinding true
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
@@ -82,7 +115,7 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
@@ -90,6 +123,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10'
 
     implementation 'com.frybits.harmony:harmony:1.2.2'
+
+    // OkHttp3
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
     // Do not update, breaks for SDK 33
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -103,25 +139,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
 
-    //MultiDex
-    implementation 'androidx.multidex:multidex:2.0.1'
-
-    // Retrofit (HTTP)
-    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
-    implementation "com.squareup.retrofit2:converter-moshi:${retrofit_version}"
-    // XML
-    implementation 'com.tickaroo.tikxml:annotation:0.8.13'
-    //noinspection GradleDependency
-    implementation 'com.tickaroo.tikxml:core:0.8.13'
-    //noinspection GradleDependency
-    implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
-    // If using KSP it will break because of proguard
-    //noinspection GradleDependency
-    kapt('com.tickaroo.tikxml:processor:0.8.13')
-
     // Moshi
-    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
+    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.1'
 
     // Tests
     testImplementation 'junit:junit:4.13.2'
@@ -134,6 +154,3 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'kotlin-kapt'

@@ -24,6 +24,7 @@
 
 package org.angelmariages.rodalieswidget.utils;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -36,6 +37,7 @@ import android.util.Log;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import org.angelmariages.rodalieswidget.BuildConfig;
 import org.angelmariages.rodalieswidget.WidgetManager;
 import org.angelmariages.rodalieswidget.timetables.TrainTime;
 import org.jetbrains.annotations.NotNull;
@@ -276,5 +278,9 @@ public final class U {
 
     public static void logException(@NotNull Throwable err) {
         FirebaseCrashlytics.getInstance().recordException(err);
+    }
+
+    public static String getVersionName() {
+        return BuildConfig.VERSION_NAME;
     }
 }
