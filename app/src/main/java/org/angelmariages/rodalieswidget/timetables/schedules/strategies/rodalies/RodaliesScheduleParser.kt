@@ -23,10 +23,10 @@
  *
  */
 
-package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 
 import org.angelmariages.rodalieswidget.timetables.TrainTime
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2.model.RodaliesJSONSchedule
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesJSONSchedule
 import java.util.ArrayList
 import java.util.Calendar
 

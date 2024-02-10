@@ -22,17 +22,16 @@
  * SOFTWARE.
  *
  */
-package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 
 import com.squareup.moshi.Moshi
 import org.angelmariages.rodalieswidget.timetables.TrainTime
 import org.angelmariages.rodalieswidget.timetables.schedules.strategies.Strategy
-import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2.model.RodaliesJSONSchedule
-import org.angelmariages.rodalieswidget.utils.U
+import org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies.model.RodaliesJSONSchedule
 import java.io.IOException
 import java.util.Calendar
 
-class Rodalies2Strategy : Strategy {
+class RodaliesStrategy : Strategy {
     private val moshi = Moshi.Builder().build()
     private val jsonAdapter = moshi.adapter(RodaliesJSONSchedule::class.java)
 
@@ -44,16 +43,14 @@ class Rodalies2Strategy : Strategy {
         deltaDays: Int
     ): List<TrainTime>? {
         try {
-            val pageFromInternet = getRodaliesJSONSchedule(deltaDays, origin, destination)
-            if (pageFromInternet == null) {
-                U.log("Page is null!")
-                return null
-            }
-            U.log(pageFromInternet)
+            val pageFromInternet =
+                getRodaliesJSONSchedule(deltaDays, origin, destination) ?: return null
+
             val fromMoshi = jsonAdapter.fromJson(pageFromInternet)
-                ?: // TODO: Log exception
-                return null
+                ?: return emptyList()
+
             val calendarInstance = getCalendar(deltaDays)
+
             return parse(fromMoshi, origin, destination, calendarInstance)
         } catch (e: IOException) {
             e.printStackTrace()

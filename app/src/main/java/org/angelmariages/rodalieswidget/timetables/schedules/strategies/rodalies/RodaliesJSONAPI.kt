@@ -22,10 +22,10 @@
  * SOFTWARE.
  *
  */
-package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies2
+package org.angelmariages.rodalieswidget.timetables.schedules.strategies.rodalies
 
 import okhttp3.HttpUrl
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
@@ -41,15 +41,15 @@ fun getRodaliesJSONSchedule(deltaDays: Int, origin: String, destination: String)
         .addHeader("Pragma", "no-cache")
         .addHeader("Cache-Control", "no-cache")
         .addHeader("Host", "serveisgrs.rodalies.gencat.cat")
-        .addHeader("Accept", MediaType.get("application/json; charset=utf-8").toString())
+        .addHeader("Accept", "application/json; charset=utf-8".toMediaType().toString())
         .addHeader("Accept-Encoding", "gzip")
         .addHeader("User-Agent", "okhttp/4.9.2")
         .get()
         .build()
     try {
         httpClient.newCall(request).execute().use { response ->
-            if (response.body() != null) {
-                return response.body()!!.string()
+            if (response.body != null) {
+                return response.body!!.string()
             }
         }
     } catch (e: IOException) {
