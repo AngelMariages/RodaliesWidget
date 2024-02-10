@@ -183,6 +183,9 @@ public class SettingsActivity extends AppCompatActivity {
             SwitchPreference pref_anonymous_data_collection = (SwitchPreference) findPreference("pref_anonymous_data_collection");
             Preference pref_view_tutorial = findPreference("pref_view_tutorial");
             RingtonePreference pref_set_sound = (RingtonePreference) findPreference("pref_set_sound");
+            Preference pref_about = findPreference("pref_version");
+
+            pref_about.setTitle(getString(R.string.pref_version, U.getVersionName()));
 
             show_all_times.setOnPreferenceChangeListener((preference, newValue) -> {
                 onPreferenceChangeC("show_all_times", newValue);
