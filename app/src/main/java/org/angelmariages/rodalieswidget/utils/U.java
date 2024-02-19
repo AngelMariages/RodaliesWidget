@@ -24,13 +24,11 @@
 
 package org.angelmariages.rodalieswidget.utils;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -268,12 +266,7 @@ public final class U {
     }
 
     public static int getColor(Context context, int resourceId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return context.getResources().getColor(resourceId, null);
-        } else {
-            //noinspection deprecation
-            return context.getResources().getColor(resourceId);
-        }
+        return context.getResources().getColor(resourceId, null);
     }
 
     public static void logException(@NotNull Throwable err) {

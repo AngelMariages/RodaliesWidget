@@ -1,0 +1,59 @@
+[versions]
+androidx-core = "1.5.0"
+androidx-junit = "1.1.5"
+constraintlayout = "2.1.4"
+core = "1.0.6"
+coreKtx = "1.12.0"
+espressoCore = "3.5.1"
+gson = "2.10"
+harmony = "1.2.2"
+junit = "4.13.2"
+kotlin = "1.9.22"
+kotlinxCoroutinesAndroid = "1.7.1"
+material = "1.11.0"
+moshi = "1.15.1"
+firebaseBom = "32.7.2"
+gradlePlugins-agp = "8.2.2"
+gradlePlugins-crashlytics = "2.9.9"
+gradlePlugins-gms = "4.4.1"
+gradlePlugins-ksp = "1.9.22-1.0.17"
+navigationUiKtx = "2.5.3"
+okhttp = "4.12.0"
+runner = "1.5.2"
+uiautomator = "2.2.0"
+vectordrawable = "1.1.0"
+workRuntimeKtx = "2.9.0"
+
+[libraries]
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-core-testing = { module = "androidx.test:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationUiKtx" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+androidx-vectordrawable = { module = "androidx.vectordrawable:vectordrawable", version.ref = "vectordrawable" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+core = { module = "com.github.kizitonwose.colorpreference:core", version.ref = "core" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+harmony = { module = "com.frybits.harmony:harmony", version.ref = "harmony" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+moshi-ksp = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+android-library = { id = "com.android.library", version.ref = "gradlePlugins-agp" }
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "gradlePlugins-crashlytics" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "gradlePlugins-gms" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
