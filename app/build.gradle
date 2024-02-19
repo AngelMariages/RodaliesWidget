@@ -99,6 +99,11 @@ android {
     namespace 'org.angelmariages.rodalieswidget'
     buildFeatures {
         viewBinding true
+        compose true
+        buildConfig true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
@@ -106,13 +111,14 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Kotlin
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
@@ -142,6 +148,27 @@ dependencies {
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
     ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.1'
+
+    // Compose & Glance
+    implementation platform('androidx.compose:compose-bom:2024.02.00')
+    implementation 'androidx.compose.material3:material3-window-size-class'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.foundation:foundation-layout'
+    implementation 'androidx.compose.material:material'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.core:core-remoteviews:1.0.0'
+    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation "androidx.glance:glance-appwidget:1.0.0"
+    implementation "androidx.glance:glance-material3:1.0.0"
+
+    // Android Studio Compose Preview
+    implementation 'androidx.compose.ui:ui-tooling'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'com.google.android.glance.tools:appwidget-host:0.2.2'
+    implementation "com.google.android.glance.tools:appwidget-viewer:0.2.2"
 
     // Tests
     testImplementation 'junit:junit:4.13.2'
