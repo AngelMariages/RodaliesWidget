@@ -23,14 +23,12 @@
  */
 
 plugins {
-    id 'com.google.devtools.ksp'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.ksp
+    alias libs.plugins.firebaseCrashlytics
+    alias libs.plugins.googleServices
 }
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     def isReleaseBuild = project.gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
@@ -114,70 +112,42 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    // Kotlin
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
-    implementation 'androidx.work:work-runtime-ktx:2.9.0'
-
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'com.github.kizitonwose.colorpreference:core:1.0.6'
-    implementation 'com.google.code.gson:gson:2.10'
-
-    implementation 'com.frybits.harmony:harmony:1.2.2'
-
-    // OkHttp3
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-
-    // Do not update, breaks for SDK 33
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //noinspection GradleDependency
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    //noinspection GradleDependency
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation libs.kotlin.stdlib
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.material
+    implementation libs.core
+    implementation libs.gson
+    implementation libs.harmony
+    implementation libs.okhttp
+    implementation libs.bundles.androidx
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:31.0.2')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.analytics
+    implementation libs.firebase.crashlytics
 
     // Moshi
-    implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
-    ksp 'com.squareup.moshi:moshi-kotlin-codegen:1.15.1'
+    implementation libs.moshi.kotlin
+    ksp libs.moshi.ksp
 
     // Compose & Glance
-    implementation platform('androidx.compose:compose-bom:2024.02.00')
-    implementation 'androidx.compose.material3:material3-window-size-class'
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.foundation:foundation'
-    implementation 'androidx.compose.foundation:foundation-layout'
-    implementation 'androidx.compose.material:material'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose'
-    implementation 'androidx.activity:activity-ktx:1.8.2'
-    implementation 'androidx.core:core-remoteviews:1.0.0'
-    implementation 'androidx.activity:activity-compose:1.8.2'
-    implementation "androidx.glance:glance-appwidget:1.0.0"
-    implementation "androidx.glance:glance-material3:1.0.0"
+    implementation platform(libs.compose.bom)
+    implementation libs.bundles.compose
+    implementation libs.bundles.glance
 
     // Android Studio Compose Preview
-    implementation 'androidx.compose.ui:ui-tooling'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'com.google.android.glance.tools:appwidget-host:0.2.2'
-    implementation "com.google.android.glance.tools:appwidget-viewer:0.2.2"
+    implementation libs.bundles.composeTooling
+    implementation libs.appwidget.host
+    implementation libs.appwidget.viewer
 
     // Tests
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test:core:1.5.0'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.core.testing
+    androidTestImplementation libs.androidx.runner
 
     // UiAutomator Testing
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation libs.androidx.uiautomator
 }
 

@@ -24,34 +24,32 @@
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-buildscript {
-    ext.kotlin_version = '1.9.22'
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        classpath 'com.android.tools.build:gradle:8.2.2'
-        classpath 'com.google.gms:google-services:4.4.1'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
-    }
-}
-
 plugins {
-    id 'com.google.devtools.ksp' version '1.9.22-1.0.17' apply false
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.android.library apply false
+    alias libs.plugins.kotlinAndroid apply false
+    alias libs.plugins.ksp apply false
+    alias libs.plugins.firebaseCrashlytics apply false
+    alias libs.plugins.googleServices apply false
 }
 
 allprojects {
     repositories {
-        maven { url 'https://maven.google.com' }
-        maven { url "https://jitpack.io" }
-        mavenCentral()
         google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        def composeSnapshot = libs.versions.composesnapshot.get()
+        if (composeSnapshot.length() > 1) {
+            maven { url "https://androidx.dev/snapshots/builds/$composeSnapshot/artifacts/repository/" }
+        }
+
+        def glanceSnapshot = libs.versions.glancesnapshot.get()
+
+        print("Glance snapshot: $glanceSnapshot")
+
+        if (glanceSnapshot.length() > 1) {
+            maven { url "https://androidx.dev/snapshots/builds/$glanceSnapshot/artifacts/repository" }
+        }
     }
 }
 
