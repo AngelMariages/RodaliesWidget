@@ -28,6 +28,7 @@ plugins {
     alias libs.plugins.ksp
     alias libs.plugins.firebaseCrashlytics
     alias libs.plugins.googleServices
+    alias libs.plugins.kotlinSerialization
 }
 
 android {
@@ -114,6 +115,7 @@ dependencies {
 
     implementation libs.kotlin.stdlib
     implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.serialization.json
     implementation libs.material
     implementation libs.core
     implementation libs.gson

@@ -26,162 +26,118 @@
 package org.angelmariages.rodalieswidget.glance
 
 import android.content.Context
-import android.os.Handler
-import android.widget.Toast
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.glance.Button
-import androidx.glance.ButtonDefaults
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalContext
-import androidx.glance.LocalSize
-import androidx.glance.action.ActionParameters
+import androidx.glance.GlanceTheme
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
-import androidx.glance.background
-import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
-import androidx.glance.layout.Column
-import androidx.glance.layout.Row
-import androidx.glance.layout.fillMaxSize
+import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.glance.currentState
 import androidx.glance.layout.padding
-import androidx.glance.layout.size
-import androidx.glance.text.TextAlign
-import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
-import org.angelmariages.rodalieswidget.R
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
+import androidx.glance.text.Text
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import org.angelmariages.rodalieswidget.glance.state.WeatherData
+import org.angelmariages.rodalieswidget.glance.state.WeatherInfo
+import org.angelmariages.rodalieswidget.glance.state.WeatherInfoStateDefinition
+import org.angelmariages.rodalieswidget.glance.ui.WidgetWrapper
+import org.angelmariages.rodalieswidget.glance.worker.WeatherWorker
+import org.angelmariages.rodalieswidget.utils.U
+import kotlin.random.Random
 
 
 /**
  * Sample AppWidget that showcase scrollable layouts using the LazyColumn
  */
 class GlanceRodaliesWidget : GlanceAppWidget() {
-    companion object {
-        private val SMALL_BOX = DpSize(90.dp, 90.dp)
-        private val BIG_BOX = DpSize(180.dp, 180.dp)
-        private val VERY_BIG_BOX = DpSize(300.dp, 300.dp)
-        private val ROW = DpSize(180.dp, 48.dp)
-        private val LARGE_ROW = DpSize(300.dp, 48.dp)
-        private val COLUMN = DpSize(48.dp, 180.dp)
-        private val LARGE_COLUMN = DpSize(48.dp, 300.dp)
-    }
+    override val stateDefinition = WeatherInfoStateDefinition
 
-    override val sizeMode = SizeMode.Responsive(
-        setOf(SMALL_BOX, BIG_BOX, ROW, LARGE_ROW, COLUMN, LARGE_COLUMN)
-    )
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
 
-    override suspend fun provideGlance(
-        context: Context,
-        id: GlanceId
-    ) = provideContent {
-        // Content will be called for each of the provided sizes
-        when (LocalSize.current) {
-            COLUMN -> ResponsiveColumn(numItems = 3)
-            ROW -> ResponsiveRow(numItems = 3)
-            LARGE_COLUMN -> ResponsiveColumn(numItems = 5)
-            LARGE_ROW -> ResponsiveRow(numItems = 5)
-            SMALL_BOX -> ResponsiveBox(numItems = 1)
-            BIG_BOX -> ResponsiveBox(numItems = 3)
-            VERY_BIG_BOX -> ResponsiveBox(numItems = 5)
-            else ->
-                throw IllegalArgumentException("Invalid size not matching the provided ones")
+        coroutineScope {
+            val manager = GlanceAppWidgetManager(context)
+            val appWidgetId = manager.getAppWidgetId(id)
+
+            val store = stateDefinition.getDataStore(context, appWidgetId.toString())
+
+            U.log("GlanceId: $id, trying to get weather info from data store")
+            val currentData = store.data.map {
+                U.log("Current degrees: $it")
+                it
+            }.stateIn(this@coroutineScope)
+
+            // Load the current weather if there is not a current value present.
+            if (currentData.value is WeatherInfo.Unavailable) {
+                U.log("Updating weather ${currentData.value}")
+                updateAppWidgetState(context = context,
+                    definition = WeatherInfoStateDefinition,
+                    glanceId = id,
+                    updateState = {
+                        val newDegrees = Random.nextInt(32, 100)
+                        U.log("Updating weather $newDegrees")
+                        WeatherInfo.Available(WeatherData(newDegrees))
+                    })
+            }
+
+
+            WeatherWorker.enqueue(context, true, appWidgetId)
+
+            // Note: you can also set `android:updatePeriodMillis` to control how often the
+            // launcher requests an update, but this does not support periods less than
+            // 30 minutes.
+            provideContent {
+                Content(glanceId = id)
+            }
         }
     }
-}
 
-private val ItemClickedKey = ActionParameters.Key<String>("name")
-private val parentModifier = GlanceModifier
-    .fillMaxSize()
-    .padding(8.dp)
-    .background(R.color.colorPrimary)
-private val columnColors = listOf(Color(0xff70D689), Color(0xffB2E5BF))
-private val rowColors = listOf(Color(0xff5087EF), Color(0xffA2BDF2))
-private val boxColors = listOf(Color(0xffF7A998), Color(0xffFA5F3D))
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Composable
+    @Preview
+    fun Content(glanceId: GlanceId) {
+        val weatherInfo = currentState<WeatherInfo>()
 
-/**
- * Displays a column with three items that share evenly the available space
- */
-@Composable
-private fun ResponsiveColumn(numItems: Int) {
-    Column(parentModifier) {
-        val modifier = GlanceModifier.fillMaxSize().padding(4.dp).defaultWeight()
-        (1..numItems).forEach {
-            val color = columnColors[(it - 1) % columnColors.size]
-            ContentItem("$it", color, modifier)
-        }
-    }
-}
+        GlanceTheme {
+            when (weatherInfo) {
+                WeatherInfo.Loading -> {
+                    WidgetWrapper(glanceId) {
+                        CircularProgressIndicator()
+                    }
+                }
 
-/**
- * Displays a row with three items that share evenly the available space
- */
-@Composable
-private fun ResponsiveRow(numItems: Int) {
-    Row(parentModifier) {
-        val modifier = GlanceModifier.fillMaxSize().padding(4.dp).defaultWeight()
-        (1..numItems).forEach {
-            val color = rowColors[(it - 1) % rowColors.size]
-            ContentItem("$it", color, modifier)
-        }
-    }
-}
+                is WeatherInfo.Unavailable -> {
+                    WidgetWrapper(glanceId) {
+                        Text(text = "Unavailable: ${weatherInfo.message}")
+                    }
+                }
 
-/**
- * Displays a Box with three items on top of each other
- */
-@Composable
-private fun ResponsiveBox(numItems: Int) {
-    val size = LocalSize.current
-    Box(modifier = parentModifier, contentAlignment = Alignment.Center) {
-        (1..numItems).forEach {
-            val index = numItems - it + 1
-            val color = boxColors[(index - 1) % boxColors.size]
-            val boxSize = (size.width * index) / numItems
-            ContentItem("${numItems - index}",
-                color,
-                GlanceModifier.size(boxSize),
-                textStyle = TextStyle(textAlign = TextAlign.End).takeIf { numItems != 1 }
-            )
-        }
-    }
-}
+                is WeatherInfo.Available -> {
+                    val degrees = weatherInfo.currentData.degrees
 
-@Composable
-private fun ContentItem(
-    text: String,
-    color: Color,
-    modifier: GlanceModifier,
-    textStyle: TextStyle? = null
-) {
-    Box(modifier = modifier) {
-        val context = LocalContext.current
-        Button(
-            text = text,
-            modifier = GlanceModifier.fillMaxSize().padding(8.dp).background(color),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = ColorProvider(color),
-                contentColor = ColorProvider(Color.White)
-            ),
-            style = textStyle ?: TextStyle(textAlign = TextAlign.Center),
-            onClick = {
-                Handler(context.mainLooper).post {
-                    Toast.makeText(
-                        context,
-                        "Item clicked: $text",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    WidgetWrapper(glanceId) {
+                        LazyColumn {
+                            items(10) { id ->
+                                Text(
+                                    text = "Item $id, w: $degrees",
+                                    modifier = GlanceModifier.padding(8.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
-        )
+        }
     }
-}
-
-class ResponsiveAppWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = GlanceRodaliesWidget()
 }

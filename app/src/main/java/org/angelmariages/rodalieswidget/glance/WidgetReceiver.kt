@@ -25,9 +25,46 @@
 
 package org.angelmariages.rodalieswidget.glance
 
+import android.appwidget.AppWidgetManager
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.glance.ExperimentalGlanceApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import kotlinx.coroutines.Dispatchers
+import org.angelmariages.rodalieswidget.glance.worker.WeatherWorker
+import org.angelmariages.rodalieswidget.utils.U
 
 class WidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = GlanceRodaliesWidget()
+
+    @ExperimentalGlanceApi
+    override val coroutineContext = Dispatchers.IO
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
+        U.log("onUpdate $appWidgetIds")
+        // for each widget, enqueue a worker
+        appWidgetIds.forEach { appWidgetId ->
+            U.log("onUpdate: $appWidgetId $appWidgetId")
+            WeatherWorker.enqueue(context, true, appWidgetId)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
+        U.log("onDeleted $appWidgetIds")
+        // for each widget, cancel the worker
+        appWidgetIds.forEach { appWidgetId ->
+            U.log("onDeleted: $appWidgetId $appWidgetId")
+            WeatherWorker.cancel(context, appWidgetId)
+        }
+    }
 }

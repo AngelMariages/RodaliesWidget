@@ -28,6 +28,7 @@ plugins {
     alias libs.plugins.android.application apply false
     alias libs.plugins.android.library apply false
     alias libs.plugins.kotlinAndroid apply false
+    alias libs.plugins.kotlinSerialization apply false
     alias libs.plugins.ksp apply false
     alias libs.plugins.firebaseCrashlytics apply false
     alias libs.plugins.googleServices apply false
@@ -38,17 +39,10 @@ allprojects {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
+
         def composeSnapshot = libs.versions.composesnapshot.get()
         if (composeSnapshot.length() > 1) {
             maven { url "https://androidx.dev/snapshots/builds/$composeSnapshot/artifacts/repository/" }
-        }
-
-        def glanceSnapshot = libs.versions.glancesnapshot.get()
-
-        print("Glance snapshot: $glanceSnapshot")
-
-        if (glanceSnapshot.length() > 1) {
-            maven { url "https://androidx.dev/snapshots/builds/$glanceSnapshot/artifacts/repository" }
         }
     }
 }
